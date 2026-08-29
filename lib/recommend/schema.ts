@@ -1,0 +1,66 @@
+// The recommendation contract: one Anthropic tool ("recommend_books") whose
+// output is validated with a mirrored Zod schema before it leaves the server.
+// The model returns books NOT in the library, each tied to a concrete reason
+// grounded in the reader's history. Period/movement enums are drawn from the
+// taxonomy so the classification stays in-vocabulary and browseable later.
+
+import { z } from "zod";
+import type Anthropic from "@anthropic-ai/sdk";
+import { MOVEMENTS, PERIODS } from "../taxonomy";
+
+// --- Anthropic tool schema (JSON Schema) ---------------------------------
+
+export const RECOMMEND_BOOKS_TOOL: Anthropic.Tool = {
+  name: "recommend_books",
+  description:
+    "Recommend books the reader has NOT read yet, chosen from their demonstrated " +
+    "taste (highly-rated works, favoured periods/movements/authors). Never " +
+    "recommend a book already present in the provided library. Each pick must " +
+    "cite concrete evidence from the reading history.",
+  input_schema: {
+    type: "object",
+    properties: {
+      recommendations: {
+        type: "array",
+        description: "Between 3 and 8 recommendations, best first.",
+        items: {
+          type: "object",
+          properties: {
+            title: { type: "string", description: "Work title." },
+            author: { type: "string", description: 'Natural order "First Last".' },
+            first_published: { type: "integer", description: "Best-guess year first published." },
+            period: { type: "string", enum: [...PERIODS], description: "One literary period." },
+            primary_movement: { type: "string", enum: [...MOVEMENTS], description: "One primary movement, or omit if none fits." },
+            reason: {
+              type: "string",
+              description:
+                "1-2 sentences tying this pick to specific evidence in the reader's " +
+                "history (name the read titles/authors/movements that motivate it).",
+            },
+            confidence: { type: "number", description: "0..1 confidence this is a strong match for the reader." },
+          },
+          required: ["title", "author", "reason", "confidence"],
+        },
+      },
+    },
+    required: ["recommendations"],
+  },
+};
+
+// --- Zod mirror (validated before persistence) ---------------------------
+
+export const RecommendationSchema = z.object({
+  title: z.string().min(1),
+  author: z.string().min(1),
+  first_published: z.number().int().nullish(),
+  period: z.enum(PERIODS).nullish(),
+  primary_movement: z.enum(MOVEMENTS).nullish(),
+  reason: z.string().min(1),
+  confidence: z.number().min(0).max(1),
+});
+
+export const RecommendResultSchema = z.object({
+  recommendations: z.array(RecommendationSchema),
+});
+
+export type Recommendation = z.infer<typeof RecommendationSchema>;

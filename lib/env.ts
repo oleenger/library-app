@@ -42,3 +42,19 @@ export function getReadingMatchEnv():
     "claude-sonnet-4-5";
   return { ok: true, env: { apiKey, model } };
 }
+
+// Recommendations are a reasoning-heavy, taste-sensitive task over the whole
+// reading history, so they run on Opus by default. The call is rare (guarded by
+// a fingerprint cache + cooldown in the route), so the cost is bounded.
+//   RECOMMEND_MODEL=claude-opus-4-8   # optional override
+export function getRecommendEnv():
+  | { ok: true; env: IntakeEnv }
+  | { ok: false; missing: string[] } {
+  const apiKey = process.env.ANTHROPIC_API_KEY?.trim() ?? "";
+  if (!apiKey) return { ok: false, missing: ["ANTHROPIC_API_KEY"] };
+  const model =
+    process.env.RECOMMEND_MODEL?.trim() ||
+    process.env.INTAKE_MODEL?.trim() ||
+    "claude-opus-4-8";
+  return { ok: true, env: { apiKey, model } };
+}
