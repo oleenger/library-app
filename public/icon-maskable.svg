@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Full-bleed square background for maskable safe-zone compliance. -->
+  <rect width="64" height="64" fill="#18201d"/>
+  <!-- Glyph kept within the central ~66% safe zone (approx x/y 11..53). -->
+  <g transform="translate(32 32) scale(0.62) translate(-32 -32)">
+    <path d="M20 17h17c5 0 9 4 9 9v22H27c-4 0-7-3-7-7V17Z" fill="#fff"/>
+    <path d="M27 17v31M31 24h9M31 30h9" fill="none" stroke="#246b54" stroke-width="3" stroke-linecap="round"/>
+  </g>
+</svg>

@@ -7,6 +7,11 @@
 /.next/
 /out/
 
+# serwist-generated service worker (built from app/sw.ts)
+/public/sw.js
+/public/sw.js.map
+/public/swe-worker-*.js
+
 # production
 /build
 

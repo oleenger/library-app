@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getWorks } from "@/lib/books";
 import { getReadsPageData } from "@/lib/insights";
-import { ReadsView } from "@/components/reads-view";
+import { ReadsClient } from "@/components/reads-client";
 
 export const metadata = { title: "Read books — Personal Library" };
 export const dynamic = "force-dynamic";
@@ -36,7 +36,7 @@ export default async function ReadsPage() {
             {data.read} {data.read === 1 ? "title" : "titles"} read, newest first.
           </p>
         </header>
-        <ReadsView data={data} />
+        <ReadsClient initialWorks={works} />
       </main>
     </div>
   );
