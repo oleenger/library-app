@@ -2,14 +2,14 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Personal Library — PoC",
+  title: "The Library",
   description: "Browse a personal book collection by literary period and movement.",
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#f7f3ec",
+  themeColor: "#f3f0e9",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

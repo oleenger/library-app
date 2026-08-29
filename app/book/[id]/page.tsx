@@ -19,11 +19,11 @@ export async function generateMetadata({
 
 function Field({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div className="border-b border-paper-edge py-3">
-      <dt className="font-sans text-xs uppercase tracking-[0.15em] text-ink-faint">
+    <div className="grid gap-1 border-b border-paper-edge py-4 sm:grid-cols-[12rem_1fr] sm:gap-6 sm:py-5">
+      <dt className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-ink-faint">
         {label}
       </dt>
-      <dd className="mt-1 font-sans text-sm text-ink">{value}</dd>
+      <dd className="text-sm leading-6 text-ink">{value}</dd>
     </div>
   );
 }
@@ -46,45 +46,65 @@ export default async function BookDetailPage({
     .filter((e): e is NonNullable<typeof e> => Boolean(e));
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12">
-      <Link
-        href="/"
-        className="font-sans text-sm text-ink-soft underline underline-offset-2 hover:text-ink"
-      >
-        ← The Library
-      </Link>
-
-      <header className="mt-6 border-b border-paper-edge pb-6">
-        <div className="flex items-center gap-2">
-          <span
-            className={`h-2 w-2 rounded-full ${periodDot(c.period)}`}
-            aria-hidden
-          />
-          <span className="font-sans text-xs uppercase tracking-[0.15em] text-ink-faint">
-            {c.period ?? "Unclassified"}
+    <main className="mx-auto max-w-6xl px-4 pb-16 sm:px-7 lg:px-10">
+      <nav className="flex h-20 items-center justify-between border-b border-ink">
+        <Link href="/" className="group flex items-center gap-3 text-sm">
+          <span className="grid h-9 w-9 place-items-center rounded-full border border-paper-edge bg-paper-raised transition-colors group-hover:border-ink">
+            ←
           </span>
+          <span className="font-semibold uppercase tracking-[0.12em]">The Library</span>
+        </Link>
+        <span className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-ink-faint">
+          Work record
+        </span>
+      </nav>
+
+      <header className="enter-up grid gap-10 border-b border-ink py-12 sm:py-16 lg:grid-cols-[minmax(0,1fr)_14rem] lg:items-end lg:py-24">
+        <div>
+          <div className="flex items-center gap-2 text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-ink-faint">
+            <span className={`h-2 w-2 rounded-full ${periodDot(c.period)}`} aria-hidden />
+            {c.period ?? "Unclassified"}
+          </div>
+          <h1 className="mt-5 max-w-4xl font-serif text-[clamp(3rem,8vw,6.75rem)] leading-[0.92] tracking-[-0.045em]">
+            {work.title}
+          </h1>
+          <p className="mt-6 text-base text-ink-soft sm:text-lg">by {work.author}</p>
         </div>
-        <h1 className="mt-2 font-serif text-3xl leading-tight text-ink sm:text-4xl">
-          {work.title}
-        </h1>
-        <p className="mt-2 font-sans text-base text-ink-soft">{work.author}</p>
+        <div className="border-l border-paper-edge pl-5">
+          <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-ink-faint">
+            First published
+          </p>
+          <p className="mt-3 font-serif text-5xl tabular-nums">
+            {formatYear(work.originalYear)}
+          </p>
+        </div>
       </header>
 
-      <dl className="mt-4">
+      <section className="enter-up-late grid gap-10 py-10 lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-16 lg:py-16">
+        <div>
+          <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-accent">
+            Classification
+          </p>
+          <p className="mt-3 max-w-xs font-serif text-2xl leading-tight">
+            Where this work sits in the collection.
+          </p>
+        </div>
+        <dl className="border-t border-ink">
         <Field label="Year first published" value={formatYear(work.originalYear)} />
         <Field label="Original language" value={work.language ?? "—"} />
         <Field label="Period" value={c.period ?? "—"} />
         <Field label="Primary movement" value={c.primaryMovement ?? "—"} />
         <Field label="Secondary movements" value={secondary} />
         {work.notes && <Field label="Notes" value={work.notes} />}
-      </dl>
+        </dl>
+      </section>
 
       {editions.length > 0 && (
-        <section className="mt-8">
-          <h2 className="font-sans text-xs uppercase tracking-[0.15em] text-ink-faint">
+        <section className="border-t border-ink py-10 sm:py-14">
+          <h2 className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-accent">
             {editions.length === 1 ? "Edition owned" : `Editions owned (${editions.length})`}
           </h2>
-          <ul className="mt-2 space-y-3">
+          <ul className="mt-5 grid gap-3 sm:grid-cols-2">
             {editions.map((edition) => {
               const companions = edition.workIds.filter(
                 (wid) => wid !== work.id,
@@ -97,12 +117,12 @@ export default async function BookDetailPage({
               return (
                 <li
                   key={edition.id}
-                  className="rounded-md border border-paper-edge bg-paper-raised p-4"
+                  className="flex flex-col rounded-md border border-paper-edge bg-paper-raised p-5 sm:p-6"
                 >
                   {isCollection && (
-                    <p className="font-serif text-lg text-ink">{edition.name}</p>
+                    <p className="font-serif text-xl text-ink">{edition.name}</p>
                   )}
-                  <p className="font-sans text-sm text-ink-soft">
+                  <p className={`${isCollection ? "mt-2" : ""} text-sm leading-6 text-ink-soft`}>
                     {edition.publisher ?? "Publisher unknown"}
                     {edition.language && ` · ${edition.language}`}
                     {translated && (
@@ -113,14 +133,14 @@ export default async function BookDetailPage({
                     )}
                   </p>
                   {companions > 0 && (
-                    <p className="mt-1 font-sans text-sm text-ink-soft">
+                    <p className="mt-1 text-sm text-ink-soft">
                       Also contains {companions} other{" "}
                       {companions === 1 ? "work" : "works"}
                     </p>
                   )}
                   <Link
                     href={`/edition/${edition.id}`}
-                    className="mt-3 inline-block font-sans text-sm text-ink underline underline-offset-2 hover:text-ink-soft"
+                    className="mt-6 inline-flex items-center gap-2 self-start text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-ink decoration-accent underline-offset-4 hover:underline"
                   >
                     View edition details →
                   </Link>

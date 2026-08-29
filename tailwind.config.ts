@@ -8,21 +8,21 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Warm paper tones rather than pure white (proposal §12).
         paper: {
-          DEFAULT: "#f7f3ec",
-          raised: "#fdfbf6",
-          edge: "#e7ded0",
+          DEFAULT: "#f3f0e9",
+          raised: "#fffefa",
+          edge: "#d9d5cc",
         },
         ink: {
-          DEFAULT: "#2b2722",
-          soft: "#6b6357",
-          faint: "#9a9284",
+          DEFAULT: "#171713",
+          soft: "#5e5c55",
+          faint: "#8d8a81",
         },
+        accent: "#e7472e",
       },
       fontFamily: {
-        serif: ["Georgia", "'Iowan Old Style'", "'Times New Roman'", "serif"],
-        sans: ["system-ui", "-apple-system", "'Segoe UI'", "Roboto", "sans-serif"],
+        serif: ["'Iowan Old Style'", "'Baskerville'", "'Times New Roman'", "serif"],
+        sans: ["'Avenir Next'", "'Helvetica Neue'", "Helvetica", "sans-serif"],
       },
     },
   },

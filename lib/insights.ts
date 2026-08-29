@@ -1,7 +1,5 @@
 // Derived, aggregate views over the catalogue: the numbers and groupings the
-// front page surfaces (headline stats, a period timeline, author frequencies,
-// a featured pick). All pure so they run on the server for first paint and can
-// be recomputed on the client as filters change.
+// front page surfaces. All pure so they can run on the server for first paint.
 
 import type { Work } from "./types";
 
@@ -15,7 +13,7 @@ export interface LibraryStats {
   latestYear: number | null;
 }
 
-/** Headline counts for the stats strip. */
+/** Headline counts for the collection overview. */
 export function getStats(works: Work[]): LibraryStats {
   const authors = new Set<string>();
   const movements = new Set<string>();
@@ -46,14 +44,4 @@ export function getStats(works: Work[]): LibraryStats {
     earliestYear: earliest,
     latestYear: latest,
   };
-}
-
-/**
- * Pick a work to feature. Deterministic given `seed` so the server and client
- * agree on first render (no hydration mismatch); omit `seed` for a random pick.
- */
-export function pickFeatured(works: Work[], seed?: number): Work | null {
-  if (works.length === 0) return null;
-  const r = seed === undefined ? Math.random() : (seed % works.length) / works.length;
-  return works[Math.floor(r * works.length) % works.length];
 }

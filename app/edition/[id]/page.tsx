@@ -31,47 +31,58 @@ export default async function EditionDetailPage({
     .filter((w): w is NonNullable<typeof w> => Boolean(w));
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12">
-      <Link
-        href="/"
-        className="font-sans text-sm text-ink-soft underline underline-offset-2 hover:text-ink"
-      >
-        ← The Library
-      </Link>
-
-      <header className="mt-6 border-b border-paper-edge pb-6">
-        <span className="font-sans text-xs uppercase tracking-[0.15em] text-ink-faint">
-          Edition
+    <main className="mx-auto max-w-6xl px-4 pb-16 sm:px-7 lg:px-10">
+      <nav className="flex h-20 items-center justify-between border-b border-ink">
+        <Link href="/" className="group flex items-center gap-3 text-sm">
+          <span className="grid h-9 w-9 place-items-center rounded-full border border-paper-edge bg-paper-raised transition-colors group-hover:border-ink">
+            ←
+          </span>
+          <span className="font-semibold uppercase tracking-[0.12em]">The Library</span>
+        </Link>
+        <span className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-ink-faint">
+          Edition record
         </span>
-        <h1 className="mt-2 font-serif text-3xl leading-tight text-ink sm:text-4xl">
+      </nav>
+
+      <header className="enter-up border-b border-ink py-12 sm:py-16 lg:py-24">
+        <span className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-accent">
+          Owned edition
+        </span>
+        <h1 className="mt-5 max-w-4xl font-serif text-[clamp(3rem,8vw,6.75rem)] leading-[0.92] tracking-[-0.045em]">
           {edition.name}
         </h1>
-        <p className="mt-2 font-sans text-base text-ink-soft">
+        <p className="mt-6 text-base text-ink-soft sm:text-lg">
           {edition.publisher ?? "Publisher unknown"}
           {edition.language && ` · ${edition.language}`}
         </p>
       </header>
 
-      <section className="mt-6">
-        <h2 className="font-sans text-xs uppercase tracking-[0.15em] text-ink-faint">
+      <section className="enter-up-late py-10 sm:py-14">
+        <div className="flex items-end justify-between border-b border-ink pb-4">
+          <h2 className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-ink-faint">
           {works.length === 1 ? "Work in this edition" : "Works in this edition"}
-        </h2>
-        <ul className="mt-3 divide-y divide-paper-edge border-y border-paper-edge">
-          {works.map((w) => (
+          </h2>
+          <span className="font-serif text-3xl tabular-nums">{works.length}</span>
+        </div>
+        <ul className="divide-y divide-paper-edge">
+          {works.map((w, index) => (
             <li key={w.id}>
               <Link
                 href={`/book/${w.id}`}
-                className="flex items-baseline justify-between gap-4 py-3 transition-colors hover:bg-paper-raised"
+                className="group grid grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-3 py-5 transition-colors hover:bg-paper-raised sm:grid-cols-[3rem_minmax(0,1fr)_auto] sm:gap-6 sm:py-7"
               >
+                <span className="text-[0.62rem] tabular-nums text-ink-faint">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
                 <span className="min-w-0">
-                  <span className="font-serif text-base text-ink hover:underline hover:underline-offset-2">
+                  <span className="font-serif text-xl leading-tight text-ink decoration-accent group-hover:underline group-hover:underline-offset-4 sm:text-2xl">
                     {w.title}
                   </span>
-                  <span className="block font-sans text-sm text-ink-soft">
+                  <span className="mt-1 block text-sm text-ink-soft">
                     {w.author}
                   </span>
                 </span>
-                <span className="shrink-0 font-sans text-sm tabular-nums text-ink-faint">
+                <span className="shrink-0 text-sm tabular-nums text-ink-faint">
                   {formatYear(w.originalYear)}
                 </span>
               </Link>
