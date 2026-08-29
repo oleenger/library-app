@@ -24,14 +24,16 @@ Although this is a throwaway-feeling PoC, the domain types (`lib/types.ts`) keep
 ## Stack
 
 Next.js (App Router) · TypeScript · Tailwind CSS · **local SQLite** (`node:sqlite`,
-no native module). `data/books.csv` is the editable source; `npm run import` loads
+no native module). `data/library_master.csv` is the editable source; `npm run import` loads
 it into `data/library.db`, which the app reads server-side. Chosen for a local-only
 project; the schema (`db/schema.sql`) is plain standard SQL that **ports to
 Postgres/Supabase** with no changes if the project ever moves to the cloud.
 
 ## Data model
 
-- **`data/books.csv`** — the editable source, **one row per owned edition**.
+- **`data/library_master.csv`** — the editable source of truth (all books),
+  **one row per owned edition**. `data/library.db` is a generated artifact rebuilt
+  from it on every import (gitignored).
 - **`db/schema.sql`** — `works`, `editions`, and a `work_editions` join table
   (many-to-many: an omnibus holds several works; a work may be owned in several
   editions). `UNIQUE(title, author)` on `works` **enforces de-duplication**.
@@ -61,12 +63,35 @@ differing `publisher`/`edition_language`.
 
 ```bash
 npm install
-npm run dev      # regenerates data/library.db, then serves http://localhost:3000
+npm run dev -- -H 0.0.0.0   # regenerates data/library.db, serves on http://<lan-ip>:3000
 ```
 
-`npm run import` rebuilds the database from the CSV on its own; `dev` and `build`
-run it automatically first. Production build:
+`npm run import` rebuilds the database from `data/library_master.csv` on its own;
+`dev` and `build` run it automatically first. Production build:
 
 ```bash
 npm run build && npm run start
 ```
+
+## Adding new books
+
+`data/library_master.csv` is the accumulating source of truth — it always holds the
+**totality** of the collection. To add books later, don't replace it; feed a
+**delta CSV** (only the new books) through:
+
+```bash
+npm run add-books -- data/new-books.csv
+```
+
+This:
+
+1. Verifies the delta's header matches the master (refuses otherwise, so the master
+   can't be corrupted).
+2. Appends the delta's rows to `data/library_master.csv`, **skipping any exact
+   duplicate rows** — so re-running the same delta is safe (idempotent).
+3. Rebuilds `data/library.db` via the importer, with the usual taxonomy validation
+   and work/edition de-duplication, printing a load summary.
+
+The delta must use the same columns as the master (see the table above) and may
+contain as few as one book. Books already owned (same `title` + `author`) are
+merged by the `UNIQUE` constraint, so overlaps are harmless.

@@ -28,7 +28,7 @@ interface BookRow {
 }
 
 const ROOT = process.cwd();
-const CSV_PATH = path.join(ROOT, "data", "books.csv");
+const CSV_PATH = path.join(ROOT, "data", "library_master.csv");
 const DB_PATH = path.join(ROOT, "data", "library.db");
 const SCHEMA_PATH = path.join(ROOT, "db", "schema.sql");
 
@@ -59,7 +59,9 @@ const { data, errors } = Papa.parse<BookRow>(csv, {
   transformHeader: (h) => h.trim(),
 });
 if (errors.length > 0) {
-  throw new Error(`Failed to parse books.csv: ${errors[0].message} (row ${errors[0].row})`);
+  throw new Error(
+    `Failed to parse library_master.csv: ${errors[0].message} (row ${errors[0].row})`,
+  );
 }
 
 // Fresh database each run.
@@ -93,11 +95,20 @@ for (const row of data) {
 
   const title = row.title.trim();
   const author = row.author.trim();
+  const firstPublished = parseYear(row.first_published);
+
+  // Work identity = title + author only. first_published is not guaranteed (may be
+  // missing or approximate), so it is stored as an attribute but never part of the
+  // match key — otherwise one work would split across editions with differing years.
   const workId = `${slugify(author)}--${slugify(title)}`;
 
+  // A shared edition (omnibus / box set) is grouped by its human-readable `edition`
+  // label + publisher — NOT by author, so a multi-author box set is ONE edition.
+  // A blank `edition` is a standalone volume: its own edition, one per row.
   const editionName = nullable(row.edition);
+  const publisher = nullable(row.publisher);
   const editionId = editionName
-    ? `ed--${slugify(author)}--${slugify(editionName)}`
+    ? `ed--${slugify(editionName)}--${slugify(publisher ?? "")}`
     : `ed--${workId}--${++editionSeq}`;
 
   const period = nullable(row.period);
@@ -121,7 +132,7 @@ for (const row of data) {
     workId,
     title,
     author,
-    parseYear(row.first_published),
+    firstPublished,
     nullable(row.original_language),
     period,
     primary,
@@ -136,7 +147,7 @@ for (const row of data) {
   const edRes = insertEdition.run(
     editionId,
     editionName ?? title,
-    nullable(row.publisher),
+    publisher,
     nullable(row.edition_language),
   );
   if (Number(edRes.changes) > 0) editionsInserted++;

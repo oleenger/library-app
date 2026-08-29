@@ -5,6 +5,7 @@
   "description": "Personal Library App — Stage 0 PoC: browse a book collection by literary period and movement.",
   "scripts": {
     "import": "node scripts/import.ts",
+    "add-books": "node scripts/add-books.ts",
     "predev": "node scripts/import.ts",
     "prebuild": "node scripts/import.ts",
     "dev": "next dev",
