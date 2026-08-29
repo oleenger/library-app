@@ -224,7 +224,8 @@ export default function CapturePage() {
             {shots.length === 0 ? "Open camera or choose photos" : "Add more photos"}
           </p>
           <p className="mt-1 text-[0.85rem] text-ink-faint">
-            One shelf per shot works best. You can add several.
+            Get close and fill the frame with one shelf — small, distant spines
+            can&apos;t be read reliably.
           </p>
         </label>
 
