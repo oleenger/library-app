@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Work } from "@/lib/types";
 import { formatYear, periodColor } from "@/lib/display";
+import { BookCover } from "@/components/book-cover";
 import {
   applyFilters,
   facetOptions,
@@ -18,6 +19,8 @@ interface Props {
   works: Work[];
   reading?: React.ReactNode;
 }
+
+type ViewMode = "list" | "grid";
 
 const AUTHOR_LIMIT = 10;
 const MOVEMENT_LIMIT = 12;
@@ -37,6 +40,22 @@ function shortPeriod(period: string | null): string {
 
 export function LibraryView({ works, reading }: Props) {
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
+  const [view, setView] = useState<ViewMode>("list");
+
+  // Restore the last chosen layout; start with "list" so SSR and first paint match.
+  useEffect(() => {
+    const saved = localStorage.getItem("library:view");
+    if (saved === "grid" || saved === "list") setView(saved);
+  }, []);
+
+  function changeView(next: ViewMode) {
+    setView(next);
+    try {
+      localStorage.setItem("library:view", next);
+    } catch {
+      /* private mode — ignore */
+    }
+  }
 
   const filtered = useMemo(() => applyFilters(works, filters), [works, filters]);
 
@@ -148,14 +167,17 @@ export function LibraryView({ works, reading }: Props) {
                 {filtered.length === 1 ? "book" : "books"}
                 {active ? " found" : ""}
               </p>
-              <ReadFilter
-                value={filters.readStatus}
-                onChange={(v) => setFilters((f) => ({ ...f, readStatus: v }))}
-                className="sm:hidden"
-              />
-              <span className="hidden text-[0.7rem] font-medium uppercase tracking-[0.12em] text-ink-faint sm:inline">
-                Title A–Z
-              </span>
+              <div className="flex items-center gap-2">
+                <ViewToggle value={view} onChange={changeView} />
+                <ReadFilter
+                  value={filters.readStatus}
+                  onChange={(v) => setFilters((f) => ({ ...f, readStatus: v }))}
+                  className="sm:hidden"
+                />
+                <span className="hidden text-[0.7rem] font-medium uppercase tracking-[0.12em] text-ink-faint sm:inline">
+                  Title A–Z
+                </span>
+              </div>
             </div>
 
             {filtered.length === 0 ? (
@@ -165,6 +187,12 @@ export function LibraryView({ works, reading }: Props) {
                   Try a different search or filter.
                 </p>
               </div>
+            ) : view === "grid" ? (
+              <ol className="grid grid-cols-2 gap-x-4 gap-y-6 p-5 sm:grid-cols-3 sm:px-6 lg:grid-cols-4">
+                {filtered.map((work) => (
+                  <BookCard key={work.id} work={work} />
+                ))}
+              </ol>
             ) : (
               <ol className="divide-y divide-paper-edge">
                 {filtered.map((work) => (
@@ -175,6 +203,60 @@ export function LibraryView({ works, reading }: Props) {
           </div>
         </section>
       </div>
+    </div>
+  );
+}
+
+/** Layout switch: list (dense, filterable) vs grid (cover shelf). */
+function ViewToggle({
+  value,
+  onChange,
+}: {
+  value: ViewMode;
+  onChange: (value: ViewMode) => void;
+}) {
+  const opts: { mode: ViewMode; label: string; icon: React.ReactNode }[] = [
+    {
+      mode: "list",
+      label: "List view",
+      icon: (
+        <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
+          <path d="M8 6h12M8 12h12M8 18h12M3.5 6h.01M3.5 12h.01M3.5 18h.01" />
+        </svg>
+      ),
+    },
+    {
+      mode: "grid",
+      label: "Grid view",
+      icon: (
+        <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" aria-hidden>
+          <rect x="4" y="4" width="7" height="7" rx="1.2" />
+          <rect x="13" y="4" width="7" height="7" rx="1.2" />
+          <rect x="4" y="13" width="7" height="7" rx="1.2" />
+          <rect x="13" y="13" width="7" height="7" rx="1.2" />
+        </svg>
+      ),
+    },
+  ];
+  return (
+    <div className="inline-flex shrink-0 rounded-full border border-paper-edge bg-paper p-0.5">
+      {opts.map((o) => {
+        const isSel = value === o.mode;
+        return (
+          <button
+            key={o.mode}
+            type="button"
+            onClick={() => onChange(o.mode)}
+            aria-pressed={isSel}
+            aria-label={o.label}
+            className={`grid h-7 w-8 place-items-center rounded-full transition-colors ${
+              isSel ? "bg-ink text-canvas shadow-sm" : "text-ink-soft hover:text-ink"
+            }`}
+          >
+            {o.icon}
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -389,6 +471,27 @@ function BookRow({ work }: { work: Work }) {
         >
           →
         </span>
+      </Link>
+    </li>
+  );
+}
+
+/** Cover-forward grid item — a placeholder spine plus a title/author caption. */
+function BookCard({ work }: { work: Work }) {
+  return (
+    <li>
+      <Link href={`/book/${work.id}`} className="group block">
+        <BookCover
+          title={work.title}
+          author={work.author}
+          period={work.classification.period}
+          read={Boolean(work.reading)}
+          className="transition-transform duration-200 group-hover:-translate-y-1 group-active:translate-y-0"
+        />
+        <h3 className="mt-2.5 line-clamp-1 font-serif text-sm leading-tight text-ink transition-colors group-hover:text-accent">
+          {work.title}
+        </h3>
+        <p className="mt-0.5 line-clamp-1 text-xs text-ink-soft">{work.author}</p>
       </Link>
     </li>
   );
