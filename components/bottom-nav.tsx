@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 
 type Dest = {
   href: string;
@@ -50,11 +51,36 @@ function isActive(pathname: string, href: string) {
 
 export function BottomNav() {
   const pathname = usePathname();
+  const [fabVisible, setFabVisible] = useState(true);
+  const lastY = useRef(0);
+
+  // Material "scroll-away" FAB: retreat on downward scroll, return on scroll-up
+  // or near the top, so it never sits on top of content while reading.
+  useEffect(() => {
+    lastY.current = window.scrollY;
+    function onScroll() {
+      const y = window.scrollY;
+      const delta = y - lastY.current;
+      if (y < 120 || delta < -6) setFabVisible(true);
+      else if (delta > 6) setFabVisible(false);
+      lastY.current = y;
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   // Login is a standalone full-screen surface — no app chrome.
   if (pathname === "/login") return null;
 
   const showFab = pathname !== "/capture";
+
+  function onTabClick(e: React.MouseEvent, href: string) {
+    // Tapping the already-active tab scrolls back to the top (iOS/Material convention).
+    if (isActive(pathname, href)) {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }
 
   return (
     <>
@@ -62,7 +88,9 @@ export function BottomNav() {
         <Link
           href="/capture"
           aria-label="Add books"
-          className="fixed right-5 z-50 grid h-14 w-14 place-items-center rounded-2xl bg-accent text-white shadow-lg shadow-accent/30 transition active:scale-95 hover:bg-ink sm:hidden"
+          className={`fixed right-5 z-50 grid h-14 w-14 place-items-center rounded-2xl bg-accent text-white shadow-lg shadow-accent/30 transition-all duration-300 hover:bg-ink active:scale-95 sm:hidden ${
+            fabVisible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-24 opacity-0"
+          }`}
           style={{ bottom: "calc(env(safe-area-inset-bottom) + 5.5rem)" }}
         >
           <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -84,6 +112,7 @@ export function BottomNav() {
               <li key={d.href} className="flex-1">
                 <Link
                   href={d.href}
+                  onClick={(e) => onTabClick(e, d.href)}
                   aria-current={active ? "page" : undefined}
                   className={`flex flex-col items-center gap-1 pb-1.5 pt-2 text-[0.65rem] font-semibold tracking-wide transition-colors ${
                     active ? "text-accent" : "text-ink-faint hover:text-ink-soft"
