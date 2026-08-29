@@ -1,3 +1,4 @@
+- Always use port 3000
 - Always start app with npm run dev -- -H 0.0.0.0
 - Be concise in your answers
 - create new branch for new features
