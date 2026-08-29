@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Work } from "@/lib/types";
 import { formatYear, periodColor } from "@/lib/display";
+import { BookCover } from "@/components/book-cover";
 import {
   applyFilters,
   facetOptions,
@@ -16,8 +17,9 @@ import {
 
 interface Props {
   works: Work[];
-  reading?: React.ReactNode;
 }
+
+type ViewMode = "list" | "grid";
 
 const AUTHOR_LIMIT = 10;
 const MOVEMENT_LIMIT = 12;
@@ -35,8 +37,24 @@ function shortPeriod(period: string | null): string {
   return SHORT_PERIOD[period] ?? period;
 }
 
-export function LibraryView({ works, reading }: Props) {
+export function LibraryView({ works }: Props) {
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
+  const [view, setView] = useState<ViewMode>("list");
+
+  // Restore the last chosen layout; start with "list" so SSR and first paint match.
+  useEffect(() => {
+    const saved = localStorage.getItem("library:view");
+    if (saved === "grid" || saved === "list") setView(saved);
+  }, []);
+
+  function changeView(next: ViewMode) {
+    setView(next);
+    try {
+      localStorage.setItem("library:view", next);
+    } catch {
+      /* private mode — ignore */
+    }
+  }
 
   const filtered = useMemo(() => applyFilters(works, filters), [works, filters]);
 
@@ -62,10 +80,10 @@ export function LibraryView({ works, reading }: Props) {
   }
 
   return (
-    <div className="pt-8 sm:pt-12">
-      {/* Search + reading summary */}
+    <div className="pt-5 sm:pt-12">
+      {/* Search */}
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex flex-1 items-center gap-2.5">
+        <div className="sticky top-16 z-20 -mx-4 flex flex-1 items-center gap-2.5 bg-canvas/95 px-4 py-3 backdrop-blur-md sm:static sm:mx-0 sm:bg-transparent sm:px-0 sm:py-0 sm:backdrop-blur-none">
           <label className="relative flex-1">
             <span className="sr-only">Search by title or author</span>
             <svg
@@ -99,43 +117,24 @@ export function LibraryView({ works, reading }: Props) {
             </button>
           )}
         </div>
-        {reading}
       </div>
 
-      {/* Period chips with the read-status toggle aligned to their right */}
-      <div className="mt-6 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+      {/* Period chips with the read-status toggle aligned to their right.
+          On phones the toggle lives in the list header instead, to save a row. */}
+      <div className="mt-4 flex flex-col gap-3 sm:mt-6 lg:flex-row lg:items-center lg:justify-between">
         <Timeline
           options={periodOpts}
           selected={filters.period}
           onToggle={(v) => toggle("period", v)}
         />
-        <div className="hidden shrink-0 self-start rounded-full border border-paper-edge bg-paper p-1 shadow-card sm:inline-flex lg:self-auto">
-          {(
-            [
-              ["", "All"],
-              ["read", "Read"],
-              ["unread", "Unread"],
-            ] as const
-          ).map(([value, label]) => {
-            const isSel = filters.readStatus === value;
-            return (
-              <button
-                key={value || "all"}
-                type="button"
-                onClick={() => setFilters((f) => ({ ...f, readStatus: value }))}
-                aria-pressed={isSel}
-                className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${
-                  isSel ? "bg-ink text-canvas shadow-sm" : "text-ink-soft hover:text-ink"
-                }`}
-              >
-                {label}
-              </button>
-            );
-          })}
-        </div>
+        <ReadFilter
+          value={filters.readStatus}
+          onChange={(v) => setFilters((f) => ({ ...f, readStatus: v }))}
+          className="hidden shrink-0 self-start shadow-card sm:inline-flex lg:self-auto"
+        />
       </div>
 
-      <div className="grid gap-8 pt-8 lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-10">
+      <div className="grid gap-5 pt-5 sm:gap-8 sm:pt-8 lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-10">
         <aside className="min-w-0">
           <details className="group rounded-2xl border border-paper-edge bg-paper p-4 shadow-card lg:hidden">
             <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-semibold">
@@ -166,9 +165,17 @@ export function LibraryView({ works, reading }: Props) {
                 {filtered.length === 1 ? "book" : "books"}
                 {active ? " found" : ""}
               </p>
-              <span className="text-[0.7rem] font-medium uppercase tracking-[0.12em] text-ink-faint">
-                Title A–Z
-              </span>
+              <div className="flex items-center gap-2">
+                <ViewToggle value={view} onChange={changeView} />
+                <ReadFilter
+                  value={filters.readStatus}
+                  onChange={(v) => setFilters((f) => ({ ...f, readStatus: v }))}
+                  className="sm:hidden"
+                />
+                <span className="hidden text-[0.7rem] font-medium uppercase tracking-[0.12em] text-ink-faint sm:inline">
+                  Title A–Z
+                </span>
+              </div>
             </div>
 
             {filtered.length === 0 ? (
@@ -178,6 +185,12 @@ export function LibraryView({ works, reading }: Props) {
                   Try a different search or filter.
                 </p>
               </div>
+            ) : view === "grid" ? (
+              <ol className="grid grid-cols-2 gap-x-4 gap-y-6 p-5 sm:grid-cols-3 sm:px-6 lg:grid-cols-4">
+                {filtered.map((work) => (
+                  <BookCard key={work.id} work={work} />
+                ))}
+              </ol>
             ) : (
               <ol className="divide-y divide-paper-edge">
                 {filtered.map((work) => (
@@ -188,6 +201,100 @@ export function LibraryView({ works, reading }: Props) {
           </div>
         </section>
       </div>
+    </div>
+  );
+}
+
+/** Layout switch: list (dense, filterable) vs grid (cover shelf). */
+function ViewToggle({
+  value,
+  onChange,
+}: {
+  value: ViewMode;
+  onChange: (value: ViewMode) => void;
+}) {
+  const opts: { mode: ViewMode; label: string; icon: React.ReactNode }[] = [
+    {
+      mode: "list",
+      label: "List view",
+      icon: (
+        <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
+          <path d="M8 6h12M8 12h12M8 18h12M3.5 6h.01M3.5 12h.01M3.5 18h.01" />
+        </svg>
+      ),
+    },
+    {
+      mode: "grid",
+      label: "Grid view",
+      icon: (
+        <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" aria-hidden>
+          <rect x="4" y="4" width="7" height="7" rx="1.2" />
+          <rect x="13" y="4" width="7" height="7" rx="1.2" />
+          <rect x="4" y="13" width="7" height="7" rx="1.2" />
+          <rect x="13" y="13" width="7" height="7" rx="1.2" />
+        </svg>
+      ),
+    },
+  ];
+  return (
+    <div className="inline-flex shrink-0 rounded-full border border-paper-edge bg-paper p-0.5">
+      {opts.map((o) => {
+        const isSel = value === o.mode;
+        return (
+          <button
+            key={o.mode}
+            type="button"
+            onClick={() => onChange(o.mode)}
+            aria-pressed={isSel}
+            aria-label={o.label}
+            className={`grid h-7 w-8 place-items-center rounded-full transition-colors ${
+              isSel ? "bg-ink text-canvas shadow-sm" : "text-ink-soft hover:text-ink"
+            }`}
+          >
+            {o.icon}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/** Segmented All / Read / Unread control. */
+function ReadFilter({
+  value,
+  onChange,
+  className = "",
+}: {
+  value: Filters["readStatus"];
+  onChange: (value: Filters["readStatus"]) => void;
+  className?: string;
+}) {
+  return (
+    <div
+      className={`inline-flex shrink-0 rounded-full border border-paper-edge bg-paper p-0.5 ${className}`}
+    >
+      {(
+        [
+          ["", "All"],
+          ["read", "Read"],
+          ["unread", "Unread"],
+        ] as const
+      ).map(([v, label]) => {
+        const isSel = value === v;
+        return (
+          <button
+            key={v || "all"}
+            type="button"
+            onClick={() => onChange(v)}
+            aria-pressed={isSel}
+            className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
+              isSel ? "bg-ink text-canvas shadow-sm" : "text-ink-soft hover:text-ink"
+            }`}
+          >
+            {label}
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -300,7 +407,7 @@ function BookRow({ work }: { work: Work }) {
     <li>
       <Link
         href={`/book/${work.id}`}
-        className="group flex items-center gap-4 px-5 py-4 transition-colors hover:bg-paper-sunken/60 sm:px-6"
+        className="group flex items-center gap-4 px-5 py-4 transition-colors hover:bg-paper-sunken/60 active:bg-paper-sunken sm:px-6"
       >
         <span
           className="h-10 w-1 shrink-0 rounded-full"
@@ -312,13 +419,24 @@ function BookRow({ work }: { work: Work }) {
             {work.title}
           </h3>
           <p className="mt-0.5 truncate text-sm text-ink-soft">{work.author}</p>
-          {/* period shown inline on phones, where the tag column is hidden */}
-          <span
-            className="mt-1.5 inline-flex items-center gap-1.5 text-xs font-medium sm:hidden"
-            style={{ color }}
-          >
-            <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: color }} aria-hidden />
-            {shortPeriod(c.period)}
+          {/* period + read status shown inline on phones, where the tag columns are hidden */}
+          <span className="mt-1.5 flex items-center gap-2 text-xs font-medium sm:hidden">
+            <span className="inline-flex items-center gap-1.5" style={{ color }}>
+              <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: color }} aria-hidden />
+              {shortPeriod(c.period)}
+            </span>
+            {work.reading && (
+              <span className="inline-flex items-center gap-1 text-emerald-700">
+                <svg viewBox="0 0 20 20" fill="currentColor" className="h-3.5 w-3.5" aria-hidden>
+                  <path
+                    fillRule="evenodd"
+                    d="M16.7 5.3a1 1 0 0 1 0 1.4l-7 7a1 1 0 0 1-1.4 0l-3.5-3.5a1 1 0 1 1 1.4-1.4l2.8 2.8 6.3-6.3a1 1 0 0 1 1.4 0Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                Read
+              </span>
+            )}
           </span>
         </div>
         {work.reading && (
@@ -351,6 +469,27 @@ function BookRow({ work }: { work: Work }) {
         >
           →
         </span>
+      </Link>
+    </li>
+  );
+}
+
+/** Cover-forward grid item — a placeholder spine plus a title/author caption. */
+function BookCard({ work }: { work: Work }) {
+  return (
+    <li>
+      <Link href={`/book/${work.id}`} className="group block">
+        <BookCover
+          title={work.title}
+          author={work.author}
+          period={work.classification.period}
+          read={Boolean(work.reading)}
+          className="transition-transform duration-200 group-hover:-translate-y-1 group-active:translate-y-0"
+        />
+        <h3 className="mt-2.5 line-clamp-1 font-serif text-sm leading-tight text-ink transition-colors group-hover:text-accent">
+          {work.title}
+        </h3>
+        <p className="mt-0.5 line-clamp-1 text-xs text-ink-soft">{work.author}</p>
       </Link>
     </li>
   );

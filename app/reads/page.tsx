@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { getWorks } from "@/lib/books";
-import { getReadsPageData } from "@/lib/insights";
+import { getReadsPageData, getReadingStats } from "@/lib/insights";
 import { ReadsClient } from "@/components/reads-client";
+import { ReadingStats } from "@/components/reading-stats";
 
 export const metadata = { title: "Read books — Personal Library" };
 export const dynamic = "force-dynamic";
@@ -9,6 +10,7 @@ export const dynamic = "force-dynamic";
 export default async function ReadsPage() {
   const works = await getWorks();
   const data = getReadsPageData(works);
+  const reading = getReadingStats(works);
 
   return (
     <div className="min-h-screen">
@@ -28,13 +30,16 @@ export default async function ReadsPage() {
       </nav>
 
       <main className="enter-up mx-auto max-w-7xl px-4 pb-24 pt-8 sm:px-6 lg:px-8">
-        <header className="mb-8">
-          <h1 className="font-serif text-4xl leading-none tracking-[-0.02em] sm:text-5xl">
-            Read books
-          </h1>
-          <p className="mt-3 text-[0.95rem] text-ink-soft">
-            {data.read} {data.read === 1 ? "title" : "titles"} read, newest first.
-          </p>
+        <header className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h1 className="font-serif text-4xl leading-none tracking-[-0.02em] sm:text-5xl">
+              Read books
+            </h1>
+            <p className="mt-3 text-[0.95rem] text-ink-soft">
+              {data.read} {data.read === 1 ? "title" : "titles"} read, newest first.
+            </p>
+          </div>
+          <ReadingStats stats={reading} />
         </header>
         <ReadsClient initialWorks={works} />
       </main>

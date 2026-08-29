@@ -4,6 +4,7 @@ import { InstallPrompt } from "@/components/install-prompt";
 import { ServiceWorkerRegister } from "@/components/service-worker-register";
 import { OfflineBanner } from "@/components/offline-banner";
 import { PwaRuntime } from "@/components/pwa-runtime";
+import { BottomNav } from "@/components/bottom-nav";
 
 export const metadata: Metadata = {
   title: "The Library",
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         {children}
+        <BottomNav />
         <OfflineBanner />
         <InstallPrompt />
         <ServiceWorkerRegister />

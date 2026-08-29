@@ -3,6 +3,7 @@ import { getWorks } from "@/lib/books";
 import { getStats, getReadingStats } from "@/lib/insights";
 import { formatYear } from "@/lib/display";
 import { LibraryClient } from "@/components/library-client";
+import { PullToRefresh } from "@/components/pull-to-refresh";
 
 // Catalogue is read live from Supabase per request, so render dynamically.
 export const dynamic = "force-dynamic";
@@ -19,14 +20,15 @@ export default async function HomePage() {
       : "—";
 
   return (
+    <PullToRefresh>
     <div className="min-h-screen">
       <header className="sticky top-0 z-30 border-b border-paper-edge bg-canvas/80 shadow-header backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-ink font-serif text-base italic text-canvas shadow-sm">
+            <span className="grid h-9 w-9 place-items-center rounded-lg bg-ink font-serif text-lg italic text-canvas shadow-sm ring-1 ring-ink/10">
               L
             </span>
-            <span className="text-[0.95rem] font-semibold tracking-tight text-ink">
+            <span className="font-serif text-[1.2rem] italic leading-none tracking-tight text-ink">
               The Library
             </span>
           </div>
@@ -51,7 +53,7 @@ export default async function HomePage() {
             </Link>
             <Link
               href="/capture"
-              className="inline-flex items-center gap-2 rounded-xl bg-accent px-3.5 py-2 text-[0.8rem] font-semibold text-white shadow-sm transition hover:bg-ink focus-visible:ring-2 focus-visible:ring-accent"
+              className="hidden items-center gap-2 rounded-xl bg-accent px-3.5 py-2 text-[0.8rem] font-semibold text-white shadow-sm transition hover:bg-ink focus-visible:ring-2 focus-visible:ring-accent sm:inline-flex"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -73,23 +75,10 @@ export default async function HomePage() {
       </header>
 
       <main className="enter-up mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
-        <nav className="flex gap-2 pt-6 sm:hidden">
-          <Link
-            href="/reads"
-            className="flex-1 rounded-xl border border-paper-edge bg-paper px-3 py-2.5 text-center text-[0.8rem] font-semibold text-ink-soft shadow-sm transition hover:border-ink-faint hover:text-ink"
-          >
-            My Read Books
-          </Link>
-          <Link
-            href="/recommendations"
-            className="flex-1 rounded-xl border border-paper-edge bg-paper px-3 py-2.5 text-center text-[0.8rem] font-semibold text-ink-soft shadow-sm transition hover:border-ink-faint hover:text-ink"
-          >
-            My Recommendations
-          </Link>
-        </nav>
         <LibraryClient initialWorks={works} />
       </main>
     </div>
+    </PullToRefresh>
   );
 }
 
