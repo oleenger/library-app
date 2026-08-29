@@ -23,10 +23,10 @@ export default async function HomePage() {
       <header className="sticky top-0 z-30 border-b border-paper-edge bg-canvas/80 shadow-header backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-ink font-serif text-base italic text-canvas shadow-sm">
+            <span className="grid h-9 w-9 place-items-center rounded-lg bg-ink font-serif text-lg italic text-canvas shadow-sm ring-1 ring-ink/10">
               L
             </span>
-            <span className="text-[0.95rem] font-semibold tracking-tight text-ink">
+            <span className="font-serif text-[1.2rem] italic leading-none tracking-tight text-ink">
               The Library
             </span>
           </div>
