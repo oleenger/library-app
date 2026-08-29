@@ -18,28 +18,46 @@ import type { Database } from "./types";
 const PUBLIC_PATHS = ["/login", "/auth/callback"];
 
 export async function updateSession(request: NextRequest): Promise<NextResponse> {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  const { pathname } = request.nextUrl;
+  const isPublic = PUBLIC_PATHS.some(
+    (p) => pathname === p || pathname.startsWith(`${p}/`),
+  );
+
+  const redirectToLogin = () => {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    url.search = "";
+    return NextResponse.redirect(url);
+  };
+
+  // Supabase not configured yet (e.g. before .env.local is filled in): fail
+  // closed but gracefully. Let public routes render so /login can show a setup
+  // notice; bounce everything else there instead of throwing a 500 everywhere.
+  if (!url || !anonKey) {
+    return isPublic ? NextResponse.next({ request }) : redirectToLogin();
+  }
+
   let response = NextResponse.next({ request });
 
-  const supabase = createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet) {
-          for (const { name, value } of cookiesToSet) {
-            request.cookies.set(name, value);
-          }
-          response = NextResponse.next({ request });
-          for (const { name, value, options } of cookiesToSet) {
-            response.cookies.set(name, value, options);
-          }
-        },
+  const supabase = createServerClient<Database>(url, anonKey, {
+    cookies: {
+      getAll() {
+        return request.cookies.getAll();
+      },
+      setAll(cookiesToSet) {
+        for (const { name, value } of cookiesToSet) {
+          request.cookies.set(name, value);
+        }
+        response = NextResponse.next({ request });
+        for (const { name, value, options } of cookiesToSet) {
+          response.cookies.set(name, value, options);
+        }
       },
     },
-  );
+  });
 
   // IMPORTANT: getUser() revalidates the token with Supabase; do not trust
   // getSession() here. Keep this call directly after client creation.
@@ -47,19 +65,11 @@ export async function updateSession(request: NextRequest): Promise<NextResponse>
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { pathname } = request.nextUrl;
-  const isPublic = PUBLIC_PATHS.some(
-    (p) => pathname === p || pathname.startsWith(`${p}/`),
-  );
-
   const owner = process.env.OWNER_EMAIL?.trim().toLowerCase();
   const isOwner = Boolean(user?.email && owner && user.email.toLowerCase() === owner);
 
   if (!isOwner && !isPublic) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    url.search = "";
-    return NextResponse.redirect(url);
+    return redirectToLogin();
   }
 
   // A signed-in owner visiting /login goes straight to the library.
