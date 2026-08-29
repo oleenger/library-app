@@ -4,7 +4,6 @@
 // be recomputed on the client as filters change.
 
 import type { Work } from "./types";
-import { PERIODS } from "./taxonomy";
 
 export interface LibraryStats {
   works: number;
@@ -14,11 +13,6 @@ export interface LibraryStats {
   /** Earliest / latest first-published year present (nulls ignored). */
   earliestYear: number | null;
   latestYear: number | null;
-}
-
-export interface PeriodBar {
-  period: string;
-  count: number;
 }
 
 /** Headline counts for the stats strip. */
@@ -52,22 +46,6 @@ export function getStats(works: Work[]): LibraryStats {
     earliestYear: earliest,
     latestYear: latest,
   };
-}
-
-/**
- * Works per period, in chronological (taxonomy) order. Only periods that are
- * actually present appear, so the timeline reflects the current set of works.
- */
-export function getPeriodTimeline(works: Work[]): PeriodBar[] {
-  const counts = new Map<string, number>();
-  for (const w of works) {
-    const p = w.classification.period;
-    if (p) counts.set(p, (counts.get(p) ?? 0) + 1);
-  }
-  return PERIODS.filter((p) => counts.has(p)).map((period) => ({
-    period,
-    count: counts.get(period) ?? 0,
-  }));
 }
 
 /**
