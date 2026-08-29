@@ -25,3 +25,24 @@ export function readingFingerprint(works: Work[]): string {
     .sort();
   return createHash("sha256").update(lines.join("\n")).digest("hex");
 }
+
+/**
+ * Stable SHA-256 over the owned library and its classification. Canon-gap
+ * analysis depends on what you own and how it is classified (period + movements),
+ * not on read status, so adding/removing/reclassifying a work invalidates it
+ * while re-rating a book does not.
+ */
+export function libraryFingerprint(works: Work[]): string {
+  const lines = works
+    .map((w) => {
+      const c = w.classification;
+      return [
+        w.id,
+        c.period ?? "",
+        c.primaryMovement ?? "",
+        [...c.secondaryMovements].sort().join(","),
+      ].join("\u0001");
+    })
+    .sort();
+  return createHash("sha256").update(lines.join("\n")).digest("hex");
+}

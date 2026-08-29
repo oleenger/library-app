@@ -6,8 +6,15 @@
 import Anthropic from "@anthropic-ai/sdk";
 import type { IntakeEnv } from "../env";
 import type { Work } from "../types";
-import { buildRecommendPrompt } from "./prompt";
-import { RECOMMEND_BOOKS_TOOL, RecommendResultSchema, type Recommendation } from "./schema";
+import { buildCanonPrompt, buildRecommendPrompt } from "./prompt";
+import {
+  CANON_GAPS_TOOL,
+  CanonResultSchema,
+  RECOMMEND_BOOKS_TOOL,
+  RecommendResultSchema,
+  type CanonGap,
+  type Recommendation,
+} from "./schema";
 
 export interface GenerateResult {
   items: Recommendation[];
@@ -42,6 +49,50 @@ export async function generateRecommendations(
 
   return {
     items: parsed.data.recommendations,
+    basedOn,
+    usage: {
+      input_tokens: msg.usage.input_tokens,
+      output_tokens: msg.usage.output_tokens,
+    },
+  };
+}
+
+export interface CanonResult {
+  items: CanonGap[];
+  basedOn: number;
+  usage: { input_tokens: number; output_tokens: number };
+}
+
+export async function generateCanonGaps(
+  env: IntakeEnv,
+  works: Work[],
+): Promise<CanonResult> {
+  const { text, basedOn } = buildCanonPrompt(works);
+  const client = new Anthropic({ apiKey: env.apiKey });
+
+  const msg = await client.messages.create({
+    model: env.model,
+    max_tokens: 3072,
+    tools: [CANON_GAPS_TOOL],
+    tool_choice: { type: "tool", name: "identify_canon_gaps" },
+    messages: [{ role: "user", content: [{ type: "text", text }] }],
+  });
+
+  const toolUse = msg.content.find((c) => c.type === "tool_use");
+  if (!toolUse || toolUse.type !== "tool_use") {
+    throw new Error("model returned no tool call");
+  }
+
+  const parsed = CanonResultSchema.safeParse(toolUse.input);
+  if (!parsed.success) {
+    throw new Error(`canon gaps failed validation: ${parsed.error.message}`);
+  }
+
+  // Strongest gaps first.
+  const items = [...parsed.data.gaps].sort((a, b) => b.importance - a.importance);
+
+  return {
+    items,
     basedOn,
     usage: {
       input_tokens: msg.usage.input_tokens,

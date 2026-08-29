@@ -1,49 +1,53 @@
-// POST /api/recommendations — generate book recommendations from reading history.
+// POST /api/recommendations?kind=taste|canon — generate recommendations.
 //
-// This endpoint is deliberately hard to abuse. Recommendations are a pure
-// function of the reading history, so we defend the (expensive) LLM call with
-// four layers, in order:
+//   taste — books to read next, from reading history.
+//   canon — major/canonical works the library lacks, scored by importance.
 //
-//   1. Content-addressed cache. The result is keyed by a fingerprint of the
-//      reading history. If the current fingerprint matches the cached one we
-//      return the cache and NEVER call the model. Refreshing the page or
-//      re-POSTing an unchanged library therefore costs nothing, forever.
+// This endpoint is deliberately hard to abuse. Each kind's result is a pure
+// function of a source fingerprint (reading history for taste, library coverage
+// for canon), so we defend the expensive LLM call with four layers, per kind:
+//
+//   1. Content-addressed cache. If the current fingerprint matches the cached
+//      one we return the cache and NEVER call the model. Refreshing the page or
+//      re-POSTing an unchanged source therefore costs nothing.
 //   2. Cooldown. A genuine cache-miss (or explicit refresh) is rate-limited to
-//      one real generation per COOLDOWN_MS; excess returns 429 with retryAfter.
-//   3. Single-flight. Concurrent requests coalesce onto one in-flight call, so
-//      a parallel burst produces a single model invocation.
-//   4. Bounds. Requires a minimum reading history; the prompt caps how much is
-//      sent; max_tokens is bounded in generate.ts.
+//      one real generation per COOLDOWN_MS per kind; excess returns 429.
+//   3. Single-flight. Concurrent requests for a kind coalesce onto one call.
+//   4. Bounds. Preconditions + capped prompt + bounded max_tokens.
 //
-// The page itself (GET, app/recommendations/page.tsx) reads the cache directly
-// and never calls the model. Generation only happens through this POST.
+// The page (GET) reads the cache directly and never calls the model.
 //
-// Note: this is a single-user personal app, so the guards above are global (no
-// auth / per-IP limiting). For a public multi-user deploy you would additionally
-// key the cooldown and cache by user and add per-IP throttling here.
+// Note: single-user personal app, so guards are global (no auth / per-IP). For a
+// public deploy, key the cooldown/cache by user and add per-IP throttling here.
 
 import { getRecommendEnv } from "@/lib/env";
 import { getWorks } from "@/lib/books";
-import { readingFingerprint } from "@/lib/recommend/fingerprint";
-import { generateRecommendations } from "@/lib/recommend/generate";
-import {
-  readRecommendations,
-  writeRecommendations,
-  type RecommendationCache,
-} from "@/lib/recommend/store";
+import { libraryFingerprint, readingFingerprint } from "@/lib/recommend/fingerprint";
+import { generateCanonGaps, generateRecommendations } from "@/lib/recommend/generate";
+import { readCache, writeSet, type RecKind, type StoredSet } from "@/lib/recommend/store";
+import type { CanonGap, Recommendation } from "@/lib/recommend/schema";
 
 export const runtime = "nodejs";
 
-/** Minimum read works before recommendations are meaningful. */
+/** Minimum read works before taste recommendations are meaningful. */
 const MIN_READS = 3;
-/** Minimum gap between genuine (cache-miss / refresh) generations. */
+/** Minimum owned works before a canon audit is meaningful. */
+const MIN_WORKS = 5;
+/** Minimum gap between genuine (cache-miss / refresh) generations, per kind. */
 const COOLDOWN_MS = 60_000;
 
-// Module-level guard state. Persists for the life of the server process.
-let lastGenerationAt = 0;
-let inFlight: Promise<RecommendationCache> | null = null;
+// Module-level guard state, per kind. Persists for the life of the server.
+const lastGenerationAt: Record<RecKind, number> = { taste: 0, canon: 0 };
+const inFlight: Record<RecKind, Promise<StoredSet<Recommendation | CanonGap>> | null> = {
+  taste: null,
+  canon: null,
+};
 
 export async function POST(req: Request) {
+  const url = new URL(req.url);
+  const kind = url.searchParams.get("kind") === "canon" ? "canon" : "taste";
+  const refresh = url.searchParams.get("refresh") === "1";
+
   const cfg = getRecommendEnv();
   if (!cfg.ok) {
     return Response.json(
@@ -57,41 +61,48 @@ export async function POST(req: Request) {
   }
 
   const works = getWorks();
-  const readCount = works.filter((w) => w.reading).length;
-  if (readCount < MIN_READS) {
-    return Response.json(
-      {
-        error: "not enough reading history",
-        hint: `Mark at least ${MIN_READS} books as read first.`,
-        readCount,
-      },
-      { status: 422 },
-    );
+
+  // Preconditions + source fingerprint, per kind.
+  let fingerprint: string;
+  if (kind === "taste") {
+    const readCount = works.filter((w) => w.reading).length;
+    if (readCount < MIN_READS) {
+      return Response.json(
+        { error: "not enough reading history", hint: `Mark at least ${MIN_READS} books as read first.` },
+        { status: 422 },
+      );
+    }
+    fingerprint = readingFingerprint(works);
+  } else {
+    if (works.length < MIN_WORKS) {
+      return Response.json(
+        { error: "not enough books", hint: `Add at least ${MIN_WORKS} books first.` },
+        { status: 422 },
+      );
+    }
+    fingerprint = libraryFingerprint(works);
   }
 
-  const fingerprint = readingFingerprint(works);
-  const cached = readRecommendations();
+  const cached = readCache()[kind];
 
-  // Optional explicit refresh (still fully gated by cooldown + single-flight).
-  const refresh = new URL(req.url).searchParams.get("refresh") === "1";
-
-  // Layer 1: content-addressed cache. Unchanged history => zero LLM calls.
+  // Layer 1: content-addressed cache. Unchanged source => zero LLM calls.
   if (!refresh && cached && cached.fingerprint === fingerprint) {
-    return Response.json({ ...cached, cached: true });
+    return Response.json({ kind, ...cached, cached: true });
   }
 
   // Layer 3: single-flight. Coalesce a concurrent burst onto one call.
-  if (inFlight) {
+  const pending = inFlight[kind];
+  if (pending) {
     try {
-      const result = await inFlight;
-      return Response.json({ ...result, cached: true, coalesced: true });
+      const result = await pending;
+      return Response.json({ kind, ...result, cached: true, coalesced: true });
     } catch {
       // fall through and let this request attempt its own generation
     }
   }
 
   // Layer 2: cooldown. Bound how often a real generation can happen.
-  const since = Date.now() - lastGenerationAt;
+  const since = Date.now() - lastGenerationAt[kind];
   if (since < COOLDOWN_MS) {
     const retryAfter = Math.ceil((COOLDOWN_MS - since) / 1000);
     return Response.json(
@@ -100,32 +111,36 @@ export async function POST(req: Request) {
     );
   }
 
-  // Set the timestamp up-front so a burst arriving in the same tick is throttled
-  // even before the (awaited) model call returns.
-  lastGenerationAt = Date.now();
+  // Timestamp up-front so a same-tick burst is throttled before the call returns.
+  lastGenerationAt[kind] = Date.now();
 
-  inFlight = (async () => {
-    const result = await generateRecommendations(cfg.env, works);
-    const record: RecommendationCache = {
+  const run = (async (): Promise<StoredSet<Recommendation | CanonGap>> => {
+    const result =
+      kind === "taste"
+        ? await generateRecommendations(cfg.env, works)
+        : await generateCanonGaps(cfg.env, works);
+    const set: StoredSet<Recommendation | CanonGap> = {
       fingerprint,
       generatedAt: new Date().toISOString(),
       model: cfg.env.model,
       basedOn: result.basedOn,
       items: result.items,
     };
-    writeRecommendations(record);
-    return record;
+    if (kind === "taste") writeSet("taste", set as StoredSet<Recommendation>);
+    else writeSet("canon", set as StoredSet<CanonGap>);
+    return set;
   })();
+  inFlight[kind] = run;
 
   try {
-    const record = await inFlight;
-    return Response.json({ ...record, cached: false });
+    const set = await run;
+    return Response.json({ kind, ...set, cached: false });
   } catch (err) {
     return Response.json(
       { error: "recommendation call failed", detail: String(err) },
       { status: 502 },
     );
   } finally {
-    inFlight = null;
+    inFlight[kind] = null;
   }
 }

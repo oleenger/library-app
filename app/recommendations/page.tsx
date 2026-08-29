@@ -1,22 +1,21 @@
 import Link from "next/link";
 import { getWorks } from "@/lib/books";
-import { readingFingerprint } from "@/lib/recommend/fingerprint";
-import { readRecommendations } from "@/lib/recommend/store";
+import { libraryFingerprint, readingFingerprint } from "@/lib/recommend/fingerprint";
+import { readCache } from "@/lib/recommend/store";
 import { RecommendationsView } from "@/components/recommendations-view";
 
 export const metadata = { title: "Recommendations — Personal Library" };
 
 // Server component: reads the persisted recommendation cache and the current
-// reading fingerprint. It NEVER calls the model — generation is an explicit
+// source fingerprints. It NEVER calls the model — generation is an explicit
 // action handled by POST /api/recommendations. Refreshing this page is free.
 export default function RecommendationsPage() {
   const works = getWorks();
   const readCount = works.filter((w) => w.reading).length;
-  const fingerprint = readingFingerprint(works);
-  const cache = readRecommendations();
+  const cache = readCache();
 
-  // The cached set is "stale" when the library has changed since it was made.
-  const stale = cache != null && cache.fingerprint !== fingerprint;
+  const tasteFp = readingFingerprint(works);
+  const canonFp = libraryFingerprint(works);
 
   return (
     <div className="min-h-screen">
@@ -35,22 +34,23 @@ export default function RecommendationsPage() {
         </Link>
       </nav>
 
-      <main className="enter-up mx-auto max-w-3xl px-4 pb-24 pt-8 sm:px-6 lg:px-8">
-        <header className="mb-8">
+      <main className="enter-up mx-auto max-w-4xl px-4 pb-24 pt-8 sm:px-6 lg:px-8">
+        <header className="mb-10">
           <h1 className="font-serif text-4xl leading-none tracking-[-0.02em] sm:text-5xl">
             Recommendations
           </h1>
           <p className="mt-3 text-[0.95rem] text-ink-soft">
-            Suggested by an LLM from the {readCount}{" "}
-            {readCount === 1 ? "book" : "books"} you&rsquo;ve read. Regenerated
-            only when your reading history changes.
+            Books to read next, and the major works your library is missing.
           </p>
         </header>
 
         <RecommendationsView
-          initial={cache}
-          stale={stale}
+          taste={cache.taste ?? null}
+          canon={cache.canon ?? null}
+          tasteStale={cache.taste != null && cache.taste.fingerprint !== tasteFp}
+          canonStale={cache.canon != null && cache.canon.fingerprint !== canonFp}
           readCount={readCount}
+          workCount={works.length}
         />
       </main>
     </div>

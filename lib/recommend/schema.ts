@@ -64,3 +64,67 @@ export const RecommendResultSchema = z.object({
 });
 
 export type Recommendation = z.infer<typeof RecommendationSchema>;
+
+// --- Canon gaps ----------------------------------------------------------
+// A structural view, not a taste view: which major/canonical works the library
+// lacks to be well-rounded across periods and movements, each scored 1..10 by
+// how foundational it is (10 = a cornerstone every serious library must hold,
+// e.g. Pride and Prejudice for Romanticism, Gravity's Rainbow for Postmodernism).
+
+export const CANON_GAPS_TOOL: Anthropic.Tool = {
+  name: "identify_canon_gaps",
+  description:
+    "Identify major, canonical works MISSING from the library that it needs to " +
+    "be well-rounded across literary periods and movements. Never list a work " +
+    "already present in the library. Prioritise under-represented periods and " +
+    "movements. Score each work's importance 1..10, where 10 is an absolutely " +
+    "foundational cornerstone of its movement.",
+  input_schema: {
+    type: "object",
+    properties: {
+      gaps: {
+        type: "array",
+        description: "12 to 20 missing works, the most important first.",
+        items: {
+          type: "object",
+          properties: {
+            title: { type: "string", description: "Work title." },
+            author: { type: "string", description: 'Natural order "First Last".' },
+            first_published: { type: "integer", description: "Best-guess year first published." },
+            period: { type: "string", enum: [...PERIODS], description: "One literary period." },
+            primary_movement: { type: "string", enum: [...MOVEMENTS], description: "The movement this work anchors, or omit if none fits." },
+            importance: {
+              type: "integer",
+              description:
+                "1..10 canonical importance. 10 = foundational cornerstone of its " +
+                "movement (Pride and Prejudice / Romanticism; Gravity's Rainbow / " +
+                "Postmodernism). 7-9 = major work. 4-6 = notable. 1-3 = minor.",
+            },
+            reason: {
+              type: "string",
+              description: "Short note on why this work matters and which gap it fills.",
+            },
+          },
+          required: ["title", "author", "primary_movement", "importance"],
+        },
+      },
+    },
+    required: ["gaps"],
+  },
+};
+
+export const CanonGapSchema = z.object({
+  title: z.string().min(1),
+  author: z.string().min(1),
+  first_published: z.number().int().nullish(),
+  period: z.enum(PERIODS).nullish(),
+  primary_movement: z.enum(MOVEMENTS).nullish(),
+  importance: z.number().int().min(1).max(10),
+  reason: z.string().nullish(),
+});
+
+export const CanonResultSchema = z.object({
+  gaps: z.array(CanonGapSchema),
+});
+
+export type CanonGap = z.infer<typeof CanonGapSchema>;
