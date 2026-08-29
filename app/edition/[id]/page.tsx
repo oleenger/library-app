@@ -1,11 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getEdition, getEditions, getWork } from "@/lib/books";
+import { getEdition, getWork } from "@/lib/books";
 import { formatYear } from "@/lib/display";
 
-export function generateStaticParams() {
-  return getEditions().map((e) => ({ id: e.id }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -13,7 +11,7 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const edition = getEdition(id);
+  const edition = await getEdition(id);
   return { title: edition ? `${edition.name} — Personal Library` : "Not found" };
 }
 
@@ -23,12 +21,12 @@ export default async function EditionDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const edition = getEdition(id);
+  const edition = await getEdition(id);
   if (!edition) notFound();
 
-  const works = edition.workIds
-    .map((wid) => getWork(wid))
-    .filter((w): w is NonNullable<typeof w> => Boolean(w));
+  const works = (
+    await Promise.all(edition.workIds.map((wid) => getWork(wid)))
+  ).filter((w): w is NonNullable<typeof w> => Boolean(w));
 
   return (
     <main className="mx-auto max-w-5xl px-4 pb-16 sm:px-6 lg:px-8">

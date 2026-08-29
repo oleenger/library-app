@@ -5,8 +5,11 @@ import { formatYear } from "@/lib/display";
 import { LibraryView } from "@/components/library-view";
 import { ReadingStats } from "@/components/reading-stats";
 
-export default function HomePage() {
-  const works = getWorks();
+// Catalogue is read live from Supabase per request, so render dynamically.
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+  const works = await getWorks();
   const stats = getStats(works);
   const reading = getReadingStats(works);
   const readCount = reading.read;

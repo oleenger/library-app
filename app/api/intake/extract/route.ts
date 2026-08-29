@@ -46,7 +46,7 @@ export async function POST(req: Request) {
     msg = await client.messages.create({
       model: cfg.env.model,
       max_tokens: 4096,
-      tools: [EXTRACT_BOOKS_TOOL],
+      tools: [EXTRACT_BOOKS_TOOL as unknown as Anthropic.Tool],
       tool_choice: { type: "tool", name: "extract_books" },
       messages: [
         {

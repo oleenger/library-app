@@ -5,14 +5,15 @@ import { readCache } from "@/lib/recommend/store";
 import { RecommendationsView } from "@/components/recommendations-view";
 
 export const metadata = { title: "Recommendations — Personal Library" };
+export const dynamic = "force-dynamic";
 
 // Server component: reads the persisted recommendation cache and the current
 // source fingerprints. It NEVER calls the model — generation is an explicit
 // action handled by POST /api/recommendations. Refreshing this page is free.
-export default function RecommendationsPage() {
-  const works = getWorks();
+export default async function RecommendationsPage() {
+  const works = await getWorks();
   const readCount = works.filter((w) => w.reading).length;
-  const cache = readCache();
+  const cache = await readCache();
 
   const tasteFp = readingFingerprint(works);
   const canonFp = libraryFingerprint(works);

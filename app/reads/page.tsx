@@ -4,9 +4,10 @@ import { getReadsPageData } from "@/lib/insights";
 import { ReadsView } from "@/components/reads-view";
 
 export const metadata = { title: "Read books — Personal Library" };
+export const dynamic = "force-dynamic";
 
-export default function ReadsPage() {
-  const works = getWorks();
+export default async function ReadsPage() {
+  const works = await getWorks();
   const data = getReadsPageData(works);
 
   return (

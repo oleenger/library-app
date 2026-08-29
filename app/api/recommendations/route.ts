@@ -60,7 +60,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const works = getWorks();
+  const works = await getWorks();
 
   // Preconditions + source fingerprint, per kind.
   let fingerprint: string;
@@ -83,7 +83,7 @@ export async function POST(req: Request) {
     fingerprint = libraryFingerprint(works);
   }
 
-  const cached = readCache()[kind];
+  const cached = (await readCache())[kind];
 
   // Layer 1: content-addressed cache. Unchanged source => zero LLM calls.
   if (!refresh && cached && cached.fingerprint === fingerprint) {
@@ -126,8 +126,8 @@ export async function POST(req: Request) {
       basedOn: result.basedOn,
       items: result.items,
     };
-    if (kind === "taste") writeSet("taste", set as StoredSet<Recommendation>);
-    else writeSet("canon", set as StoredSet<CanonFocus>);
+    if (kind === "taste") await writeSet("taste", set as StoredSet<Recommendation>);
+    else await writeSet("canon", set as StoredSet<CanonFocus>);
     return set;
   })();
   inFlight[kind] = run;

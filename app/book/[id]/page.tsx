@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getEdition, getWork, getWorks } from "@/lib/books";
+import { getEdition, getWork } from "@/lib/books";
 import { formatYear, periodColor } from "@/lib/display";
 
-export function generateStaticParams() {
-  return getWorks().map((w) => ({ id: w.id }));
-}
+// Rendered on demand: the catalogue is live in Supabase, so a newly added book
+// is reachable immediately without a rebuild.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -13,7 +13,7 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const work = getWork(id);
+  const work = await getWork(id);
   return { title: work ? `${work.title} — Personal Library` : "Not found" };
 }
 
@@ -34,16 +34,16 @@ export default async function BookDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const work = getWork(id);
+  const work = await getWork(id);
   if (!work) notFound();
 
   const { classification: c } = work;
   const secondary =
     c.secondaryMovements.length > 0 ? c.secondaryMovements.join(", ") : "—";
 
-  const editions = work.editionIds
-    .map((eid) => getEdition(eid))
-    .filter((e): e is NonNullable<typeof e> => Boolean(e));
+  const editions = (
+    await Promise.all(work.editionIds.map((eid) => getEdition(eid)))
+  ).filter((e): e is NonNullable<typeof e> => Boolean(e));
 
   return (
     <main className="mx-auto max-w-5xl px-4 pb-16 sm:px-6 lg:px-8">

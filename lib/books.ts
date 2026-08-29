@@ -1,8 +1,9 @@
+import { cache } from "react";
 import type { Edition, Work } from "./types";
 import { PERIODS } from "./taxonomy";
-import { getDb } from "./db";
+import { admin } from "./supabase/admin";
 
-// Row shapes returned by the SQLite catalogue (built by scripts/import.ts).
+// Row shapes returned by the Supabase catalogue tables.
 interface WorkRow {
   id: string;
   title: string;
@@ -36,22 +37,38 @@ interface Catalogue {
   editions: Map<string, Edition>;
 }
 
-let cache: Catalogue | null = null;
+// PostgREST caps a single response at 1000 rows by default; the library is far
+// smaller, but ask for a generous window so growth never silently truncates.
+const MAX_ROWS = 10_000;
 
-function build(): Catalogue {
-  const db = getDb();
-  const workRows = db
-    .prepare("SELECT * FROM works ORDER BY author, title")
-    .all() as unknown as WorkRow[];
-  const editionRows = db
-    .prepare("SELECT * FROM editions")
-    .all() as unknown as EditionRow[];
-  const linkRows = db
-    .prepare("SELECT work_id, edition_id FROM work_editions ORDER BY edition_id")
-    .all() as unknown as LinkRow[];
-  const readRows = db
-    .prepare("SELECT work_id, date_read, rating, source FROM read_status")
-    .all() as unknown as ReadRow[];
+/**
+ * Load and assemble the whole catalogue from Supabase. Wrapped in React
+ * `cache()` so multiple calls within one server render (e.g. a book page that
+ * needs a work and its editions) share a single set of queries. The cache is
+ * per-request, so a write in another request is always reflected on the next
+ * render — no manual invalidation needed.
+ */
+const loadCatalogue = cache(async (): Promise<Catalogue> => {
+  const db = admin();
+
+  const [worksRes, editionsRes, linksRes, readsRes] = await Promise.all([
+    db.from("works").select("*").order("author").order("title").limit(MAX_ROWS),
+    db.from("editions").select("*").limit(MAX_ROWS),
+    db.from("work_editions").select("work_id, edition_id").limit(MAX_ROWS),
+    db
+      .from("read_status")
+      .select("work_id, date_read, rating, source")
+      .limit(MAX_ROWS),
+  ]);
+
+  for (const res of [worksRes, editionsRes, linksRes, readsRes]) {
+    if (res.error) throw new Error(`catalogue load failed: ${res.error.message}`);
+  }
+
+  const workRows = (worksRes.data ?? []) as WorkRow[];
+  const editionRows = (editionsRes.data ?? []) as EditionRow[];
+  const linkRows = (linksRes.data ?? []) as LinkRow[];
+  const readRows = (readsRes.data ?? []) as ReadRow[];
 
   const readByWork = new Map<string, ReadRow>();
   for (const r of readRows) readByWork.set(r.work_id, r);
@@ -100,36 +117,26 @@ function build(): Catalogue {
   }));
 
   return { works, editions };
-}
-
-function catalogue(): Catalogue {
-  if (!cache) cache = build();
-  return cache;
-}
-
-/** Drop the in-process catalogue cache after the DB is rebuilt (intake commit). */
-export function resetCatalogue(): void {
-  cache = null;
-}
+});
 
 /** All works, deduplicated and sorted by author then title. */
-export function getWorks(): Work[] {
-  return catalogue().works;
+export async function getWorks(): Promise<Work[]> {
+  return (await loadCatalogue()).works;
 }
 
 /** Look up a single work by its id. */
-export function getWork(id: string): Work | undefined {
-  return catalogue().works.find((w) => w.id === id);
+export async function getWork(id: string): Promise<Work | undefined> {
+  return (await loadCatalogue()).works.find((w) => w.id === id);
 }
 
 /** All editions in the catalogue. */
-export function getEditions(): Edition[] {
-  return [...catalogue().editions.values()];
+export async function getEditions(): Promise<Edition[]> {
+  return [...(await loadCatalogue()).editions.values()];
 }
 
 /** Look up a single edition by its id. */
-export function getEdition(id: string): Edition | undefined {
-  return catalogue().editions.get(id);
+export async function getEdition(id: string): Promise<Edition | undefined> {
+  return (await loadCatalogue()).editions.get(id);
 }
 
 /** Periods present in the catalogue, in taxonomy (chronological) order. */

@@ -13,11 +13,8 @@
 // New works are NEVER created here: an export row that matches nothing is dropped.
 
 import Anthropic from "@anthropic-ai/sdk";
-import { readFileSync } from "node:fs";
-import path from "node:path";
-import Papa from "papaparse";
 import { getReadingMatchEnv } from "../env";
-import { workIdFor } from "../intake/importer";
+import { admin } from "../supabase/admin";
 import type { ReadRecord } from "./store";
 import { parseGoodreadsReads, type GoodreadsRead } from "./goodreads";
 
@@ -63,21 +60,24 @@ const key = (title: string, author: string) => `${normAuthor(author)}\u0000${nor
 
 // --- library source ------------------------------------------------------
 
-function loadLibraryWorks(): LibraryWork[] {
-  const csvPath = path.join(process.cwd(), "data", "library_master.csv");
-  const { data } = Papa.parse<{ title?: string; author?: string; first_published?: string }>(
-    readFileSync(csvPath, "utf8"),
-    { header: true, skipEmptyLines: true, transformHeader: (h) => h.trim() },
-  );
+async function loadLibraryWorks(): Promise<LibraryWork[]> {
+  const { data, error } = await admin()
+    .from("works")
+    .select("id, title, author, first_published")
+    .limit(100_000);
+  if (error) throw new Error(`library load failed: ${error.message}`);
   const byId = new Map<string, LibraryWork>();
-  for (const r of data) {
+  for (const r of data ?? []) {
     const title = r.title?.trim();
     const author = r.author?.trim();
     if (!title || !author) continue;
-    const workId = workIdFor(title, author);
-    if (byId.has(workId)) continue; // one row per work (editions collapse)
-    const year = Number(r.first_published);
-    byId.set(workId, { workId, title, author, year: Number.isFinite(year) ? year : null });
+    if (byId.has(r.id)) continue; // one row per work (editions already collapsed)
+    byId.set(r.id, {
+      workId: r.id,
+      title,
+      author,
+      year: r.first_published ?? null,
+    });
   }
   return [...byId.values()];
 }
@@ -86,7 +86,7 @@ function loadLibraryWorks(): LibraryWork[] {
 
 export async function matchReads(csv: string): Promise<MatchResult> {
   const reads = parseGoodreadsReads(csv);
-  const library = loadLibraryWorks();
+  const library = await loadLibraryWorks();
 
   const matches: ReadRecord[] = [];
   const matchedWorkIds = new Set<string>();

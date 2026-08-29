@@ -1,18 +1,16 @@
-// Read/write data/recommendations.json — the persisted cache of the last
-// generated recommendation sets. Two independent kinds live in one file:
+// Persisted cache of the last generated recommendation sets, stored in the
+// Supabase `recommendations` table (one row per kind). Two independent kinds
+// live here:
 //
 //   taste — books to read next, inferred from reading history.
 //   canon — major/canonical works missing from the library, scored by importance.
 //
-// Keeping them on disk (mirroring read_status.csv) means a server restart never
-// re-triggers an LLM call: a cached set is served until its source fingerprint
-// (reading history for taste, library coverage for canon) actually changes.
+// Persisting them means a cold start never re-triggers an LLM call: a cached set
+// is served until its source fingerprint (reading history for taste, library
+// coverage for canon) actually changes.
 
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import path from "node:path";
+import { admin } from "../supabase/admin";
 import type { CanonFocus, Recommendation } from "./schema";
-
-const STORE_PATH = path.join(process.cwd(), "data", "recommendations.json");
 
 export type RecKind = "taste" | "canon";
 
@@ -33,27 +31,58 @@ export interface RecommendationCache {
   canon?: StoredSet<CanonFocus>;
 }
 
-export function readCache(): RecommendationCache {
-  if (!existsSync(STORE_PATH)) return {};
-  try {
-    const raw = JSON.parse(readFileSync(STORE_PATH, "utf8"));
-    if (!raw || typeof raw !== "object") return {};
-    return raw as RecommendationCache;
-  } catch {
-    return {};
-  }
+interface Row {
+  kind: RecKind;
+  fingerprint: string;
+  generated_at: string;
+  model: string;
+  based_on: number;
+  items: unknown;
 }
 
-function writeCache(cache: RecommendationCache): void {
-  writeFileSync(STORE_PATH, `${JSON.stringify(cache, null, 2)}\n`, "utf8");
+function toStored<T>(row: Row): StoredSet<T> {
+  return {
+    fingerprint: row.fingerprint,
+    generatedAt: row.generated_at,
+    model: row.model,
+    basedOn: row.based_on,
+    items: (row.items ?? []) as T[],
+  };
+}
+
+export async function readCache(): Promise<RecommendationCache> {
+  const { data, error } = await admin()
+    .from("recommendations")
+    .select("kind, fingerprint, generated_at, model, based_on, items");
+  if (error) throw new Error(`recommendation cache read failed: ${error.message}`);
+
+  const cache: RecommendationCache = {};
+  for (const row of (data ?? []) as Row[]) {
+    if (row.kind === "taste") cache.taste = toStored<Recommendation>(row);
+    else if (row.kind === "canon") cache.canon = toStored<CanonFocus>(row);
+  }
+  return cache;
 }
 
 /** Persist one kind's set without disturbing the other. */
-export function writeSet(kind: "taste", set: StoredSet<Recommendation>): void;
-export function writeSet(kind: "canon", set: StoredSet<CanonFocus>): void;
-export function writeSet(kind: RecKind, set: StoredSet<Recommendation | CanonFocus>): void {
-  const cache = readCache();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (cache as any)[kind] = set;
-  writeCache(cache);
+export async function writeSet(kind: "taste", set: StoredSet<Recommendation>): Promise<void>;
+export async function writeSet(kind: "canon", set: StoredSet<CanonFocus>): Promise<void>;
+export async function writeSet(
+  kind: RecKind,
+  set: StoredSet<Recommendation | CanonFocus>,
+): Promise<void> {
+  const { error } = await admin()
+    .from("recommendations")
+    .upsert(
+      {
+        kind,
+        fingerprint: set.fingerprint,
+        generated_at: set.generatedAt,
+        model: set.model,
+        based_on: set.basedOn,
+        items: set.items as unknown,
+      },
+      { onConflict: "kind" },
+    );
+  if (error) throw new Error(`recommendation cache write failed: ${error.message}`);
 }

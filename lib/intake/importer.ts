@@ -1,14 +1,11 @@
-// Reusable importer core, shared by the `import`/`add-books` scripts and the
-// intake commit API route. Keeps CSV-as-source-of-truth: books are appended to
-// data/library_master.csv, then the DB is rebuilt from that master.
-//
-// Porting to Postgres later: swap `node:sqlite` for a pg client and change the
-// `INSERT OR IGNORE` statements to `INSERT ... ON CONFLICT DO NOTHING`. The
-// parsing, taxonomy validation, and work/edition grouping below are unchanged.
+// Reusable importer core: parsing, taxonomy validation, and work/edition
+// grouping. This module is intentionally PURE — it does no database I/O and no
+// filesystem writes beyond the local-only CSV helpers at the bottom (used by the
+// `add-books` dev script). Persisting grouped records to Supabase lives in
+// ./catalogue-db so the serverless bundle never pulls in node:sqlite or fs.
 
-import { existsSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import { DatabaseSync } from "node:sqlite";
 import Papa from "papaparse";
 import { isMovement, isPeriod } from "../taxonomy.ts";
 
@@ -26,13 +23,6 @@ export interface BookRow {
   notes?: string;
 }
 
-export interface ImportSummary {
-  worksInserted: number;
-  editionsInserted: number;
-  duplicateRows: number;
-  rejected: string[];
-}
-
 // Column order of data/library_master.csv — the single canonical header.
 export const MASTER_COLUMNS: (keyof BookRow)[] = [
   "title",
@@ -48,11 +38,7 @@ export const MASTER_COLUMNS: (keyof BookRow)[] = [
   "notes",
 ];
 
-const ROOT = process.cwd();
-const CSV_PATH = path.join(ROOT, "data", "library_master.csv");
-const READ_STATUS_PATH = path.join(ROOT, "data", "read_status.csv");
-const DB_PATH = path.join(ROOT, "data", "library.db");
-const SCHEMA_PATH = path.join(ROOT, "db", "schema.sql");
+// --- deterministic identity ------------------------------------------------
 
 export function slugify(value: string): string {
   return value
@@ -64,8 +50,9 @@ export function slugify(value: string): string {
 
 /**
  * The canonical work id: title + author only, matching the identity used when
- * inserting works. Exported so the reading matcher can produce ids that line up
- * with the catalogue (a matched Goodreads row must reference a real work row).
+ * inserting works. Because it is deterministic, the same title+author always
+ * yields the same id — so an ON CONFLICT (id) DO NOTHING upsert also enforces
+ * the UNIQUE (title, author) de-duplication rule.
  */
 export function workIdFor(title: string, author: string): string {
   return `${slugify(author.trim())}--${slugify(title.trim())}`;
@@ -83,10 +70,40 @@ function parseYear(value: string | undefined): number | null {
   return Number.isFinite(n) ? n : null;
 }
 
-// Rebuild data/library.db from the master CSV. Validates taxonomy, groups
-// works/editions, and returns a summary. Never mutates process state.
-export function runImport(): ImportSummary {
-  const csv = readFileSync(CSV_PATH, "utf8");
+// --- grouping --------------------------------------------------------------
+
+export interface WorkRecord {
+  id: string;
+  title: string;
+  author: string;
+  first_published: number | null;
+  original_language: string | null;
+  period: string | null;
+  primary_movement: string | null;
+  secondary_movements: string | null;
+  notes: string | null;
+}
+export interface EditionRecord {
+  id: string;
+  name: string;
+  publisher: string | null;
+  language: string | null;
+}
+export interface LinkRecord {
+  work_id: string;
+  edition_id: string;
+}
+
+export interface GroupResult {
+  works: WorkRecord[];
+  editions: EditionRecord[];
+  links: LinkRecord[];
+  /** Human-readable lines for rows rejected as off-taxonomy. */
+  rejected: string[];
+}
+
+/** Parse the master CSV text into raw BookRows. Throws on malformed CSV. */
+export function parseMasterCsv(csv: string): BookRow[] {
   const { data, errors } = Papa.parse<BookRow>(csv, {
     header: true,
     skipEmptyLines: true,
@@ -97,47 +114,34 @@ export function runImport(): ImportSummary {
       `Failed to parse library_master.csv: ${errors[0].message} (row ${errors[0].row})`,
     );
   }
+  return data;
+}
 
-  // Fresh database each run.
-  rmSync(DB_PATH, { force: true });
-  const db = new DatabaseSync(DB_PATH);
-  db.exec(readFileSync(SCHEMA_PATH, "utf8"));
-
-  const insertWork = db.prepare(
-    `INSERT OR IGNORE INTO works
-       (id, title, author, first_published, original_language, period, primary_movement, secondary_movements, notes)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-  );
-  const insertEdition = db.prepare(
-    `INSERT OR IGNORE INTO editions (id, name, publisher, language) VALUES (?, ?, ?, ?)`,
-  );
-  const linkWorkEdition = db.prepare(
-    `INSERT OR IGNORE INTO work_editions (work_id, edition_id) VALUES (?, ?)`,
-  );
-
-  let editionSeq = 0;
-  let worksInserted = 0;
-  let duplicateRows = 0;
-  let editionsInserted = 0;
+/**
+ * Validate taxonomy and group rows into de-duplicated work / edition / link
+ * records. Pure: no I/O. Rows outside the controlled taxonomy are collected in
+ * `rejected` rather than emitted.
+ */
+export function groupRows(rows: BookRow[]): GroupResult {
+  const works = new Map<string, WorkRecord>();
+  const editions = new Map<string, EditionRecord>();
+  const links = new Map<string, LinkRecord>();
   const rejected: string[] = [];
+  let editionSeq = 0;
 
-  db.prepare("BEGIN").run();
-
-  for (const row of data) {
+  for (const row of rows) {
     if (!row.title?.trim() || !row.author?.trim()) continue;
 
     const title = row.title.trim();
     const author = row.author.trim();
-    const firstPublished = parseYear(row.first_published);
 
-    // Work identity = title + author only. first_published is not guaranteed (may be
-    // missing or approximate), so it is stored as an attribute but never part of the
-    // match key — otherwise one work would split across editions with differing years.
-    const workId = `${slugify(author)}--${slugify(title)}`;
+    // Work identity = title + author only. first_published may be missing or
+    // approximate, so it is an attribute, never part of the match key.
+    const workId = workIdFor(title, author);
 
-    // A shared edition (omnibus / box set) is grouped by its human-readable `edition`
-    // label + publisher — NOT by author, so a multi-author box set is ONE edition.
-    // A blank `edition` is a standalone volume: its own edition, one per row.
+    // A shared edition (omnibus / box set) is grouped by its human-readable
+    // `edition` label + publisher — NOT by author, so a multi-author box set is
+    // ONE edition. A blank `edition` is a standalone volume: its own edition.
     const editionName = nullable(row.edition);
     const publisher = nullable(row.publisher);
     const editionId = editionName
@@ -151,7 +155,6 @@ export function runImport(): ImportSummary {
       .map((m) => m.trim())
       .filter(Boolean);
 
-    // Reject anything outside the controlled taxonomy rather than inserting it.
     const bad: string[] = [];
     if (period && !isPeriod(period)) bad.push(`period "${period}"`);
     if (primary && !isMovement(primary)) bad.push(`primary movement "${primary}"`);
@@ -161,41 +164,41 @@ export function runImport(): ImportSummary {
       continue;
     }
 
-    const res = insertWork.run(
-      workId,
-      title,
-      author,
-      firstPublished,
-      nullable(row.original_language),
-      period,
-      primary,
-      secondary.join("|") || null,
-      nullable(row.notes),
-    );
-    // changes === 0 means the UNIQUE(title, author) constraint collapsed a duplicate:
-    // the same work owned in another edition.
-    if (Number(res.changes) > 0) worksInserted++;
-    else duplicateRows++;
+    if (!works.has(workId)) {
+      works.set(workId, {
+        id: workId,
+        title,
+        author,
+        first_published: parseYear(row.first_published),
+        original_language: nullable(row.original_language),
+        period,
+        primary_movement: primary,
+        secondary_movements: secondary.join("|") || null,
+        notes: nullable(row.notes),
+      });
+    }
 
-    const edRes = insertEdition.run(
-      editionId,
-      editionName ?? title,
-      publisher,
-      nullable(row.edition_language),
-    );
-    if (Number(edRes.changes) > 0) editionsInserted++;
+    if (!editions.has(editionId)) {
+      editions.set(editionId, {
+        id: editionId,
+        name: editionName ?? title,
+        publisher,
+        language: nullable(row.edition_language),
+      });
+    }
 
-    linkWorkEdition.run(workId, editionId);
+    links.set(`${workId}\u0000${editionId}`, { work_id: workId, edition_id: editionId });
   }
 
-  db.prepare("COMMIT").run();
-
-  loadReadStatus(db);
-
-  db.close();
-
-  return { worksInserted, editionsInserted, duplicateRows, rejected };
+  return {
+    works: [...works.values()],
+    editions: [...editions.values()],
+    links: [...links.values()],
+    rejected,
+  };
 }
+
+// --- read status -----------------------------------------------------------
 
 // Read-status CSV columns — the canonical header of data/read_status.csv.
 export const READ_STATUS_COLUMNS = [
@@ -216,41 +219,10 @@ export interface ReadStatusRow {
   source: string;
 }
 
-// Load data/read_status.csv into the read_status table. Rows whose work_id is not
-// present in `works` are skipped (a work may have been removed from the master).
-// Missing file is not an error: read tracking is optional.
-function loadReadStatus(db: DatabaseSync): void {
-  if (!existsSync(READ_STATUS_PATH)) return;
-  const { data } = Papa.parse<ReadStatusRow>(readFileSync(READ_STATUS_PATH, "utf8"), {
-    header: true,
-    skipEmptyLines: true,
-    transformHeader: (h) => h.trim(),
-  });
+// --- local CSV helpers (dev scripts only; never run on Vercel) --------------
 
-  const known = new Set(
-    (db.prepare("SELECT id FROM works").all() as unknown as { id: string }[]).map(
-      (r) => r.id,
-    ),
-  );
-  const insert = db.prepare(
-    `INSERT OR IGNORE INTO read_status (work_id, date_read, rating, source)
-     VALUES (?, ?, ?, ?)`,
-  );
-
-  db.prepare("BEGIN").run();
-  for (const row of data) {
-    const workId = row.work_id?.trim();
-    if (!workId || !known.has(workId)) continue;
-    const rating = Number(row.rating);
-    insert.run(
-      workId,
-      nullable(row.date_read),
-      Number.isFinite(rating) && rating > 0 ? rating : null,
-      nullable(row.source),
-    );
-  }
-  db.prepare("COMMIT").run();
-}
+const ROOT = process.cwd();
+const CSV_PATH = path.join(ROOT, "data", "library_master.csv");
 
 // Normalise line endings and drop trailing blank lines.
 const norm = (s: string) => s.replace(/\r\n/g, "\n").replace(/\n+$/, "");

@@ -1,10 +1,8 @@
 // Upload a Goodreads CSV export, match its "read" shelf against existing library
-// works, persist the matches to data/read_status.csv, and rebuild the catalogue
-// so read flags show immediately. No new works are ever created from the export.
+// works, and persist the matches to the Supabase read_status table. No new works
+// are ever created from the export. Reads show immediately because the catalogue
+// is read live from Supabase per request.
 
-import { resetCatalogue } from "@/lib/books";
-import { resetDb } from "@/lib/db";
-import { runImport } from "@/lib/intake/importer";
 import { matchReads } from "@/lib/reading/match";
 import { mergeAndWriteReadStatus } from "@/lib/reading/store";
 
@@ -37,13 +35,8 @@ export async function POST(req: Request) {
     );
   }
 
-  // Persist and rebuild only when something matched, so a bad upload is a no-op.
-  const total = mergeAndWriteReadStatus(result.matches);
-  if (result.matches.length > 0) {
-    runImport();
-    resetDb();
-    resetCatalogue();
-  }
+  // Persist only when something matched, so a bad upload is a no-op.
+  const merged = await mergeAndWriteReadStatus(result.matches);
 
   return Response.json({
     totalReadsInExport: result.totalReads,
@@ -54,6 +47,6 @@ export async function POST(req: Request) {
     unmatchedGoodreads: result.unmatchedGoodreads,
     llmUsed: result.llmUsed,
     llmError: result.llmError,
-    totalReadWorks: total.length,
+    totalReadWorks: merged.length,
   });
 }
