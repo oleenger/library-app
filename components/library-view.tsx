@@ -173,7 +173,7 @@ export function LibraryView({ works }: Props) {
                   className="sm:hidden"
                 />
                 <span className="hidden text-[0.7rem] font-medium uppercase tracking-[0.12em] text-ink-faint sm:inline">
-                  Title A–Z
+                  By author
                 </span>
               </div>
             </div>

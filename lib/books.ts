@@ -8,6 +8,7 @@ interface WorkRow {
   id: string;
   title: string;
   author: string;
+  author_sort: string | null;
   first_published: number | null;
   original_language: string | null;
   period: string | null;
@@ -52,7 +53,12 @@ const loadCatalogue = cache(async (): Promise<Catalogue> => {
   const db = admin();
 
   const [worksRes, editionsRes, linksRes, readsRes] = await Promise.all([
-    db.from("works").select("*").order("author").order("title").limit(MAX_ROWS),
+    db
+      .from("works")
+      .select("*")
+      .order("author_sort", { nullsFirst: false })
+      .order("title")
+      .limit(MAX_ROWS),
     db.from("editions").select("*").limit(MAX_ROWS),
     db.from("work_editions").select("work_id, edition_id").limit(MAX_ROWS),
     db
@@ -96,6 +102,7 @@ const loadCatalogue = cache(async (): Promise<Catalogue> => {
     id: r.id,
     title: r.title,
     author: r.author,
+    authorSort: r.author_sort,
     originalYear: r.first_published,
     language: r.original_language,
     notes: r.notes,
@@ -119,7 +126,7 @@ const loadCatalogue = cache(async (): Promise<Catalogue> => {
   return { works, editions };
 });
 
-/** All works, deduplicated and sorted by author then title. */
+/** All works, deduplicated and sorted by author surname then title. */
 export async function getWorks(): Promise<Work[]> {
   return (await loadCatalogue()).works;
 }

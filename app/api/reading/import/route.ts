@@ -3,7 +3,9 @@
 // are ever created from the export. Reads show immediately because the catalogue
 // is read live from Supabase per request.
 
-import { matchReads } from "@/lib/reading/match";
+import { matchReadsAgainstLibrary } from "@/lib/reading/match";
+import { parseGoodreadsReads } from "@/lib/reading/goodreads";
+import { saveGoodreadsReads } from "@/lib/reading/goodreads-store";
 import { mergeAndWriteReadStatus } from "@/lib/reading/store";
 
 export const runtime = "nodejs";
@@ -27,7 +29,11 @@ export async function POST(req: Request) {
 
   let result;
   try {
-    result = await matchReads(csv);
+    // Persist the shelf first so it can be replayed later (reconcile) against
+    // books added to the library after this upload — no re-upload needed.
+    const reads = parseGoodreadsReads(csv);
+    await saveGoodreadsReads(reads);
+    result = await matchReadsAgainstLibrary(reads);
   } catch (err) {
     return Response.json(
       { error: "matching failed", detail: String(err) },

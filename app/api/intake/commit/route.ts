@@ -9,6 +9,7 @@ import {
   type BookRow,
 } from "@/lib/intake/importer";
 import { existingEditionSignatures, upsertGrouped } from "@/lib/intake/catalogue-db";
+import { reconcileReads } from "@/lib/reading/reconcile";
 import { CandidateSchema } from "@/lib/intake/schema";
 import { z } from "zod";
 
@@ -83,10 +84,21 @@ export async function POST(req: Request) {
 
     let added = 0;
     let importSummary: Awaited<ReturnType<typeof upsertGrouped>> | null = null;
+    let reconciled = 0;
     if (rows.length > 0) {
       const grouped = groupRows(rows);
       importSummary = await upsertGrouped(grouped);
       added = rows.length; // copies actually committed (may span fewer works)
+
+      // Retro-match the newly added works against the persisted Goodreads shelf,
+      // so a book that is on the shelf but was only just catalogued is marked read
+      // immediately. Best-effort: a reconcile failure must not fail the commit.
+      try {
+        const r = await reconcileReads();
+        reconciled = r.matches.length;
+      } catch (err) {
+        console.error("[intake/commit] reconcile after commit failed:", err);
+      }
     }
 
     return Response.json({
@@ -94,6 +106,7 @@ export async function POST(req: Request) {
       duplicates,
       rejected,
       import: importSummary,
+      reconciledReads: reconciled,
     });
   } catch (err) {
     // Surface DB / network failures as clean JSON rather than crashing the

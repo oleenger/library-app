@@ -85,7 +85,18 @@ async function loadLibraryWorks(): Promise<LibraryWork[]> {
 // --- entry point ---------------------------------------------------------
 
 export async function matchReads(csv: string): Promise<MatchResult> {
-  const reads = parseGoodreadsReads(csv);
+  return matchReadsAgainstLibrary(parseGoodreadsReads(csv));
+}
+
+/**
+ * Core matcher: reconcile already-parsed Goodreads "read" rows against the
+ * current library. Used both by the CSV upload path (via {@link matchReads}) and
+ * by the reconcile pass, which replays the persisted shelf against a catalogue
+ * that may have grown since the export was uploaded.
+ */
+export async function matchReadsAgainstLibrary(
+  reads: GoodreadsRead[],
+): Promise<MatchResult> {
   const library = await loadLibraryWorks();
 
   const matches: ReadRecord[] = [];

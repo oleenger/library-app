@@ -6,6 +6,7 @@
 // the same book twice is a no-op, and re-seeding never duplicates rows.
 
 import { admin } from "../supabase/admin";
+import { deriveAuthorSort } from "../author-sort";
 import { editionSignature, type GroupResult } from "./importer";
 
 export interface WriteSummary {
@@ -59,9 +60,15 @@ export async function upsertGrouped(g: GroupResult): Promise<WriteSummary> {
   const db = admin();
 
   if (g.works.length > 0) {
+    // Derive the surname sort key at write time so newly added books sort by
+    // last name exactly like the migration-backfilled existing rows.
+    const works = g.works.map((w) => ({
+      ...w,
+      author_sort: deriveAuthorSort(w.author),
+    }));
     const { error } = await db
       .from("works")
-      .upsert(g.works, { onConflict: "id", ignoreDuplicates: true });
+      .upsert(works, { onConflict: "id", ignoreDuplicates: true });
     if (error) throw new Error(`works upsert failed: ${error.message}`);
   }
 

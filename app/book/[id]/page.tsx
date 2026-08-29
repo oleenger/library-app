@@ -57,6 +57,19 @@ export default async function BookDetailPage({
         <span className="text-xs text-ink-faint">Work record</span>
       </nav>
 
+      <div className="flex justify-end pt-4">
+        <Link
+          href={`/book/${work.id}/edit`}
+          className="inline-flex items-center gap-2 rounded-full border border-paper-edge bg-paper px-4 py-1.5 text-xs font-semibold text-ink-soft shadow-sm transition-colors hover:border-ink-faint hover:text-ink"
+        >
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" className="h-3.5 w-3.5" aria-hidden>
+            <path d="M4 13.5V16h2.5l7.4-7.4-2.5-2.5L4 13.5Z" strokeLinejoin="round" />
+            <path d="m12.5 5.5 2 2" strokeLinecap="round" />
+          </svg>
+          Edit
+        </Link>
+      </div>
+
       <header className="enter-up border-b border-paper-edge py-10 sm:py-14">
         <span
           className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium"

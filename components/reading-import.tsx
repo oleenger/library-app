@@ -83,6 +83,74 @@ export function ReadingImport() {
       )}
 
       {state.phase === "done" && <Summary summary={state.summary} />}
+
+      <Reconcile />
+    </div>
+  );
+}
+
+interface ReconcileSummary {
+  shelfSize: number;
+  matched: number;
+  totalReadWorks: number;
+}
+
+type ReconcileState =
+  | { phase: "idle" }
+  | { phase: "running" }
+  | { phase: "done"; summary: ReconcileSummary }
+  | { phase: "error"; message: string };
+
+/**
+ * Replay the persisted Goodreads shelf against the current library — the path for
+ * books added AFTER the last export was uploaded. No file needed.
+ */
+function Reconcile() {
+  const [state, setState] = useState<ReconcileState>({ phase: "idle" });
+
+  async function run() {
+    setState({ phase: "running" });
+    try {
+      const res = await fetch("/api/reading/reconcile", { method: "POST" });
+      const json = await res.json();
+      if (!res.ok) {
+        setState({ phase: "error", message: json.error ?? "Reconcile failed" });
+        return;
+      }
+      setState({ phase: "done", summary: json as ReconcileSummary });
+    } catch (err) {
+      setState({ phase: "error", message: String(err) });
+    }
+  }
+
+  return (
+    <div className="mt-6 rounded-2xl border border-paper-edge bg-paper p-6 shadow-card sm:p-8">
+      <h2 className="text-sm font-semibold text-ink">Re-match after adding books</h2>
+      <p className="mt-2 text-sm leading-6 text-ink-soft">
+        Already uploaded your export? Run this after cataloguing new books to mark
+        any that are on your saved Goodreads shelf as read — no re-upload needed.
+        Read statuses you set by hand are never touched.
+      </p>
+      <button
+        type="button"
+        onClick={run}
+        disabled={state.phase === "running"}
+        className="mt-5 inline-flex items-center gap-2 rounded-xl border border-paper-edge bg-white px-4 py-2.5 text-sm font-semibold text-ink shadow-sm transition hover:border-ink-faint disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        {state.phase === "running" ? "Reconciling…" : "Reconcile now"}
+      </button>
+
+      {state.phase === "error" && (
+        <p className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {state.message}
+        </p>
+      )}
+      {state.phase === "done" && (
+        <p className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+          Replayed {state.summary.shelfSize} shelf {state.summary.shelfSize === 1 ? "entry" : "entries"};{" "}
+          {state.summary.matched} matched. {state.summary.totalReadWorks} total read works.
+        </p>
+      )}
     </div>
   );
 }

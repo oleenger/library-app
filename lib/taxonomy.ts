@@ -68,6 +68,7 @@ export const MOVEMENTS = [
   "Satire", // ridicule of vice and folly (Chaucer, Swift, Heller)
   "Science fiction", // speculative science, technology and futures
   "Dystopian fiction", // cautionary imagined societies
+  "Crime fiction", // detective, mystery and crime narratives
 ] as const;
 
 export type Period = (typeof PERIODS)[number];
