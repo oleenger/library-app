@@ -88,6 +88,11 @@ function catalogue(): Catalogue {
   return cache;
 }
 
+/** Drop the in-process catalogue cache after the DB is rebuilt (intake commit). */
+export function resetCatalogue(): void {
+  cache = null;
+}
+
 /** All works, deduplicated and sorted by author then title. */
 export function getWorks(): Work[] {
   return catalogue().works;

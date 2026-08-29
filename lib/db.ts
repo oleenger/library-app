@@ -18,3 +18,15 @@ export function getDb(): DatabaseSync {
   }
   return db;
 }
+
+/**
+ * Drop the cached connection so the next getDb() reopens the file. Call this
+ * after the catalogue DB is rebuilt in-process (e.g. the intake commit route),
+ * otherwise reads keep hitting the old, unlinked SQLite file.
+ */
+export function resetDb(): void {
+  if (db) {
+    db.close();
+    db = null;
+  }
+}
