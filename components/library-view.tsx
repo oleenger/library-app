@@ -61,20 +61,18 @@ export function LibraryView({ works }: Props) {
   }
 
   return (
-    <div className="pt-7 sm:pt-9">
-      <div className="flex items-end justify-between gap-4">
-        <div>
-          <h1 className="font-serif text-3xl leading-none tracking-[-0.02em] sm:text-4xl">
-            Collection
-          </h1>
-          <p className="mt-2 text-sm text-ink-soft">
-            {works.length} books · browse by period, movement, and author
-          </p>
-        </div>
+    <div className="pt-8 sm:pt-12">
+      <div className="max-w-2xl">
+        <h1 className="font-serif text-4xl leading-none tracking-[-0.02em] sm:text-5xl">
+          Collection
+        </h1>
+        <p className="mt-3 text-[0.95rem] text-ink-soft">
+          Browse by period, movement, and author.
+        </p>
       </div>
 
       {/* Search */}
-      <div className="mt-6 flex items-center gap-2">
+      <div className="mt-7 flex items-center gap-2.5">
         <label className="relative flex-1">
           <span className="sr-only">Search by title or author</span>
           <svg
@@ -95,14 +93,14 @@ export function LibraryView({ works }: Props) {
               setFilters((f) => ({ ...f, query: e.target.value }))
             }
             placeholder="Search title or author"
-            className="h-12 w-full rounded-2xl border border-paper-edge bg-white pl-11 pr-4 text-sm text-ink shadow-card transition-colors placeholder:text-ink-faint hover:border-ink-faint focus:border-accent focus:outline-none focus:ring-4 focus:ring-accent/15"
+            className="h-12 w-full rounded-full border border-paper-edge bg-paper pl-11 pr-4 text-sm text-ink shadow-card transition-colors placeholder:text-ink-faint hover:border-ink-faint focus:border-accent focus:outline-none focus:ring-4 focus:ring-accent/12"
           />
         </label>
         {active && (
           <button
             type="button"
             onClick={() => setFilters(EMPTY_FILTERS)}
-            className="h-12 shrink-0 rounded-2xl border border-paper-edge bg-white px-4 text-xs font-semibold text-ink-soft transition-colors hover:border-ink-faint hover:text-ink"
+            className="h-12 shrink-0 rounded-full border border-paper-edge bg-paper px-5 text-xs font-semibold text-ink-soft transition-colors hover:border-ink-faint hover:text-ink"
           >
             Clear
           </button>
@@ -116,37 +114,40 @@ export function LibraryView({ works }: Props) {
         onToggle={(v) => toggle("period", v)}
       />
 
-      <div className="grid gap-8 pt-8 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-10">
+      <div className="grid gap-8 pt-8 lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-10">
         <aside className="min-w-0">
-          <details className="group rounded-2xl border border-paper-edge bg-white p-4 shadow-card lg:hidden">
-            <summary className="flex cursor-pointer items-center justify-between text-sm font-semibold">
-              Filters
+          <details className="group rounded-2xl border border-paper-edge bg-paper p-4 shadow-card lg:hidden">
+            <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-semibold">
+              Movements &amp; authors
               <span className="text-ink-faint transition-transform group-open:rotate-180">
                 ⌄
               </span>
             </summary>
-            <div className="mt-5 space-y-6">
+            <div className="mt-5 space-y-7">
               <FacetGroup title="Movements" options={movementOpts} selected={filters.movement} onToggle={(v) => toggle("movement", v)} />
               <FacetGroup title="Authors" options={authorOpts} selected={filters.author} onToggle={(v) => toggle("author", v)} />
             </div>
           </details>
           <div className="hidden lg:sticky lg:top-24 lg:block">
-            <div className="space-y-7 rounded-2xl border border-paper-edge bg-white p-5 shadow-card">
+            <div className="space-y-7 rounded-2xl border border-paper-edge bg-paper p-6 shadow-card">
               <FacetGroup title="Movements" options={movementOpts} selected={filters.movement} onToggle={(v) => toggle("movement", v)} />
+              <div className="border-t border-paper-edge" />
               <FacetGroup title="Authors" options={authorOpts} selected={filters.author} onToggle={(v) => toggle("author", v)} />
             </div>
           </div>
         </aside>
 
         <section className="min-w-0">
-          <div className="overflow-hidden rounded-2xl border border-paper-edge bg-white shadow-card">
+          <div className="overflow-hidden rounded-2xl border border-paper-edge bg-paper shadow-card">
             <div className="flex items-center justify-between border-b border-paper-edge px-5 py-4 sm:px-6">
               <p className="text-sm text-ink-soft" aria-live="polite">
-                <span className="font-semibold text-ink">{filtered.length}</span>{" "}
+                <span className="font-serif text-lg text-ink">{filtered.length}</span>{" "}
                 {filtered.length === 1 ? "book" : "books"}
                 {active ? " found" : ""}
               </p>
-              <span className="text-xs text-ink-faint">Title A–Z</span>
+              <span className="text-[0.7rem] font-medium uppercase tracking-[0.12em] text-ink-faint">
+                Title A–Z
+              </span>
             </div>
 
             {filtered.length === 0 ? (
@@ -185,7 +186,7 @@ function FacetGroup({
   if (options.length === 0) return null;
   return (
     <div className="min-w-0">
-      <h2 className="mb-2 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-ink-faint">
+      <h2 className="mb-3 text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-ink-faint">
         {title}
       </h2>
       <ul className="flex flex-wrap gap-2 lg:flex-col lg:gap-0.5">
@@ -198,9 +199,9 @@ function FacetGroup({
                 onClick={() => onToggle(o.value)}
                 aria-pressed={isSel}
                 aria-label={`${o.value}, ${o.count} works`}
-                className={`flex min-h-9 w-max items-center justify-between gap-3 rounded-lg px-3 text-left text-sm transition-colors lg:min-h-0 lg:w-full lg:px-2.5 lg:py-2 ${
+                className={`flex min-h-9 w-max items-center justify-between gap-3 rounded-lg px-3 text-left text-sm transition-colors lg:min-h-0 lg:w-full lg:px-3 lg:py-2 ${
                   isSel
-                    ? "bg-accent text-white"
+                    ? "bg-accent text-white shadow-sm"
                     : "text-ink-soft hover:bg-paper-sunken hover:text-ink"
                 }`}
               >
@@ -221,7 +222,7 @@ function FacetGroup({
   );
 }
 
-/** Compact period facet. */
+/** Chronological period facet — clean neutral pills led by a colour swatch. */
 function Timeline({
   options,
   selected,
@@ -233,7 +234,7 @@ function Timeline({
 }) {
   if (options.length === 0) return null;
   return (
-    <ul className="no-scrollbar -mx-4 mt-5 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0">
+    <ul className="no-scrollbar -mx-4 mt-6 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">
       {options.map((o) => {
         const isSel = o.value === selected;
         const color = periodColor(o.value);
@@ -246,15 +247,17 @@ function Timeline({
               style={
                 isSel
                   ? { backgroundColor: color, borderColor: color }
-                  : { backgroundColor: `${color}14`, borderColor: `${color}33` }
+                  : undefined
               }
-              className={`flex h-9 shrink-0 items-center gap-2 rounded-full border px-3.5 text-sm font-medium transition-transform hover:-translate-y-px ${
-                isSel ? "text-white" : "text-ink"
+              className={`flex h-9 shrink-0 items-center gap-2 rounded-full border px-3.5 text-sm font-medium transition-all hover:-translate-y-px ${
+                isSel
+                  ? "text-white shadow-sm"
+                  : "border-paper-edge bg-paper text-ink hover:border-ink-faint"
               }`}
             >
               <span
-                className={`h-2 w-2 rounded-full ${isSel ? "bg-white/80" : ""}`}
-                style={isSel ? undefined : { backgroundColor: color }}
+                className="h-2.5 w-2.5 rounded-full"
+                style={{ backgroundColor: isSel ? "rgba(255,255,255,0.9)" : color }}
                 aria-hidden
               />
               <span>{SHORT_PERIOD[o.value] ?? o.value}</span>
@@ -276,10 +279,10 @@ function BookRow({ work }: { work: Work }) {
     <li>
       <Link
         href={`/book/${work.id}`}
-        className="group flex items-center gap-4 px-5 py-4 transition-colors hover:bg-paper-sunken/50 sm:px-6"
+        className="group flex items-center gap-4 px-5 py-4 transition-colors hover:bg-paper-sunken/60 sm:px-6"
       >
         <span
-          className="h-9 w-1 shrink-0 rounded-full"
+          className="h-10 w-1 shrink-0 rounded-full"
           style={{ backgroundColor: color }}
           aria-hidden
         />
@@ -297,10 +300,8 @@ function BookRow({ work }: { work: Work }) {
             {shortPeriod(c.period)}
           </span>
         </div>
-        <span
-          className="hidden shrink-0 rounded-full px-3 py-1 text-xs font-medium sm:inline-block"
-          style={{ backgroundColor: `${color}1f`, color }}
-        >
+        <span className="hidden shrink-0 items-center gap-2 rounded-full border border-paper-edge bg-paper px-3 py-1 text-xs font-medium text-ink-soft sm:inline-flex">
+          <span className="h-2 w-2 rounded-full" style={{ backgroundColor: color }} aria-hidden />
           {shortPeriod(c.period)}
         </span>
         <span className="w-12 shrink-0 text-right text-sm tabular-nums text-ink-faint">

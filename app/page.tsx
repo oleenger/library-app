@@ -14,17 +14,17 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen">
-      <header className="sticky top-0 z-30 border-b border-paper-edge bg-white/90 shadow-header backdrop-blur-md">
-        <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:h-16 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-2.5">
-            <span className="grid h-8 w-8 place-items-center rounded-lg bg-ink font-serif text-sm italic text-white">
+      <header className="sticky top-0 z-30 border-b border-paper-edge bg-canvas/80 shadow-header backdrop-blur-md">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-3">
+            <span className="grid h-9 w-9 place-items-center rounded-xl bg-ink font-serif text-base italic text-canvas shadow-sm">
               L
             </span>
-            <span className="text-sm font-semibold tracking-tight">
+            <span className="text-[0.95rem] font-semibold tracking-tight text-ink">
               The Library
             </span>
           </div>
-          <dl className="flex items-center gap-5 sm:gap-7">
+          <dl className="flex items-center divide-x divide-paper-edge">
             <HeaderStat label="Books" value={stats.works} />
             <HeaderStat label="Authors" value={stats.authors} />
             <HeaderStat label="Span" value={span} className="hidden sm:block" />
@@ -32,7 +32,7 @@ export default function HomePage() {
         </div>
       </header>
 
-      <main className="enter-up mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
+      <main className="enter-up mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
         <LibraryView works={works} />
       </main>
     </div>
@@ -49,9 +49,9 @@ function HeaderStat({
   className?: string;
 }) {
   return (
-    <div className={`text-right leading-none ${className}`}>
-      <dd className="text-sm font-semibold tabular-nums text-ink">{value}</dd>
-      <dt className="mt-1 text-[0.65rem] uppercase tracking-[0.12em] text-ink-faint">
+    <div className={`px-4 text-right leading-none first:pl-0 last:pr-0 sm:px-5 ${className}`}>
+      <dd className="font-serif text-lg tabular-nums text-ink">{value}</dd>
+      <dt className="mt-1 text-[0.6rem] font-medium uppercase tracking-[0.14em] text-ink-faint">
         {label}
       </dt>
     </div>
