@@ -113,29 +113,43 @@ export function buildCanonPrompt(works: Work[]): CanonPrompt {
   const periodCoverage = PERIODS.map((p) => `- ${p}: ${periodCounts.get(p) ?? 0}`).join("\n");
   const movementCoverage = MOVEMENTS.map((m) => `- ${m}: ${movementCounts.get(m) ?? 0}`).join("\n");
 
+  // The reader's demonstrated focus: the periods and movements they own most of.
+  const topPeriods = [...periodCounts.entries()]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .slice(0, 3)
+    .map(([p, n]) => `${p} (${n})`);
+  const topMovements = [...movementCounts.entries()]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .slice(0, 5)
+    .map(([m, n]) => `${m} (${n})`);
+
   const owned = works
     .map((w) => `${w.title} — ${w.author}`)
     .sort((a, b) => a.localeCompare(b));
 
   const text = [
-    "You are a literary curator auditing a personal library for completeness.",
-    "Your job is to name the major, canonical works the library is MISSING so its",
-    "owner can build a properly rounded collection across periods and movements.",
+    "You are a literary curator helping a reader deepen the collection in the",
+    "areas they clearly love. Group your recommendations UNDER the reader's focus",
+    "areas — the periods and movements they favour — and under each list the major,",
+    "canonical works they are still MISSING.",
     "",
     "Method:",
-    "- Look at the coverage counts below. A 0 (or very low count) in an important",
-    "  period or movement is a gap.",
-    "- Recommend the foundational works that fill those gaps first.",
-    "- Score each work's importance 1..10. 10 = an absolute cornerstone of its",
-    "  movement that no serious library can omit (e.g. Pride and Prejudice for",
-    "  Romanticism, Gravity's Rainbow for Postmodernism). 7-9 = major; 4-6 =",
-    "  notable; 1-3 = minor. Order the list by importance, highest first.",
+    "- The reader's strongest areas (most owned) are given below; treat these as",
+    "  the focus areas. Use the exact period/movement names shown.",
+    "- Choose 4-6 focus areas total. Favour the reader's clear interests; you may",
+    "  add at most one adjacent area worth developing.",
+    "- Under each area, list the foundational works they lack, most important first.",
+    "- Score each work 1..10. 10 = an absolute cornerstone of that area no serious",
+    "  collection can omit (e.g. Pride and Prejudice for Romanticism, Gravity's",
+    "  Rainbow for Postmodernism). 7-9 = major; 4-6 = notable; 1-3 = minor.",
+    "- Return ABOUT 30 works in total across all focus areas.",
     "",
     "Hard rules:",
     "- Recommend only real, published books.",
     "- Never recommend a work already in the OWNED LIBRARY list.",
-    "- Return 12 to 20 works via the identify_canon_gaps tool, spread across the",
-    "  weakest periods/movements rather than piling into one.",
+    "",
+    `READER'S STRONGEST PERIODS: ${topPeriods.join(", ") || "(none yet)"}`,
+    `READER'S STRONGEST MOVEMENTS: ${topMovements.join(", ") || "(none yet)"}`,
     "",
     "PERIOD COVERAGE (owned works per period):",
     periodCoverage,

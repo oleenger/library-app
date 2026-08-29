@@ -12,7 +12,7 @@ import {
   CanonResultSchema,
   RECOMMEND_BOOKS_TOOL,
   RecommendResultSchema,
-  type CanonGap,
+  type CanonFocus,
   type Recommendation,
 } from "./schema";
 
@@ -58,7 +58,7 @@ export async function generateRecommendations(
 }
 
 export interface CanonResult {
-  items: CanonGap[];
+  items: CanonFocus[];
   basedOn: number;
   usage: { input_tokens: number; output_tokens: number };
 }
@@ -72,7 +72,7 @@ export async function generateCanonGaps(
 
   const msg = await client.messages.create({
     model: env.model,
-    max_tokens: 3072,
+    max_tokens: 4096,
     tools: [CANON_GAPS_TOOL],
     tool_choice: { type: "tool", name: "identify_canon_gaps" },
     messages: [{ role: "user", content: [{ type: "text", text }] }],
@@ -88,8 +88,11 @@ export async function generateCanonGaps(
     throw new Error(`canon gaps failed validation: ${parsed.error.message}`);
   }
 
-  // Strongest gaps first.
-  const items = [...parsed.data.gaps].sort((a, b) => b.importance - a.importance);
+  // Strongest works first within each focus area; keep the model's area order.
+  const items: CanonFocus[] = parsed.data.focus_areas.map((area) => ({
+    ...area,
+    works: [...area.works].sort((a, b) => b.importance - a.importance),
+  }));
 
   return {
     items,

@@ -10,7 +10,7 @@
 
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import type { CanonGap, Recommendation } from "./schema";
+import type { CanonFocus, Recommendation } from "./schema";
 
 const STORE_PATH = path.join(process.cwd(), "data", "recommendations.json");
 
@@ -30,7 +30,7 @@ export interface StoredSet<T> {
 
 export interface RecommendationCache {
   taste?: StoredSet<Recommendation>;
-  canon?: StoredSet<CanonGap>;
+  canon?: StoredSet<CanonFocus>;
 }
 
 export function readCache(): RecommendationCache {
@@ -50,8 +50,8 @@ function writeCache(cache: RecommendationCache): void {
 
 /** Persist one kind's set without disturbing the other. */
 export function writeSet(kind: "taste", set: StoredSet<Recommendation>): void;
-export function writeSet(kind: "canon", set: StoredSet<CanonGap>): void;
-export function writeSet(kind: RecKind, set: StoredSet<Recommendation | CanonGap>): void {
+export function writeSet(kind: "canon", set: StoredSet<CanonFocus>): void;
+export function writeSet(kind: RecKind, set: StoredSet<Recommendation | CanonFocus>): void {
   const cache = readCache();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (cache as any)[kind] = set;

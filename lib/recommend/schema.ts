@@ -70,46 +70,68 @@ export type Recommendation = z.infer<typeof RecommendationSchema>;
 // lacks to be well-rounded across periods and movements, each scored 1..10 by
 // how foundational it is (10 = a cornerstone every serious library must hold,
 // e.g. Pride and Prejudice for Romanticism, Gravity's Rainbow for Postmodernism).
+// Results are grouped under the focus areas (periods/movements) the reader
+// favours, so gaps are shown "under each thing I'm into".
 
 export const CANON_GAPS_TOOL: Anthropic.Tool = {
   name: "identify_canon_gaps",
   description:
-    "Identify major, canonical works MISSING from the library that it needs to " +
-    "be well-rounded across literary periods and movements. Never list a work " +
-    "already present in the library. Prioritise under-represented periods and " +
-    "movements. Score each work's importance 1..10, where 10 is an absolutely " +
-    "foundational cornerstone of its movement.",
+    "Organise the major, canonical works MISSING from the library under the " +
+    "periods and movements the reader clearly favours. Use the coverage counts " +
+    "to infer the reader's focus areas (where they own the most), then under " +
+    "each area list the foundational works they still lack. Never list a work " +
+    "already present in the library. Score each work 1..10 by canonical " +
+    "importance. Return about 30 works in total across all areas.",
   input_schema: {
     type: "object",
     properties: {
-      gaps: {
+      focus_areas: {
         type: "array",
-        description: "12 to 20 missing works, the most important first.",
+        description:
+          "4 to 6 areas the reader favours (a period like 'Victorian / 19th " +
+          "century' or a movement like 'Modernism'), strongest first. About 30 " +
+          "works total across all areas.",
         items: {
           type: "object",
           properties: {
-            title: { type: "string", description: "Work title." },
-            author: { type: "string", description: 'Natural order "First Last".' },
-            first_published: { type: "integer", description: "Best-guess year first published." },
-            period: { type: "string", enum: [...PERIODS], description: "One literary period." },
-            primary_movement: { type: "string", enum: [...MOVEMENTS], description: "The movement this work anchors, or omit if none fits." },
-            importance: {
-              type: "integer",
-              description:
-                "1..10 canonical importance. 10 = foundational cornerstone of its " +
-                "movement (Pride and Prejudice / Romanticism; Gravity's Rainbow / " +
-                "Postmodernism). 7-9 = major work. 4-6 = notable. 1-3 = minor.",
-            },
-            reason: {
+            focus: {
               type: "string",
-              description: "Short note on why this work matters and which gap it fills.",
+              description:
+                "The period or movement the reader is into, e.g. 'Modernism' or " +
+                "'Victorian / 19th century'.",
+            },
+            works: {
+              type: "array",
+              description: "Major canonical works the reader lacks in this area, most important first.",
+              items: {
+                type: "object",
+                properties: {
+                  title: { type: "string", description: "Work title." },
+                  author: { type: "string", description: 'Natural order "First Last".' },
+                  first_published: { type: "integer", description: "Best-guess year first published." },
+                  period: { type: "string", enum: [...PERIODS], description: "One literary period." },
+                  primary_movement: { type: "string", enum: [...MOVEMENTS], description: "The movement this work anchors, or omit if none fits." },
+                  importance: {
+                    type: "integer",
+                    description:
+                      "1..10 canonical importance. 10 = foundational cornerstone " +
+                      "(Pride and Prejudice / Romanticism; Gravity's Rainbow / " +
+                      "Postmodernism). 7-9 = major. 4-6 = notable. 1-3 = minor.",
+                  },
+                  reason: {
+                    type: "string",
+                    description: "Short note on why this work matters and which gap it fills.",
+                  },
+                },
+                required: ["title", "author", "importance"],
+              },
             },
           },
-          required: ["title", "author", "primary_movement", "importance"],
+          required: ["focus", "works"],
         },
       },
     },
-    required: ["gaps"],
+    required: ["focus_areas"],
   },
 };
 
@@ -123,8 +145,14 @@ export const CanonGapSchema = z.object({
   reason: z.string().nullish(),
 });
 
+export const CanonFocusSchema = z.object({
+  focus: z.string().min(1),
+  works: z.array(CanonGapSchema),
+});
+
 export const CanonResultSchema = z.object({
-  gaps: z.array(CanonGapSchema),
+  focus_areas: z.array(CanonFocusSchema),
 });
 
 export type CanonGap = z.infer<typeof CanonGapSchema>;
+export type CanonFocus = z.infer<typeof CanonFocusSchema>;

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { formatYear, periodColor } from "@/lib/display";
 import type { StoredSet, RecKind } from "@/lib/recommend/store";
-import type { CanonGap, Recommendation } from "@/lib/recommend/schema";
+import type { CanonFocus, CanonGap, Recommendation } from "@/lib/recommend/schema";
 
 const SHORT_PERIOD: Record<string, string> = {
   "Classical / Antiquity": "Classical",
@@ -35,7 +35,7 @@ export function RecommendationsView({
   workCount,
 }: {
   taste: StoredSet<Recommendation> | null;
-  canon: StoredSet<CanonGap> | null;
+  canon: StoredSet<CanonFocus> | null;
   tasteStale: boolean;
   canonStale: boolean;
   readCount: number;
@@ -51,18 +51,18 @@ export function RecommendationsView({
         stale={tasteStale}
         enabled={readCount >= 3}
         disabledHint="Mark at least 3 books as read to get recommendations."
-        renderRow={(item) => <BookRow key={item.title + item.author} item={item} />}
+        renderContent={(set) => <TasteContent set={set} />}
       />
 
       <RecSection
         kind="canon"
         title="Canon gaps"
-        subtitle="Major works your library lacks to be well-rounded, scored by importance."
+        subtitle="Major works you're missing, grouped under the periods and movements you're into."
         initial={canon}
         stale={canonStale}
         enabled={workCount >= 5}
         disabledHint="Add at least 5 books first."
-        renderRow={(item) => <BookRow key={item.title + item.author} item={item} />}
+        renderContent={(set) => <CanonContent set={set} />}
       />
     </div>
   );
@@ -73,7 +73,11 @@ type State =
   | { phase: "loading" }
   | { phase: "error"; message: string; retryAfter?: number };
 
-function RecSection<T extends Recommendation | CanonGap>({
+function itemCount<T>(set: StoredSet<T> | null): number {
+  return set?.items?.length ?? 0;
+}
+
+function RecSection<T>({
   kind,
   title,
   subtitle,
@@ -81,7 +85,7 @@ function RecSection<T extends Recommendation | CanonGap>({
   stale,
   enabled,
   disabledHint,
-  renderRow,
+  renderContent,
 }: {
   kind: RecKind;
   title: string;
@@ -90,15 +94,14 @@ function RecSection<T extends Recommendation | CanonGap>({
   stale: boolean;
   enabled: boolean;
   disabledHint: string;
-  renderRow: (item: T) => React.ReactNode;
+  renderContent: (set: StoredSet<T>) => React.ReactNode;
 }) {
   const [set, setSet] = useState<StoredSet<T> | null>(initial);
   const [isStale, setIsStale] = useState(stale);
   const [state, setState] = useState<State>({ phase: "idle" });
 
   const loading = state.phase === "loading";
-  const items = set?.items ?? [];
-  const hasItems = items.length > 0;
+  const hasItems = itemCount(set) > 0;
 
   async function generate(refresh: boolean) {
     if (!enabled || loading) return;
@@ -179,20 +182,7 @@ function RecSection<T extends Recommendation | CanonGap>({
         </div>
       )}
 
-      {hasItems && (
-        <div className="overflow-hidden rounded-2xl border border-paper-edge bg-paper shadow-card">
-          <div className="flex items-center justify-between border-b border-paper-edge px-5 py-4 sm:px-6">
-            <p className="text-sm text-ink-soft">
-              <span className="font-serif text-lg text-ink">{items.length}</span>{" "}
-              {items.length === 1 ? "book" : "books"}
-            </p>
-            <span className="text-[0.7rem] font-medium uppercase tracking-[0.12em] text-ink-faint">
-              {kind === "canon" ? "By importance" : "Best match first"}
-            </span>
-          </div>
-          <ol className="divide-y divide-paper-edge">{items.map(renderRow)}</ol>
-        </div>
-      )}
+      {hasItems && set && renderContent(set)}
 
       {state.phase === "error" && (
         <p className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
@@ -207,6 +197,61 @@ function RecSection<T extends Recommendation | CanonGap>({
         </p>
       )}
     </section>
+  );
+}
+
+/** Taste picks: one front-page-style card, best match first. */
+function TasteContent({ set }: { set: StoredSet<Recommendation> }) {
+  return (
+    <div className="overflow-hidden rounded-2xl border border-paper-edge bg-paper shadow-card">
+      <div className="flex items-center justify-between border-b border-paper-edge px-5 py-4 sm:px-6">
+        <p className="text-sm text-ink-soft">
+          <span className="font-serif text-lg text-ink">{set.items.length}</span>{" "}
+          {set.items.length === 1 ? "book" : "books"}
+        </p>
+        <span className="text-[0.7rem] font-medium uppercase tracking-[0.12em] text-ink-faint">
+          Best match first
+        </span>
+      </div>
+      <ol className="divide-y divide-paper-edge">
+        {set.items.map((item) => (
+          <BookRow key={item.title + item.author} item={item} />
+        ))}
+      </ol>
+    </div>
+  );
+}
+
+/** Canon gaps: one card per focus area (period/movement you're into). */
+function CanonContent({ set }: { set: StoredSet<CanonFocus> }) {
+  const total = set.items.reduce((n, area) => n + area.works.length, 0);
+  return (
+    <div className="space-y-6">
+      <p className="text-sm text-ink-soft">
+        <span className="font-serif text-lg text-ink">{total}</span>{" "}
+        {total === 1 ? "work" : "works"} across{" "}
+        <span className="font-serif text-lg text-ink">{set.items.length}</span>{" "}
+        {set.items.length === 1 ? "area" : "areas"} you favour.
+      </p>
+      {set.items.map((area) => (
+        <div
+          key={area.focus}
+          className="overflow-hidden rounded-2xl border border-paper-edge bg-paper shadow-card"
+        >
+          <div className="flex items-center justify-between border-b border-paper-edge px-5 py-4 sm:px-6">
+            <h3 className="font-serif text-lg text-ink">{area.focus}</h3>
+            <span className="text-[0.7rem] font-medium uppercase tracking-[0.12em] text-ink-faint">
+              {area.works.length} {area.works.length === 1 ? "work" : "works"}
+            </span>
+          </div>
+          <ol className="divide-y divide-paper-edge">
+            {area.works.map((item) => (
+              <BookRow key={item.title + item.author} item={item} />
+            ))}
+          </ol>
+        </div>
+      ))}
+    </div>
   );
 }
 

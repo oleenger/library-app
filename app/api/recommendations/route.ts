@@ -25,7 +25,7 @@ import { getWorks } from "@/lib/books";
 import { libraryFingerprint, readingFingerprint } from "@/lib/recommend/fingerprint";
 import { generateCanonGaps, generateRecommendations } from "@/lib/recommend/generate";
 import { readCache, writeSet, type RecKind, type StoredSet } from "@/lib/recommend/store";
-import type { CanonGap, Recommendation } from "@/lib/recommend/schema";
+import type { CanonFocus, Recommendation } from "@/lib/recommend/schema";
 
 export const runtime = "nodejs";
 
@@ -38,7 +38,7 @@ const COOLDOWN_MS = 60_000;
 
 // Module-level guard state, per kind. Persists for the life of the server.
 const lastGenerationAt: Record<RecKind, number> = { taste: 0, canon: 0 };
-const inFlight: Record<RecKind, Promise<StoredSet<Recommendation | CanonGap>> | null> = {
+const inFlight: Record<RecKind, Promise<StoredSet<Recommendation | CanonFocus>> | null> = {
   taste: null,
   canon: null,
 };
@@ -114,12 +114,12 @@ export async function POST(req: Request) {
   // Timestamp up-front so a same-tick burst is throttled before the call returns.
   lastGenerationAt[kind] = Date.now();
 
-  const run = (async (): Promise<StoredSet<Recommendation | CanonGap>> => {
+  const run = (async (): Promise<StoredSet<Recommendation | CanonFocus>> => {
     const result =
       kind === "taste"
         ? await generateRecommendations(cfg.env, works)
         : await generateCanonGaps(cfg.env, works);
-    const set: StoredSet<Recommendation | CanonGap> = {
+    const set: StoredSet<Recommendation | CanonFocus> = {
       fingerprint,
       generatedAt: new Date().toISOString(),
       model: cfg.env.model,
@@ -127,7 +127,7 @@ export async function POST(req: Request) {
       items: result.items,
     };
     if (kind === "taste") writeSet("taste", set as StoredSet<Recommendation>);
-    else writeSet("canon", set as StoredSet<CanonGap>);
+    else writeSet("canon", set as StoredSet<CanonFocus>);
     return set;
   })();
   inFlight[kind] = run;
