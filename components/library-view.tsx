@@ -17,7 +17,6 @@ import {
 
 interface Props {
   works: Work[];
-  reading?: React.ReactNode;
 }
 
 type ViewMode = "list" | "grid";
@@ -38,7 +37,7 @@ function shortPeriod(period: string | null): string {
   return SHORT_PERIOD[period] ?? period;
 }
 
-export function LibraryView({ works, reading }: Props) {
+export function LibraryView({ works }: Props) {
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
   const [view, setView] = useState<ViewMode>("list");
 
@@ -81,8 +80,8 @@ export function LibraryView({ works, reading }: Props) {
   }
 
   return (
-    <div className="pt-8 sm:pt-12">
-      {/* Search + reading summary */}
+    <div className="pt-5 sm:pt-12">
+      {/* Search */}
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="sticky top-16 z-20 -mx-4 flex flex-1 items-center gap-2.5 bg-canvas/95 px-4 py-3 backdrop-blur-md sm:static sm:mx-0 sm:bg-transparent sm:px-0 sm:py-0 sm:backdrop-blur-none">
           <label className="relative flex-1">
@@ -118,12 +117,11 @@ export function LibraryView({ works, reading }: Props) {
             </button>
           )}
         </div>
-        {reading}
       </div>
 
       {/* Period chips with the read-status toggle aligned to their right.
           On phones the toggle lives in the list header instead, to save a row. */}
-      <div className="mt-6 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+      <div className="mt-4 flex flex-col gap-3 sm:mt-6 lg:flex-row lg:items-center lg:justify-between">
         <Timeline
           options={periodOpts}
           selected={filters.period}
@@ -136,7 +134,7 @@ export function LibraryView({ works, reading }: Props) {
         />
       </div>
 
-      <div className="grid gap-8 pt-8 lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-10">
+      <div className="grid gap-5 pt-5 sm:gap-8 sm:pt-8 lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-10">
         <aside className="min-w-0">
           <details className="group rounded-2xl border border-paper-edge bg-paper p-4 shadow-card lg:hidden">
             <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-semibold">
