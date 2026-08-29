@@ -1,0 +1,2 @@
+- Be concise in your answers.
+- Commit atomic work
