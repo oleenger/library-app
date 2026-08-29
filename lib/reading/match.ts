@@ -16,7 +16,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import Papa from "papaparse";
-import { getIntakeEnv } from "../env";
+import { getReadingMatchEnv } from "../env";
 import { workIdFor } from "../intake/importer";
 import type { ReadRecord } from "./store";
 import { parseGoodreadsReads, type GoodreadsRead } from "./goodreads";
@@ -123,7 +123,7 @@ export async function matchReads(csv: string): Promise<MatchResult> {
   const candidateLib = unmatchedLib.filter((w) => readAuthors.has(normAuthor(w.author)));
 
   if (candidateLib.length > 0 && candidateReads.length > 0) {
-    const env = getIntakeEnv();
+    const env = getReadingMatchEnv();
     if (!env.ok) {
       llmError = `LLM matching skipped — missing ${env.missing.join(", ")}`;
     } else {

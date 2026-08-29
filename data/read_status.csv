@@ -1,0 +1,59 @@
+work_id,title,author,date_read,rating,source
+abdulrazak-gurnah--etterliv,Etterliv,Abdulrazak Gurnah,2022-06-05,4,exact
+aldous-huxley--brave-new-world,Brave New World,Aldous Huxley,2025-10-19,5,exact
+anne-bronte--the-tenant-of-wildfell-hall,The Tenant of Wildfell Hall,Anne Brontë,2023-04-01,5,exact
+charles-dickens--a-christmas-carol,A Christmas Carol,Charles Dickens,2024-12-30,5,exact
+charles-dickens--a-tale-of-two-cities,A Tale of Two Cities,Charles Dickens,2026-04-21,5,exact
+charles-dickens--bleak-house,Bleak House,Charles Dickens,2026-03-07,5,exact
+charles-dickens--great-expectations,Great Expectations,Charles Dickens,2023-05-29,5,exact
+charles-dickens--hard-times,Hard Times,Charles Dickens,2023-09-08,5,exact
+charles-dickens--little-dorrit,Little Dorrit,Charles Dickens,2026-04-13,5,exact
+charles-dickens--oliver-twist,Oliver Twist,Charles Dickens,2025-12-15,5,exact
+charles-dickens--our-mutual-friend,Our Mutual Friend,Charles Dickens,2026-01-27,5,exact
+charlotte-bronte--jane-eyre,Jane Eyre,Charlotte Brontë,2023-03-25,4,exact
+edvard-hoem--felemakaren,Felemakaren,Edvard Hoem,2022-04-13,5,exact
+edvard-hoem--husjomfru,Husjomfru,Edvard Hoem,2024-01-01,4,exact
+edvard-hoem--sla-ttekar-i-himmelen,Slåttekar i himmelen,Edvard Hoem,2022-05-22,4,exact
+elizabeth-gaskell--cranford,Cranford,Elizabeth Gaskell,2025-12-21,4,exact
+emily-bronte--wuthering-heights,Wuthering Heights,Emily Brontë,2023-01-14,5,exact
+erik-fosnes-hansen--beretninger-om-beskyttelse,Beretninger om beskyttelse,Erik Fosnes Hansen,2023-06-20,4,exact
+erik-fosnes-hansen--langs-landeveien-mellom-cottbus-og-berlin,Langs Landeveien Mellom Cottbus og Berlin,Erik Fosnes Hansen,2022-07-14,4,exact
+erik-fosnes-hansen--salme-ved-reisens-slutt,Salme ved reisens slutt,Erik Fosnes Hansen,2023-06-05,4,exact
+f-scott-fitzgerald--the-great-gatsby,The Great Gatsby,F. Scott Fitzgerald,2026-07-24,5,exact
+gaute-heivoll--forklaringen,Forklaringen,Gaute Heivoll,2022-05-01,3,exact
+george-eliot--silas-marner,Silas Marner,George Eliot,2025-02-03,4,exact
+gu-nter-grass--i-krabbegang,I krabbegang,Günter Grass,2022-05-06,4,llm
+hermann-broch--s-vngjengerne-i-pasenow-eller-romantikken-1888,Søvngjengerne I: Pasenow eller romantikken (1888),Hermann Broch,2022-07-15,5,llm
+homer--the-odyssey,The Odyssey,Homer,2025-04-14,5,llm
+honore-de-balzac--pe-re-goriot,Père Goriot,Honoré de Balzac,2025-01-19,5,exact
+james-joyce--a-portrait-of-the-artist-as-a-young-man,A Portrait of the Artist as a Young Man,James Joyce,2023-02-18,5,exact
+jane-austen--emma,Emma,Jane Austen,2023-02-12,5,exact
+jane-austen--northanger-abbey,Northanger Abbey,Jane Austen,2023-03-12,5,exact
+jane-austen--persuasion,Persuasion,Jane Austen,2023-01-23,5,exact
+jane-austen--pride-and-prejudice,Pride and Prejudice,Jane Austen,2023-01-18,5,exact
+jane-austen--sanditon,Sanditon,Jane Austen,2023-12-23,,llm
+jenny-erpenbeck--alle-dagers-ende,Alle dagers ende,Jenny Erpenbeck,2022-11-22,5,exact
+jenny-erpenbeck--det-gamle-barnet,Det gamle barnet,Jenny Erpenbeck,2025-03-07,4,llm
+jenny-erpenbeck--ga-r-gikk-har-ga-tt,"Går, gikk, har gått",Jenny Erpenbeck,2023-05-03,5,llm
+jenny-erpenbeck--hjems-kelse,Hjemsøkelse,Jenny Erpenbeck,2022-07-01,5,exact
+jenny-erpenbeck--kairos,Kairos,Jenny Erpenbeck,2022-06-25,4,exact
+jon-fosse--trilogien,Trilogien,Jon Fosse,2021-12-29,5,exact
+jon-fosse--vaim,Vaim,Jon Fosse,2025-09-07,5,exact
+kjartan-fl-gstad--dalen-portland,Dalen Portland,Kjartan Fløgstad,2022-09-10,5,exact
+kjartan-fl-gstad--grand-manila,Grand Manila,Kjartan Fløgstad,2022-10-24,4,exact
+lena-andersson--dottern,Dottern,Lena Andersson,2022-09-18,3,exact
+lena-andersson--koryfe-erna,Koryféerna,Lena Andersson,2022-08-03,3,llm
+lena-andersson--sveas-son,Sveas son,Lena Andersson,2022-08-05,5,exact
+louisa-may-alcott--little-women,Little Women,Louisa May Alcott,2023-06-01,,exact
+marie-aubert--jeg-er-egentlig-ikke-sa-nn,Jeg er egentlig ikke sånn,Marie Aubert,2023-07-08,4,exact
+michel-houellebecq--tilintetgj-re,Tilintetgjøre,Michel Houellebecq,2022-04-01,2,exact
+nino-haratischwili--det-a-ttende-livet-til-brilka,Det åttende livet (til Brilka),Nino Haratischwili,,5,exact
+solvej-balle--om-utregning-av-romfang-1,Om utregning av romfang 1,Solvej Balle,2022-08-19,3,llm
+solvej-balle--om-utregning-av-romfang-2,Om utregning av romfang 2,Solvej Balle,2023-06-21,4,llm
+solvej-balle--om-utregning-av-romfang-3,Om utregning av romfang 3,Solvej Balle,2023-08-21,5,exact
+solvej-balle--om-utregning-av-romfang-4,Om utregning av romfang 4,Solvej Balle,2024-02-01,3,llm
+thomas-bernhard--werke-7,Werke 7,Thomas Bernhard,2023-03-05,,llm
+thomas-hardy--far-from-the-madding-crowd,Far From the Madding Crowd,Thomas Hardy,2023-03-19,5,exact
+thomas-hardy--jude-the-obscure,Jude the Obscure,Thomas Hardy,2023-04-06,5,exact
+thomas-hardy--the-mayor-of-casterbridge,The Mayor of Casterbridge,Thomas Hardy,2024-12-02,5,exact
+umberto-eco--dronning-loanas-mystiske-flamme,Dronning Loanas mystiske flamme,Umberto Eco,,3,llm
