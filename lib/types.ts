@@ -13,6 +13,8 @@ export interface Work {
   id: string;
   title: string;
   author: string;
+  /** "Last, First" sort key used to order the library by surname. Editable. */
+  authorSort: string | null;
   /** Year first published. Negative = BCE. Null when we don't have it. */
   originalYear: number | null;
   /** Original language when known. */
