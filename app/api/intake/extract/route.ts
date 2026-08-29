@@ -8,6 +8,9 @@ import { EXTRACT_BOOKS_TOOL, parseExtraction } from "@/lib/intake/schema";
 import { buildExtractionPrompt } from "@/lib/intake/skill";
 
 export const runtime = "nodejs";
+// Vision extraction can take tens of seconds; give the function room so Vercel
+// doesn't cut the connection mid-call (which the client sees as "Failed to fetch").
+export const maxDuration = 60;
 
 const MAX_BYTES = 12 * 1024 * 1024; // 12 MB cap per photo
 
