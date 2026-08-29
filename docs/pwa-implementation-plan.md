@@ -6,6 +6,10 @@ Companion to `pwa-vs-web-mobile-analysis.md`. The analysis argues PWA is the cor
 
 **Chosen tooling** (from proposal §9): Serwist (service worker), Dexie/IndexedDB (offline catalogue). Existing stack: Next.js 15 App Router, React 19, Tailwind, TypeScript.
 
+**Target platform:** Android-first. iOS-specific work (Apple touch-icon workarounds, `apple-mobile-web-app-*` meta) is minimised; Android Chrome features (`beforeinstallprompt`, maskable icons, persistent storage, gesture-bar safe areas) are prioritised.
+
+**Deferred, by decision:** the mobile *interaction* redesign (bottom navigation bar, Capture FAB, filter bottom-sheet, restored read/unread filter on mobile, cover grid) is **out of scope for these PWA stages** and will be done in a later design pass. Stage 1 lays only the `env(safe-area-inset-*)` groundwork so that later work drops in cleanly.
+
 ---
 
 ## Stage 1 — Installable shell  (`pwa-1-installable`)
