@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { MOVEMENTS, PERIODS } from "@/lib/taxonomy";
+import { useOnline } from "@/lib/offline/use-online";
 
 // Photo intake workflow: capture -> extract -> review -> add.
 // Capture/extract happen per shot; review aggregates every read book into one
@@ -162,6 +163,7 @@ function newId(): string {
 }
 
 export default function CapturePage() {
+  const online = useOnline();
   const [shots, setShots] = useState<Shot[]>([]);
   const [mode, setMode] = useState<"capture" | "review" | "done">("capture");
   const [items, setItems] = useState<ReviewItem[]>([]);
@@ -352,6 +354,17 @@ export default function CapturePage() {
             scanning barcodes one at a time.
           </p>
         </div>
+
+        {!online && (
+          <div className="mt-6 flex items-start gap-3 rounded-xl border border-amber-300/60 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+            <span className="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-amber-500" aria-hidden />
+            <p>
+              <span className="font-semibold">You&apos;re offline.</span> Adding
+              books needs a connection — photos are read and saved on the server.
+              You can still browse your library; come back online to add books.
+            </p>
+          </div>
+        )}
 
         {/* Workflow stepper */}
         <ol className="mt-8 flex flex-wrap items-center gap-x-2 gap-y-3">

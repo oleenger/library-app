@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { InstallPrompt } from "@/components/install-prompt";
 import { ServiceWorkerRegister } from "@/components/service-worker-register";
+import { OfflineBanner } from "@/components/offline-banner";
+import { PwaRuntime } from "@/components/pwa-runtime";
 
 export const metadata: Metadata = {
   title: "The Library",
@@ -31,8 +33,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         {children}
+        <OfflineBanner />
         <InstallPrompt />
         <ServiceWorkerRegister />
+        <PwaRuntime />
       </body>
     </html>
   );
