@@ -70,6 +70,57 @@ function parseYear(value: string | undefined): number | null {
   return Number.isFinite(n) ? n : null;
 }
 
+// --- edition identity ------------------------------------------------------
+
+/**
+ * Deterministic edition id. A named edition (omnibus / box set) is shared across
+ * works, so its id is work-independent. A blank edition is a standalone copy,
+ * identified by its own work + printing attributes (publisher + language) — so
+ * two distinct printings of the same work get distinct ids, while re-committing
+ * the same copy yields a stable id. Replaces the old sequence counter, which
+ * produced colliding `ed--work--1` ids when adding a copy to an existing work.
+ */
+export function editionIdFor(
+  workId: string,
+  editionName: string | null,
+  publisher: string | null,
+  language: string | null,
+): string {
+  return editionName
+    ? `ed--${slugify(editionName)}--${slugify(publisher ?? "")}`
+    : `ed--${workId}--${slugify(publisher ?? "")}--${slugify(language ?? "")}`;
+}
+
+/**
+ * Content signature of a (work, edition) link. Used to detect an already-owned
+ * copy by its attributes rather than its id, so rows persisted under any earlier
+ * id scheme still match and intake stays idempotent without a data migration.
+ */
+export function editionSignature(
+  workId: string,
+  name: string,
+  publisher: string | null,
+  language: string | null,
+): string {
+  return [workId, slugify(name), slugify(publisher ?? ""), slugify(language ?? "")].join("\u0000");
+}
+
+/** Work id, edition id, and dedup signature for the edition a candidate describes. */
+export function editionIdentity(
+  row: BookRow,
+): { workId: string; editionId: string; signature: string } {
+  const workId = workIdFor(row.title.trim(), row.author.trim());
+  const editionName = nullable(row.edition);
+  const publisher = nullable(row.publisher);
+  const language = nullable(row.edition_language);
+  const name = editionName ?? row.title.trim();
+  return {
+    workId,
+    editionId: editionIdFor(workId, editionName, publisher, language),
+    signature: editionSignature(workId, name, publisher, language),
+  };
+}
+
 // --- grouping --------------------------------------------------------------
 
 export interface WorkRecord {
@@ -127,7 +178,6 @@ export function groupRows(rows: BookRow[]): GroupResult {
   const editions = new Map<string, EditionRecord>();
   const links = new Map<string, LinkRecord>();
   const rejected: string[] = [];
-  let editionSeq = 0;
 
   for (const row of rows) {
     if (!row.title?.trim() || !row.author?.trim()) continue;
@@ -141,12 +191,16 @@ export function groupRows(rows: BookRow[]): GroupResult {
 
     // A shared edition (omnibus / box set) is grouped by its human-readable
     // `edition` label + publisher — NOT by author, so a multi-author box set is
-    // ONE edition. A blank `edition` is a standalone volume: its own edition.
+    // ONE edition. A blank `edition` is a standalone copy: its id is derived from
+    // publisher + language so two distinct printings stay distinct.
     const editionName = nullable(row.edition);
     const publisher = nullable(row.publisher);
-    const editionId = editionName
-      ? `ed--${slugify(editionName)}--${slugify(publisher ?? "")}`
-      : `ed--${workId}--${++editionSeq}`;
+    const editionId = editionIdFor(
+      workId,
+      editionName,
+      publisher,
+      nullable(row.edition_language),
+    );
 
     const period = nullable(row.period);
     const primary = nullable(row.primary_movement);

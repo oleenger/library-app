@@ -4,11 +4,11 @@
 // added books appear immediately with no rebuild step.
 
 import {
+  editionIdentity,
   groupRows,
-  workIdFor,
   type BookRow,
 } from "@/lib/intake/importer";
-import { existingWorkIds, upsertGrouped } from "@/lib/intake/catalogue-db";
+import { existingEditionSignatures, upsertGrouped } from "@/lib/intake/catalogue-db";
 import { CandidateSchema } from "@/lib/intake/schema";
 import { z } from "zod";
 
@@ -50,7 +50,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const existing = await existingWorkIds();
+  const existing = await existingEditionSignatures();
   const seen = new Set<string>();
   const rows: BookRow[] = [];
   const duplicates: { title: string; author: string }[] = [];
@@ -65,13 +65,18 @@ export async function POST(req: Request) {
       return;
     }
     const c = parsed.data;
-    const workId = workIdFor(c.title, c.author);
-    if (existing.has(workId) || seen.has(workId)) {
+    const row = candidateToRow(c);
+    // Dedup at the (work, edition) level: a copy is a duplicate only if this
+    // exact edition of this work is already owned or already seen in this batch.
+    // Two distinct editions of the same title therefore both survive, and a new
+    // edition of an already-owned title is no longer wrongly discarded.
+    const { signature } = editionIdentity(row);
+    if (existing.has(signature) || seen.has(signature)) {
       duplicates.push({ title: c.title, author: c.author });
       return;
     }
-    seen.add(workId);
-    rows.push(candidateToRow(c));
+    seen.add(signature);
+    rows.push(row);
   });
 
   let added = 0;
@@ -79,7 +84,7 @@ export async function POST(req: Request) {
   if (rows.length > 0) {
     const grouped = groupRows(rows);
     importSummary = await upsertGrouped(grouped);
-    added = grouped.works.length;
+    added = rows.length; // copies actually committed (may span fewer works)
   }
 
   return Response.json({
