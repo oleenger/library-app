@@ -66,6 +66,9 @@ npm install
 npm run dev -- -H 0.0.0.0   # regenerates data/library.db, serves on http://<lan-ip>:3000
 ```
 
+Development must always use port `3000`. If that port is already occupied, stop
+the existing process before starting the app; do not use Next.js's fallback port.
+
 `npm run import` rebuilds the database from `data/library_master.csv` on its own;
 `dev` and `build` run it automatically first. Production build:
 
