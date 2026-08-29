@@ -231,11 +231,14 @@ export default function CapturePage() {
         if (res.ok) {
           patch({ status: "ok", candidates: json.candidates ?? [] });
         } else {
+          const extra = json.detail
+            ? `: ${String(json.detail).slice(0, 140)}`
+            : json.missing
+              ? `: ${json.missing.join(", ")}`
+              : "";
           patch({
             status: "error",
-            error: json.error
-              ? `${json.error}${json.missing ? `: ${json.missing.join(", ")}` : ""}`
-              : `HTTP ${res.status}`,
+            error: json.error ? `${json.error}${extra}` : `HTTP ${res.status}`,
           });
         }
       } catch (err) {

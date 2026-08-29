@@ -4,7 +4,7 @@
 
 import Anthropic from "@anthropic-ai/sdk";
 import { getIntakeEnv } from "@/lib/env";
-import { EXTRACT_BOOKS_TOOL, ExtractionSchema } from "@/lib/intake/schema";
+import { EXTRACT_BOOKS_TOOL, parseExtraction } from "@/lib/intake/schema";
 import { buildExtractionPrompt } from "@/lib/intake/skill";
 
 export const runtime = "nodejs";
@@ -70,16 +70,31 @@ export async function POST(req: Request) {
     return Response.json({ error: "model returned no tool call" }, { status: 502 });
   }
 
-  const parsed = ExtractionSchema.safeParse(toolUse.input);
-  if (!parsed.success) {
+  // Best-effort parse: one off-taxonomy field must not discard the whole photo.
+  let result;
+  try {
+    result = parseExtraction(toolUse.input);
+  } catch (err) {
+    console.error("[intake/extract] unusable tool output:", err, JSON.stringify(toolUse.input));
     return Response.json(
-      { error: "extraction failed validation", issues: parsed.error.issues },
+      { error: "extraction failed validation", detail: String(err) },
       { status: 502 },
     );
   }
 
+  if (result.dropped.length > 0) {
+    console.warn("[intake/extract] coerced fields:", result.dropped);
+  }
+  if (result.candidates.length === 0) {
+    return Response.json(
+      { error: "no readable books found in photo", dropped: result.dropped },
+      { status: 422 },
+    );
+  }
+
   return Response.json({
-    candidates: parsed.data.books,
+    candidates: result.candidates,
+    dropped: result.dropped,
     usage: {
       input_tokens: msg.usage.input_tokens,
       output_tokens: msg.usage.output_tokens,
