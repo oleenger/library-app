@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { InstallPrompt } from "@/components/install-prompt";
+import { ServiceWorkerRegister } from "@/components/service-worker-register";
 
 export const metadata: Metadata = {
   title: "The Library",
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         {children}
         <InstallPrompt />
+        <ServiceWorkerRegister />
       </body>
     </html>
   );
