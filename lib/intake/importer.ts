@@ -6,7 +6,7 @@
 // `INSERT OR IGNORE` statements to `INSERT ... ON CONFLICT DO NOTHING`. The
 // parsing, taxonomy validation, and work/edition grouping below are unchanged.
 
-import { readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import Papa from "papaparse";
@@ -50,15 +50,25 @@ export const MASTER_COLUMNS: (keyof BookRow)[] = [
 
 const ROOT = process.cwd();
 const CSV_PATH = path.join(ROOT, "data", "library_master.csv");
+const READ_STATUS_PATH = path.join(ROOT, "data", "read_status.csv");
 const DB_PATH = path.join(ROOT, "data", "library.db");
 const SCHEMA_PATH = path.join(ROOT, "db", "schema.sql");
 
-function slugify(value: string): string {
+export function slugify(value: string): string {
   return value
     .toLowerCase()
     .normalize("NFKD")
     .replace(/[^\w]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+/**
+ * The canonical work id: title + author only, matching the identity used when
+ * inserting works. Exported so the reading matcher can produce ids that line up
+ * with the catalogue (a matched Goodreads row must reference a real work row).
+ */
+export function workIdFor(title: string, author: string): string {
+  return `${slugify(author.trim())}--${slugify(title.trim())}`;
 }
 
 function nullable(value: string | undefined): string | null {
@@ -179,9 +189,67 @@ export function runImport(): ImportSummary {
   }
 
   db.prepare("COMMIT").run();
+
+  loadReadStatus(db);
+
   db.close();
 
   return { worksInserted, editionsInserted, duplicateRows, rejected };
+}
+
+// Read-status CSV columns — the canonical header of data/read_status.csv.
+export const READ_STATUS_COLUMNS = [
+  "work_id",
+  "title",
+  "author",
+  "date_read",
+  "rating",
+  "source",
+] as const;
+
+export interface ReadStatusRow {
+  work_id: string;
+  title: string;
+  author: string;
+  date_read: string;
+  rating: string;
+  source: string;
+}
+
+// Load data/read_status.csv into the read_status table. Rows whose work_id is not
+// present in `works` are skipped (a work may have been removed from the master).
+// Missing file is not an error: read tracking is optional.
+function loadReadStatus(db: DatabaseSync): void {
+  if (!existsSync(READ_STATUS_PATH)) return;
+  const { data } = Papa.parse<ReadStatusRow>(readFileSync(READ_STATUS_PATH, "utf8"), {
+    header: true,
+    skipEmptyLines: true,
+    transformHeader: (h) => h.trim(),
+  });
+
+  const known = new Set(
+    (db.prepare("SELECT id FROM works").all() as unknown as { id: string }[]).map(
+      (r) => r.id,
+    ),
+  );
+  const insert = db.prepare(
+    `INSERT OR IGNORE INTO read_status (work_id, date_read, rating, source)
+     VALUES (?, ?, ?, ?)`,
+  );
+
+  db.prepare("BEGIN").run();
+  for (const row of data) {
+    const workId = row.work_id?.trim();
+    if (!workId || !known.has(workId)) continue;
+    const rating = Number(row.rating);
+    insert.run(
+      workId,
+      nullable(row.date_read),
+      Number.isFinite(rating) && rating > 0 ? rating : null,
+      nullable(row.source),
+    );
+  }
+  db.prepare("COMMIT").run();
 }
 
 // Normalise line endings and drop trailing blank lines.

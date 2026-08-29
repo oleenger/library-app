@@ -24,6 +24,12 @@ interface LinkRow {
   work_id: string;
   edition_id: string;
 }
+interface ReadRow {
+  work_id: string;
+  date_read: string | null;
+  rating: number | null;
+  source: string | null;
+}
 
 interface Catalogue {
   works: Work[];
@@ -43,6 +49,12 @@ function build(): Catalogue {
   const linkRows = db
     .prepare("SELECT work_id, edition_id FROM work_editions ORDER BY edition_id")
     .all() as unknown as LinkRow[];
+  const readRows = db
+    .prepare("SELECT work_id, date_read, rating, source FROM read_status")
+    .all() as unknown as ReadRow[];
+
+  const readByWork = new Map<string, ReadRow>();
+  for (const r of readRows) readByWork.set(r.work_id, r);
 
   const editions = new Map<string, Edition>();
   for (const e of editionRows) {
@@ -78,6 +90,13 @@ function build(): Catalogue {
         ? r.secondary_movements.split("|").map((m) => m.trim()).filter(Boolean)
         : [],
     },
+    reading: readByWork.has(r.id)
+      ? {
+          dateRead: readByWork.get(r.id)!.date_read,
+          rating: readByWork.get(r.id)!.rating,
+          source: readByWork.get(r.id)!.source,
+        }
+      : null,
   }));
 
   return { works, editions };
