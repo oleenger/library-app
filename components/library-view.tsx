@@ -102,38 +102,38 @@ export function LibraryView({ works, reading }: Props) {
         {reading}
       </div>
 
-      {/* Read status segmented control */}
-      <div className="mt-4 inline-flex rounded-full border border-paper-edge bg-paper p-1 shadow-card">
-        {(
-          [
-            ["", "All"],
-            ["read", "Read"],
-            ["unread", "Unread"],
-          ] as const
-        ).map(([value, label]) => {
-          const isSel = filters.readStatus === value;
-          return (
-            <button
-              key={value || "all"}
-              type="button"
-              onClick={() => setFilters((f) => ({ ...f, readStatus: value }))}
-              aria-pressed={isSel}
-              className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${
-                isSel ? "bg-ink text-canvas shadow-sm" : "text-ink-soft hover:text-ink"
-              }`}
-            >
-              {label}
-            </button>
-          );
-        })}
+      {/* Period chips with the read-status toggle aligned to their right */}
+      <div className="mt-6 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+        <Timeline
+          options={periodOpts}
+          selected={filters.period}
+          onToggle={(v) => toggle("period", v)}
+        />
+        <div className="inline-flex shrink-0 self-start rounded-full border border-paper-edge bg-paper p-1 shadow-card lg:self-auto">
+          {(
+            [
+              ["", "All"],
+              ["read", "Read"],
+              ["unread", "Unread"],
+            ] as const
+          ).map(([value, label]) => {
+            const isSel = filters.readStatus === value;
+            return (
+              <button
+                key={value || "all"}
+                type="button"
+                onClick={() => setFilters((f) => ({ ...f, readStatus: value }))}
+                aria-pressed={isSel}
+                className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${
+                  isSel ? "bg-ink text-canvas shadow-sm" : "text-ink-soft hover:text-ink"
+                }`}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
       </div>
-
-      {/* Period chips */}
-      <Timeline
-        options={periodOpts}
-        selected={filters.period}
-        onToggle={(v) => toggle("period", v)}
-      />
 
       <div className="grid gap-8 pt-8 lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-10">
         <aside className="min-w-0">
@@ -255,7 +255,7 @@ function Timeline({
 }) {
   if (options.length === 0) return null;
   return (
-    <ul className="no-scrollbar -mx-4 mt-6 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">
+    <ul className="no-scrollbar -mx-4 flex flex-1 gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">
       {options.map((o) => {
         const isSel = o.value === selected;
         const color = periodColor(o.value);

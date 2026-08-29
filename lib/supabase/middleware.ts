@@ -18,6 +18,12 @@ import type { Database } from "./types";
 const PUBLIC_PATHS = ["/login", "/auth/callback"];
 
 export async function updateSession(request: NextRequest): Promise<NextResponse> {
+  // Auth gate is opt-in. While AUTH_ENABLED !== "true" the whole site is public
+  // (no login required). Flip the flag to re-enable the owner gate later.
+  if (process.env.AUTH_ENABLED !== "true") {
+    return NextResponse.next({ request });
+  }
+
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
