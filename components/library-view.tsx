@@ -107,6 +107,32 @@ export function LibraryView({ works }: Props) {
         )}
       </div>
 
+      {/* Read status segmented control */}
+      <div className="mt-4 inline-flex rounded-full border border-paper-edge bg-paper p-1 shadow-card">
+        {(
+          [
+            ["", "All"],
+            ["read", "Read"],
+            ["unread", "Unread"],
+          ] as const
+        ).map(([value, label]) => {
+          const isSel = filters.readStatus === value;
+          return (
+            <button
+              key={value || "all"}
+              type="button"
+              onClick={() => setFilters((f) => ({ ...f, readStatus: value }))}
+              aria-pressed={isSel}
+              className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${
+                isSel ? "bg-ink text-canvas shadow-sm" : "text-ink-soft hover:text-ink"
+              }`}
+            >
+              {label}
+            </button>
+          );
+        })}
+      </div>
+
       {/* Period chips */}
       <Timeline
         options={periodOpts}
@@ -300,6 +326,23 @@ function BookRow({ work }: { work: Work }) {
             {shortPeriod(c.period)}
           </span>
         </div>
+        {work.reading && (
+          <span
+            className="hidden shrink-0 items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 sm:inline-flex"
+            title={
+              work.reading.dateRead ? `Read ${work.reading.dateRead}` : "Read"
+            }
+          >
+            <svg viewBox="0 0 20 20" fill="currentColor" className="h-3.5 w-3.5" aria-hidden>
+              <path
+                fillRule="evenodd"
+                d="M16.7 5.3a1 1 0 0 1 0 1.4l-7 7a1 1 0 0 1-1.4 0l-3.5-3.5a1 1 0 1 1 1.4-1.4l2.8 2.8 6.3-6.3a1 1 0 0 1 1.4 0Z"
+                clipRule="evenodd"
+              />
+            </svg>
+            Read
+          </span>
+        )}
         <span className="hidden shrink-0 items-center gap-2 rounded-full border border-paper-edge bg-paper px-3 py-1 text-xs font-medium text-ink-soft sm:inline-flex">
           <span className="h-2 w-2 rounded-full" style={{ backgroundColor: color }} aria-hidden />
           {shortPeriod(c.period)}

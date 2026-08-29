@@ -73,6 +73,20 @@ export default async function BookDetailPage({
           {work.title}
         </h1>
         <p className="mt-4 text-base text-ink-soft">by {work.author}</p>
+        {work.reading && (
+          <p className="mt-5 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+            <svg viewBox="0 0 20 20" fill="currentColor" className="h-3.5 w-3.5" aria-hidden>
+              <path
+                fillRule="evenodd"
+                d="M16.7 5.3a1 1 0 0 1 0 1.4l-7 7a1 1 0 0 1-1.4 0l-3.5-3.5a1 1 0 1 1 1.4-1.4l2.8 2.8 6.3-6.3a1 1 0 0 1 1.4 0Z"
+                clipRule="evenodd"
+              />
+            </svg>
+            Read
+            {work.reading.dateRead && ` · ${work.reading.dateRead}`}
+            {work.reading.rating != null && ` · ${"★".repeat(work.reading.rating)}`}
+          </p>
+        )}
         <p className="mt-6 inline-flex items-baseline gap-2">
           <span className="text-xs text-ink-faint">First published</span>
           <span className="font-serif text-2xl tabular-nums">
