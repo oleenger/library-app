@@ -109,7 +109,7 @@ export function LibraryView({ works, reading }: Props) {
           selected={filters.period}
           onToggle={(v) => toggle("period", v)}
         />
-        <div className="hidden shrink-0 self-start rounded-full border border-paper-edge bg-paper p-1 shadow-card sm:inline-flex lg:self-auto">
+        <div className="inline-flex shrink-0 self-start rounded-full border border-paper-edge bg-paper p-1 shadow-card lg:self-auto">
           {(
             [
               ["", "All"],
