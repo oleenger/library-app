@@ -1,13 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MOVEMENTS, PERIODS } from "@/lib/taxonomy";
 
 // Photo intake workflow: capture -> extract -> review -> add.
 // Capture/extract happen per shot; review aggregates every read book into one
-// editable queue; add commits the kept books to the library (client-side state
-// only — nothing is persisted until "Add to library").
+// editable queue; add commits the kept books to the library.
+//
+// Session state is mirrored to sessionStorage so it survives a tab reload:
+// Android Chrome can discard and reload the page when the OS camera launches
+// (memory pressure), which would otherwise wipe every read book. We also keep
+// only tiny thumbnail data URLs in memory (not the multi-MB originals) to make
+// that discard far less likely in the first place.
 
 // Longest edge to downscale to before upload. 1600px keeps spine text legible
 // (proposal §9.1) while cutting a multi-MB photo to a few hundred KB. Bump this
@@ -52,6 +57,26 @@ async function downscale(file: File, maxEdge = MAX_EDGE): Promise<Blob> {
   return file; // last resort: upload full-size
 }
 
+// Render a small, self-contained thumbnail (data URL) from a blob. Unlike an
+// object URL this survives a tab reload once persisted, and it lets us revoke
+// the full-size original so it stops occupying memory.
+async function thumbnailDataUrl(blob: Blob, maxEdge = 240): Promise<string> {
+  try {
+    const bmp = await createImageBitmap(blob);
+    const scale = Math.min(1, maxEdge / Math.max(bmp.width, bmp.height));
+    const w = Math.round(bmp.width * scale);
+    const h = Math.round(bmp.height * scale);
+    const canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    canvas.getContext("2d")!.drawImage(bmp, 0, 0, w, h);
+    bmp.close();
+    return canvas.toDataURL("image/jpeg", 0.7);
+  } catch {
+    return "";
+  }
+}
+
 // Full candidate shape returned by the extract route. Everything except
 // confidence/unreadable maps onto a master-CSV column.
 type Candidate = {
@@ -71,7 +96,8 @@ type Candidate = {
 };
 
 type Shot = {
-  url: string;
+  id: string;
+  url: string; // object URL while capturing, swapped to a data-URL thumbnail after downscale
   originalBytes: number;
   scaledBytes: number;
   status: "uploading" | "ok" | "error";
@@ -90,6 +116,51 @@ type CommitResult = {
 
 const STEPS = ["Capture", "Extract", "Review", "Add"] as const;
 
+// sessionStorage key. Bump the suffix if the persisted shape changes.
+const SESSION_KEY = "intake-session-v1";
+
+type PersistedState = {
+  shots: Shot[];
+  mode: "capture" | "review" | "done";
+  items: ReviewItem[];
+  result: CommitResult | null;
+};
+
+// Shots that are safe to restore: finished (in-flight uploads can't be resumed).
+// Object URLs are dead after a reload, so anything that isn't a self-contained
+// data-URL thumbnail is blanked — the books still survive, just without a photo.
+function persistableShots(shots: Shot[]): Shot[] {
+  return shots
+    .filter((s) => s.status !== "uploading")
+    .map((s) => (s.url.startsWith("data:") ? s : { ...s, url: "" }));
+}
+
+function loadSession(): PersistedState | null {
+  try {
+    const raw = sessionStorage.getItem(SESSION_KEY);
+    return raw ? (JSON.parse(raw) as PersistedState) : null;
+  } catch {
+    return null;
+  }
+}
+
+function saveSession(state: PersistedState) {
+  try {
+    sessionStorage.setItem(
+      SESSION_KEY,
+      JSON.stringify({ ...state, shots: persistableShots(state.shots) }),
+    );
+  } catch {
+    // Storage full / unavailable — persistence is best-effort.
+  }
+}
+
+function newId(): string {
+  return typeof crypto !== "undefined" && "randomUUID" in crypto
+    ? crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
 export default function CapturePage() {
   const [shots, setShots] = useState<Shot[]>([]);
   const [mode, setMode] = useState<"capture" | "review" | "done">("capture");
@@ -97,53 +168,76 @@ export default function CapturePage() {
   const [committing, setCommitting] = useState(false);
   const [result, setResult] = useState<CommitResult | null>(null);
 
+  // Rehydrate a prior session (e.g. after Android Chrome reloaded the tab when
+  // the camera launched) before we start persisting again.
+  const hydrated = useRef(false);
+  useEffect(() => {
+    const saved = loadSession();
+    if (saved) {
+      setShots(saved.shots ?? []);
+      setMode(saved.mode ?? "capture");
+      setItems(saved.items ?? []);
+      setResult(saved.result ?? null);
+    }
+    hydrated.current = true;
+  }, []);
+
+  // Mirror session state to storage on every change (best-effort).
+  useEffect(() => {
+    if (!hydrated.current) return;
+    saveSession({ shots, mode, items, result });
+  }, [shots, mode, items, result]);
+
   async function onPick(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files ?? []);
     e.target.value = ""; // allow re-picking the same file
     for (const file of files) {
-      if (!file.type.startsWith("image/")) continue;
+      // Android camera files sometimes report an empty MIME type; only reject
+      // things that clearly aren't images (the input already filters to image/*).
+      if (file.type && !file.type.startsWith("image/")) continue;
 
       // Show the card immediately so there is always visible feedback, even if
-      // downscaling or the request fails.
-      const url = URL.createObjectURL(file);
-      let index = 0;
-      setShots((prev) => {
-        index = prev.length;
-        return [
-          ...prev,
-          { url, originalBytes: file.size, scaledBytes: file.size, status: "uploading" },
-        ];
-      });
+      // downscaling or the request fails. Each shot has a stable id so async
+      // updates target the right card regardless of ordering.
+      const id = newId();
+      const objectUrl = URL.createObjectURL(file);
+      setShots((prev) => [
+        ...prev,
+        { id, url: objectUrl, originalBytes: file.size, scaledBytes: file.size, status: "uploading" },
+      ]);
+
+      const patch = (fields: Partial<Shot>) =>
+        setShots((prev) => prev.map((s) => (s.id === id ? { ...s, ...fields } : s)));
 
       try {
         const scaled = await downscale(file);
-        setShots((prev) =>
-          prev.map((s, i) => (i === index ? { ...s, scaledBytes: scaled.size } : s)),
-        );
+
+        // Swap the heavy full-size object URL for a light data-URL thumbnail and
+        // free the original — this both persists across reloads and cuts memory.
+        const thumb = await thumbnailDataUrl(scaled);
+        if (thumb) {
+          patch({ scaledBytes: scaled.size, url: thumb });
+          URL.revokeObjectURL(objectUrl);
+        } else {
+          patch({ scaledBytes: scaled.size });
+        }
 
         const body = new FormData();
         body.append("photo", scaled, "shot.jpg");
         const res = await fetch("/api/intake/extract", { method: "POST", body });
         const json = await res.json();
-        setShots((prev) =>
-          prev.map((s, i) =>
-            i === index
-              ? res.ok
-                ? { ...s, status: "ok", candidates: json.candidates ?? [] }
-                : {
-                    ...s,
-                    status: "error",
-                    error: json.error
-                      ? `${json.error}${json.missing ? `: ${json.missing.join(", ")}` : ""}`
-                      : `HTTP ${res.status}`,
-                  }
-              : s,
-          ),
-        );
+        if (res.ok) {
+          patch({ status: "ok", candidates: json.candidates ?? [] });
+        } else {
+          patch({
+            status: "error",
+            error: json.error
+              ? `${json.error}${json.missing ? `: ${json.missing.join(", ")}` : ""}`
+              : `HTTP ${res.status}`,
+          });
+        }
       } catch (err) {
-        setShots((prev) =>
-          prev.map((s, i) => (i === index ? { ...s, status: "error", error: String(err) } : s)),
-        );
+        patch({ status: "error", error: String(err) });
       }
     }
   }
@@ -213,6 +307,11 @@ export default function CapturePage() {
     setItems([]);
     setResult(null);
     setMode("capture");
+    try {
+      sessionStorage.removeItem(SESSION_KEY);
+    } catch {
+      // ignore
+    }
   }
 
   return (
@@ -398,14 +497,24 @@ function CaptureStage({
 
           <ul className="mt-4 grid gap-4 lg:grid-cols-2">
             {shots.map((s, i) => (
-              <li key={i} className="rounded-2xl border border-paper-edge bg-paper p-3 shadow-card">
+              <li key={s.id} className="rounded-2xl border border-paper-edge bg-paper p-3 shadow-card">
                 <div className="flex gap-4">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={s.url}
-                    alt={`Shelf photo ${i + 1}`}
-                    className="h-24 w-24 flex-none rounded-xl object-cover shadow-cover"
-                  />
+                  {s.url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={s.url}
+                      alt={`Shelf photo ${i + 1}`}
+                      className="h-24 w-24 flex-none rounded-xl object-cover shadow-cover"
+                    />
+                  ) : (
+                    // Thumbnail didn't survive (restored session) — show a placeholder.
+                    <span className="grid h-24 w-24 flex-none place-items-center rounded-xl bg-paper-sunken text-ink-faint shadow-cover">
+                      <svg viewBox="0 0 24 24" className="h-8 w-8" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" />
+                      </svg>
+                    </span>
+                  )}
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-2">
                       <StatusPill status={s.status} />
