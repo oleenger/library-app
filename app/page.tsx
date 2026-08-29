@@ -1,13 +1,15 @@
 import Link from "next/link";
 import { getWorks } from "@/lib/books";
-import { getStats } from "@/lib/insights";
+import { getStats, getReadingStats } from "@/lib/insights";
 import { formatYear } from "@/lib/display";
 import { LibraryView } from "@/components/library-view";
+import { ReadingStats } from "@/components/reading-stats";
 
 export default function HomePage() {
   const works = getWorks();
   const stats = getStats(works);
-  const readCount = works.filter((w) => w.reading).length;
+  const reading = getReadingStats(works);
+  const readCount = reading.read;
 
   const span =
     stats.earliestYear !== null && stats.latestYear !== null
@@ -63,7 +65,7 @@ export default function HomePage() {
       </header>
 
       <main className="enter-up mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
-        <LibraryView works={works} />
+        <LibraryView works={works} reading={<ReadingStats stats={reading} />} />
       </main>
     </div>
   );

@@ -16,6 +16,7 @@ import {
 
 interface Props {
   works: Work[];
+  reading?: React.ReactNode;
 }
 
 const AUTHOR_LIMIT = 10;
@@ -34,7 +35,7 @@ function shortPeriod(period: string | null): string {
   return SHORT_PERIOD[period] ?? period;
 }
 
-export function LibraryView({ works }: Props) {
+export function LibraryView({ works, reading }: Props) {
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
 
   const filtered = useMemo(() => applyFilters(works, filters), [works, filters]);
@@ -62,49 +63,43 @@ export function LibraryView({ works }: Props) {
 
   return (
     <div className="pt-8 sm:pt-12">
-      <div className="max-w-2xl">
-        <h1 className="font-serif text-4xl leading-none tracking-[-0.02em] sm:text-5xl">
-          Collection
-        </h1>
-        <p className="mt-3 text-[0.95rem] text-ink-soft">
-          Browse by period, movement, and author.
-        </p>
-      </div>
-
-      {/* Search */}
-      <div className="mt-7 flex items-center gap-2.5">
-        <label className="relative flex-1">
-          <span className="sr-only">Search by title or author</span>
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint"
-            aria-hidden="true"
-          >
-            <circle cx="11" cy="11" r="6" />
-            <path d="m16 16 4 4" />
-          </svg>
-          <input
-            type="search"
-            value={filters.query}
-            onChange={(e) =>
-              setFilters((f) => ({ ...f, query: e.target.value }))
-            }
-            placeholder="Search title or author"
-            className="h-12 w-full rounded-full border border-paper-edge bg-paper pl-11 pr-4 text-sm text-ink shadow-card transition-colors placeholder:text-ink-faint hover:border-ink-faint focus:border-accent focus:outline-none focus:ring-4 focus:ring-accent/12"
-          />
-        </label>
-        {active && (
-          <button
-            type="button"
-            onClick={() => setFilters(EMPTY_FILTERS)}
-            className="h-12 shrink-0 rounded-full border border-paper-edge bg-paper px-5 text-xs font-semibold text-ink-soft transition-colors hover:border-ink-faint hover:text-ink"
-          >
-            Clear
-          </button>
-        )}
+      {/* Search + reading summary */}
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-1 items-center gap-2.5">
+          <label className="relative flex-1">
+            <span className="sr-only">Search by title or author</span>
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint"
+              aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="6" />
+              <path d="m16 16 4 4" />
+            </svg>
+            <input
+              type="search"
+              value={filters.query}
+              onChange={(e) =>
+                setFilters((f) => ({ ...f, query: e.target.value }))
+              }
+              placeholder="Search title or author"
+              className="h-12 w-full rounded-full border border-paper-edge bg-paper pl-11 pr-4 text-sm text-ink shadow-card transition-colors placeholder:text-ink-faint hover:border-ink-faint focus:border-accent focus:outline-none focus:ring-4 focus:ring-accent/12"
+            />
+          </label>
+          {active && (
+            <button
+              type="button"
+              onClick={() => setFilters(EMPTY_FILTERS)}
+              className="h-12 shrink-0 rounded-full border border-paper-edge bg-paper px-5 text-xs font-semibold text-ink-soft transition-colors hover:border-ink-faint hover:text-ink"
+            >
+              Clear
+            </button>
+          )}
+        </div>
+        {reading}
       </div>
 
       {/* Read status segmented control */}
