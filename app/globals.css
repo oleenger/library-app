@@ -12,12 +12,12 @@
   }
 
   html {
-    @apply bg-paper;
+    @apply bg-canvas;
     scroll-behavior: smooth;
   }
 
   body {
-    @apply bg-paper text-ink font-sans antialiased;
+    @apply bg-canvas text-ink font-sans antialiased;
     min-height: 100vh;
   }
 

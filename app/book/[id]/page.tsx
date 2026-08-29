@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getEdition, getWork, getWorks } from "@/lib/books";
-import { formatYear, periodDot } from "@/lib/display";
+import { formatYear, periodColor } from "@/lib/display";
 
 export function generateStaticParams() {
   return getWorks().map((w) => ({ id: w.id }));
@@ -47,37 +47,38 @@ export default async function BookDetailPage({
 
   return (
     <main className="mx-auto max-w-5xl px-4 pb-16 sm:px-6 lg:px-8">
-      <nav className="flex h-16 items-center justify-between border-b border-paper-edge sm:h-20">
-        <Link href="/" className="group flex items-center gap-3 text-sm">
-          <span className="grid h-9 w-9 place-items-center rounded-xl border border-paper-edge bg-paper-raised shadow-sm transition-colors group-hover:border-ink-faint">
+      <nav className="flex h-14 items-center justify-between border-b border-paper-edge sm:h-16">
+        <Link href="/" className="group flex items-center gap-2.5 text-sm">
+          <span className="grid h-8 w-8 place-items-center rounded-lg border border-paper-edge bg-white shadow-sm transition-colors group-hover:border-ink-faint">
             ←
           </span>
           <span className="font-semibold">The Library</span>
         </Link>
-        <span className="text-xs text-ink-faint">
-          Work record
-        </span>
+        <span className="text-xs text-ink-faint">Work record</span>
       </nav>
 
-      <header className="enter-up grid gap-8 border-b border-paper-edge py-10 sm:grid-cols-[minmax(0,1fr)_12rem] sm:items-end sm:py-14">
-        <div>
-          <div className="flex items-center gap-2 text-xs font-medium text-ink-soft">
-            <span className={`h-2 w-2 rounded-full ${periodDot(c.period)}`} aria-hidden />
-            {c.period ?? "Unclassified"}
-          </div>
-          <h1 className="mt-4 max-w-3xl font-serif text-4xl leading-tight tracking-[-0.035em] sm:text-5xl lg:text-6xl">
-            {work.title}
-          </h1>
-          <p className="mt-4 text-base text-ink-soft">by {work.author}</p>
-        </div>
-        <div className="border-l border-paper-edge pl-5">
-          <p className="text-xs text-ink-faint">
-            First published
-          </p>
-          <p className="mt-2 font-serif text-4xl tabular-nums">
+      <header className="enter-up border-b border-paper-edge py-10 sm:py-14">
+        <span
+          className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium"
+          style={{ backgroundColor: `${periodColor(c.period)}1f`, color: periodColor(c.period) }}
+        >
+          <span
+            className="h-1.5 w-1.5 rounded-full"
+            style={{ backgroundColor: periodColor(c.period) }}
+            aria-hidden
+          />
+          {c.period ?? "Unclassified"}
+        </span>
+        <h1 className="mt-5 max-w-3xl font-serif text-4xl leading-tight tracking-[-0.035em] sm:text-5xl">
+          {work.title}
+        </h1>
+        <p className="mt-4 text-base text-ink-soft">by {work.author}</p>
+        <p className="mt-6 inline-flex items-baseline gap-2">
+          <span className="text-xs text-ink-faint">First published</span>
+          <span className="font-serif text-2xl tabular-nums">
             {formatYear(work.originalYear)}
-          </p>
-        </div>
+          </span>
+        </p>
       </header>
 
       <section className="enter-up-late grid gap-8 py-10 md:grid-cols-[12rem_minmax(0,1fr)] md:gap-12 sm:py-12">
@@ -89,7 +90,7 @@ export default async function BookDetailPage({
             Bibliographic and collection details.
           </p>
         </div>
-        <dl className="border-t border-paper-edge">
+        <dl className="rounded-2xl border border-paper-edge bg-white px-5 shadow-card sm:px-6">
         <Field label="Year first published" value={formatYear(work.originalYear)} />
         <Field label="Original language" value={work.language ?? "—"} />
         <Field label="Period" value={c.period ?? "—"} />
