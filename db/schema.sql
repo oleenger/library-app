@@ -32,3 +32,15 @@ CREATE TABLE work_editions (
   edition_id TEXT NOT NULL REFERENCES editions (id),
   PRIMARY KEY (work_id, edition_id)
 );
+
+-- Reading history, keyed by work (editions are deliberately ignored: "I have read
+-- this title" is the unit of interest). Rebuilt from data/read_status.csv on every
+-- import so read flags survive a catalogue rebuild, mirroring the CSV-as-source-of-
+-- truth rule used for works/editions. `source` records how the row was matched to a
+-- library work ("exact" for the deterministic pass, "llm" for the model fallback).
+CREATE TABLE read_status (
+  work_id   TEXT PRIMARY KEY REFERENCES works (id),
+  date_read TEXT,       -- ISO yyyy-mm-dd, or NULL when the export had no date
+  rating    INTEGER,    -- 1..5, or NULL when unrated (Goodreads 0)
+  source    TEXT
+);

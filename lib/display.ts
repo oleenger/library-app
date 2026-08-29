@@ -27,3 +27,18 @@ export function formatYear(year: number | null): string {
   if (year === null) return "—";
   return year < 0 ? `${Math.abs(year)} BCE` : `${year}`;
 }
+
+const MONTHS = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
+
+/** ISO yyyy-mm-dd → "15 Mar 2024". Falls back gracefully on partial dates. */
+export function formatReadDate(iso: string | null): string {
+  if (!iso) return "Undated";
+  const [y, m, d] = iso.split("-");
+  const month = m ? MONTHS[Number(m) - 1] : undefined;
+  if (y && month && d) return `${Number(d)} ${month} ${y}`;
+  if (y && month) return `${month} ${y}`;
+  return y ?? iso;
+}

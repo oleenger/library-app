@@ -22,6 +22,18 @@ export interface Work {
   /** The owned edition(s) of this work. A work may be owned in several editions. */
   editionIds: string[];
   classification: Classification;
+  /** Reading history for this work, or null if it has not been marked read. */
+  reading: WorkReading | null;
+}
+
+/** A work's read status, sourced from data/read_status.csv via the import. */
+export interface WorkReading {
+  /** ISO yyyy-mm-dd, or null when the export carried no date. */
+  dateRead: string | null;
+  /** 1..5, or null when unrated. */
+  rating: number | null;
+  /** How the work was matched to the export: "exact" or "llm". */
+  source: string | null;
 }
 
 /**

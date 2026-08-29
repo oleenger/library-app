@@ -25,3 +25,20 @@ export function getIntakeEnv():
   if (missing.length > 0) return { ok: false, missing };
   return { ok: true, env: { apiKey, model } };
 }
+
+// Reading-import matching is a text-only, cross-language title-identity task —
+// Sonnet handles it well at ~1/5 the cost of the Opus used for vision intake, so
+// it gets its own model knob. Falls back to INTAKE_MODEL, then a Sonnet default,
+// so the feature works with zero extra configuration.
+//   READING_MATCH_MODEL=claude-sonnet-4-5   # optional override
+export function getReadingMatchEnv():
+  | { ok: true; env: IntakeEnv }
+  | { ok: false; missing: string[] } {
+  const apiKey = process.env.ANTHROPIC_API_KEY?.trim() ?? "";
+  if (!apiKey) return { ok: false, missing: ["ANTHROPIC_API_KEY"] };
+  const model =
+    process.env.READING_MATCH_MODEL?.trim() ||
+    process.env.INTAKE_MODEL?.trim() ||
+    "claude-sonnet-4-5";
+  return { ok: true, env: { apiKey, model } };
+}

@@ -1,12 +1,15 @@
 import Link from "next/link";
 import { getWorks } from "@/lib/books";
-import { getStats } from "@/lib/insights";
+import { getStats, getReadingStats } from "@/lib/insights";
 import { formatYear } from "@/lib/display";
 import { LibraryView } from "@/components/library-view";
+import { ReadingStats } from "@/components/reading-stats";
 
 export default function HomePage() {
   const works = getWorks();
   const stats = getStats(works);
+  const reading = getReadingStats(works);
+  const readCount = reading.read;
 
   const span =
     stats.earliestYear !== null && stats.latestYear !== null
@@ -28,9 +31,16 @@ export default function HomePage() {
           <div className="flex items-center gap-4">
             <dl className="flex items-center divide-x divide-paper-edge">
               <HeaderStat label="Books" value={stats.works} />
-              <HeaderStat label="Authors" value={stats.authors} />
+              <HeaderStat label="Read" value={readCount} />
+              <HeaderStat label="Authors" value={stats.authors} className="hidden sm:block" />
               <HeaderStat label="Span" value={span} className="hidden sm:block" />
             </dl>
+            <Link
+              href="/reading"
+              className="hidden items-center gap-2 rounded-xl border border-paper-edge bg-paper px-3.5 py-2 text-[0.8rem] font-semibold text-ink-soft shadow-sm transition hover:border-ink-faint hover:text-ink sm:inline-flex"
+            >
+              Import reads
+            </Link>
             <Link
               href="/capture"
               className="inline-flex items-center gap-2 rounded-xl bg-accent px-3.5 py-2 text-[0.8rem] font-semibold text-white shadow-sm transition hover:bg-ink focus-visible:ring-2 focus-visible:ring-accent"
@@ -55,7 +65,7 @@ export default function HomePage() {
       </header>
 
       <main className="enter-up mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
-        <LibraryView works={works} />
+        <LibraryView works={works} reading={<ReadingStats stats={reading} />} />
       </main>
     </div>
   );
