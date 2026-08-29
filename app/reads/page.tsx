@@ -21,12 +21,20 @@ export default async function ReadsPage() {
           </span>
           <span className="font-semibold">The Library</span>
         </Link>
-        <Link
-          href="/reading"
-          className="hidden items-center gap-2 rounded-xl border border-paper-edge bg-paper px-3.5 py-2 text-[0.8rem] font-semibold text-ink-soft shadow-sm transition hover:border-ink-faint hover:text-ink sm:inline-flex"
-        >
-          Import reads
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/reads/manage"
+            className="inline-flex items-center gap-2 rounded-xl border border-paper-edge bg-paper px-3.5 py-2 text-[0.8rem] font-semibold text-ink-soft shadow-sm transition hover:border-ink-faint hover:text-ink"
+          >
+            Edit read status
+          </Link>
+          <Link
+            href="/reading"
+            className="hidden items-center gap-2 rounded-xl border border-paper-edge bg-paper px-3.5 py-2 text-[0.8rem] font-semibold text-ink-soft shadow-sm transition hover:border-ink-faint hover:text-ink sm:inline-flex"
+          >
+            Import reads
+          </Link>
+        </div>
       </nav>
 
       <main className="enter-up mx-auto max-w-7xl px-4 pb-24 pt-8 sm:px-6 lg:px-8">

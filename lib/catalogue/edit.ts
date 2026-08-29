@@ -103,3 +103,51 @@ export async function setReadStatus(
   );
   if (error) throw new Error(`read status write failed: ${error.message}`);
 }
+
+/**
+ * Bulk mark works read/unread by hand. Marking read inserts a manual row only
+ * where none exists (ignoreDuplicates), so a book already read via Goodreads
+ * keeps its recorded date/rating; newly marked rows are source='manual' and are
+ * protected from the reconcile pass. Marking unread removes the rows outright.
+ * Returns the number of rows written or deleted.
+ */
+export async function bulkSetReadStatus(
+  workIds: string[],
+  read: boolean,
+): Promise<number> {
+  const ids = [...new Set(workIds)].filter(Boolean);
+  if (ids.length === 0) return 0;
+  const db = admin();
+
+  if (!read) {
+    const { error, count } = await db
+      .from("read_status")
+      .delete({ count: "exact" })
+      .in("work_id", ids);
+    if (error) throw new Error(`bulk read clear failed: ${error.message}`);
+    return count ?? 0;
+  }
+
+  // Need title/author for the manual rows; pull them from the catalogue.
+  const { data: works, error: wErr } = await db
+    .from("works")
+    .select("id, title, author")
+    .in("id", ids);
+  if (wErr) throw new Error(`bulk read lookup failed: ${wErr.message}`);
+
+  const rows = (works ?? []).map((w) => ({
+    work_id: w.id,
+    title: w.title,
+    author: w.author,
+    date_read: null,
+    rating: null,
+    source: "manual",
+  }));
+  if (rows.length === 0) return 0;
+
+  const { error } = await db
+    .from("read_status")
+    .upsert(rows, { onConflict: "work_id", ignoreDuplicates: true });
+  if (error) throw new Error(`bulk read write failed: ${error.message}`);
+  return rows.length;
+}
