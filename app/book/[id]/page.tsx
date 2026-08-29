@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getEdition, getWork } from "@/lib/books";
 import { formatYear, periodColor } from "@/lib/display";
+import { slugify } from "@/lib/slug";
 
 // Rendered on demand: the catalogue is live in Supabase, so a newly added book
 // is reachable immediately without a rebuild.
@@ -38,8 +39,34 @@ export default async function BookDetailPage({
   if (!work) notFound();
 
   const { classification: c } = work;
-  const secondary =
-    c.secondaryMovements.length > 0 ? c.secondaryMovements.join(", ") : "—";
+
+  const facetLinkClass =
+    "text-ink decoration-accent/40 underline-offset-4 hover:underline";
+  const periodValue = c.period ? (
+    <Link href={`/period/${slugify(c.period)}`} className={facetLinkClass}>
+      {c.period}
+    </Link>
+  ) : (
+    "—"
+  );
+  const primaryValue = c.primaryMovement ? (
+    <Link href={`/movement/${slugify(c.primaryMovement)}`} className={facetLinkClass}>
+      {c.primaryMovement}
+    </Link>
+  ) : (
+    "—"
+  );
+  const secondaryValue =
+    c.secondaryMovements.length > 0
+      ? c.secondaryMovements.map((m, i) => (
+          <span key={m}>
+            {i > 0 && ", "}
+            <Link href={`/movement/${slugify(m)}`} className={facetLinkClass}>
+              {m}
+            </Link>
+          </span>
+        ))
+      : "—";
 
   const editions = (
     await Promise.all(work.editionIds.map((eid) => getEdition(eid)))
@@ -71,21 +98,44 @@ export default async function BookDetailPage({
       </div>
 
       <header className="enter-up border-b border-paper-edge py-10 sm:py-14">
-        <span
-          className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium"
-          style={{ backgroundColor: `${periodColor(c.period)}1f`, color: periodColor(c.period) }}
-        >
+        {c.period ? (
+          <Link
+            href={`/period/${slugify(c.period)}`}
+            className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium transition-opacity hover:opacity-80"
+            style={{ backgroundColor: `${periodColor(c.period)}1f`, color: periodColor(c.period) }}
+          >
+            <span
+              className="h-1.5 w-1.5 rounded-full"
+              style={{ backgroundColor: periodColor(c.period) }}
+              aria-hidden
+            />
+            {c.period}
+          </Link>
+        ) : (
           <span
-            className="h-1.5 w-1.5 rounded-full"
-            style={{ backgroundColor: periodColor(c.period) }}
-            aria-hidden
-          />
-          {c.period ?? "Unclassified"}
-        </span>
+            className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium"
+            style={{ backgroundColor: `${periodColor(null)}1f`, color: periodColor(null) }}
+          >
+            <span
+              className="h-1.5 w-1.5 rounded-full"
+              style={{ backgroundColor: periodColor(null) }}
+              aria-hidden
+            />
+            Unclassified
+          </span>
+        )}
         <h1 className="mt-5 max-w-3xl font-serif text-4xl leading-tight tracking-[-0.035em] sm:text-5xl">
           {work.title}
         </h1>
-        <p className="mt-4 text-base text-ink-soft">by {work.author}</p>
+        <p className="mt-4 text-base text-ink-soft">
+          by{" "}
+          <Link
+            href={`/author/${slugify(work.author)}`}
+            className="font-medium text-ink decoration-accent/40 underline-offset-4 hover:underline"
+          >
+            {work.author}
+          </Link>
+        </p>
         {work.reading && (
           <p className="mt-5 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
             <svg viewBox="0 0 20 20" fill="currentColor" className="h-3.5 w-3.5" aria-hidden>
@@ -120,9 +170,9 @@ export default async function BookDetailPage({
         <dl className="rounded-2xl border border-paper-edge bg-white px-5 shadow-card sm:px-6">
         <Field label="Year first published" value={formatYear(work.originalYear)} />
         <Field label="Original language" value={work.language ?? "—"} />
-        <Field label="Period" value={c.period ?? "—"} />
-        <Field label="Primary movement" value={c.primaryMovement ?? "—"} />
-        <Field label="Secondary movements" value={secondary} />
+        <Field label="Period" value={periodValue} />
+        <Field label="Primary movement" value={primaryValue} />
+        <Field label="Secondary movements" value={secondaryValue} />
         {work.notes && <Field label="Notes" value={work.notes} />}
         </dl>
       </section>

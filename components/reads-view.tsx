@@ -5,6 +5,7 @@
 import Link from "next/link";
 import type { ReadsPageData } from "@/lib/insights";
 import { formatReadDate, periodColor } from "@/lib/display";
+import { slugify } from "@/lib/slug";
 
 const SHORT_PERIOD: Record<string, string> = {
   "Classical / Antiquity": "Classical",
@@ -71,9 +72,12 @@ export function ReadsView({ data }: { data: ReadsPageData }) {
               const color = periodColor(p.period);
               return (
                 <li key={p.period} className="flex items-center gap-3">
-                  <span className="w-24 shrink-0 truncate text-xs text-ink-soft">
+                  <Link
+                    href={`/period/${slugify(p.period)}`}
+                    className="w-24 shrink-0 truncate text-xs text-ink-soft transition-colors hover:text-accent"
+                  >
                     {SHORT_PERIOD[p.period] ?? p.period}
-                  </span>
+                  </Link>
                   <span className="relative h-2.5 flex-1 overflow-hidden rounded-full bg-paper-sunken">
                     <span
                       className="absolute inset-y-0 left-0 rounded-full"
@@ -95,9 +99,13 @@ export function ReadsView({ data }: { data: ReadsPageData }) {
             <ul className="space-y-2.5">
               {data.byMovement.slice(0, 12).map((m) => (
                 <li key={m.movement} className="flex items-center gap-3">
-                  <span className="w-28 shrink-0 truncate text-xs text-ink-soft" title={m.movement}>
+                  <Link
+                    href={`/movement/${slugify(m.movement)}`}
+                    className="w-28 shrink-0 truncate text-xs text-ink-soft transition-colors hover:text-accent"
+                    title={m.movement}
+                  >
                     {m.movement}
-                  </span>
+                  </Link>
                   <span className="relative h-2.5 flex-1 overflow-hidden rounded-full bg-paper-sunken">
                     <span
                       className="absolute inset-y-0 left-0 rounded-full bg-ink/70"
