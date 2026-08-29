@@ -102,37 +102,19 @@ export function LibraryView({ works, reading }: Props) {
         {reading}
       </div>
 
-      {/* Period chips with the read-status toggle aligned to their right */}
+      {/* Period chips with the read-status toggle aligned to their right.
+          On phones the toggle lives in the list header instead, to save a row. */}
       <div className="mt-6 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <Timeline
           options={periodOpts}
           selected={filters.period}
           onToggle={(v) => toggle("period", v)}
         />
-        <div className="inline-flex shrink-0 self-start rounded-full border border-paper-edge bg-paper p-1 shadow-card lg:self-auto">
-          {(
-            [
-              ["", "All"],
-              ["read", "Read"],
-              ["unread", "Unread"],
-            ] as const
-          ).map(([value, label]) => {
-            const isSel = filters.readStatus === value;
-            return (
-              <button
-                key={value || "all"}
-                type="button"
-                onClick={() => setFilters((f) => ({ ...f, readStatus: value }))}
-                aria-pressed={isSel}
-                className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${
-                  isSel ? "bg-ink text-canvas shadow-sm" : "text-ink-soft hover:text-ink"
-                }`}
-              >
-                {label}
-              </button>
-            );
-          })}
-        </div>
+        <ReadFilter
+          value={filters.readStatus}
+          onChange={(v) => setFilters((f) => ({ ...f, readStatus: v }))}
+          className="hidden shrink-0 self-start shadow-card sm:inline-flex lg:self-auto"
+        />
       </div>
 
       <div className="grid gap-8 pt-8 lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-10">
@@ -166,7 +148,12 @@ export function LibraryView({ works, reading }: Props) {
                 {filtered.length === 1 ? "book" : "books"}
                 {active ? " found" : ""}
               </p>
-              <span className="text-[0.7rem] font-medium uppercase tracking-[0.12em] text-ink-faint">
+              <ReadFilter
+                value={filters.readStatus}
+                onChange={(v) => setFilters((f) => ({ ...f, readStatus: v }))}
+                className="sm:hidden"
+              />
+              <span className="hidden text-[0.7rem] font-medium uppercase tracking-[0.12em] text-ink-faint sm:inline">
                 Title A–Z
               </span>
             </div>
@@ -188,6 +175,46 @@ export function LibraryView({ works, reading }: Props) {
           </div>
         </section>
       </div>
+    </div>
+  );
+}
+
+/** Segmented All / Read / Unread control. */
+function ReadFilter({
+  value,
+  onChange,
+  className = "",
+}: {
+  value: Filters["readStatus"];
+  onChange: (value: Filters["readStatus"]) => void;
+  className?: string;
+}) {
+  return (
+    <div
+      className={`inline-flex shrink-0 rounded-full border border-paper-edge bg-paper p-0.5 ${className}`}
+    >
+      {(
+        [
+          ["", "All"],
+          ["read", "Read"],
+          ["unread", "Unread"],
+        ] as const
+      ).map(([v, label]) => {
+        const isSel = value === v;
+        return (
+          <button
+            key={v || "all"}
+            type="button"
+            onClick={() => onChange(v)}
+            aria-pressed={isSel}
+            className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
+              isSel ? "bg-ink text-canvas shadow-sm" : "text-ink-soft hover:text-ink"
+            }`}
+          >
+            {label}
+          </button>
+        );
+      })}
     </div>
   );
 }
