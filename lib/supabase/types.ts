@@ -9,6 +9,7 @@ export type WorksRow = {
   id: string;
   title: string;
   author: string;
+  author_sort: string | null;
   first_published: number | null;
   original_language: string | null;
   period: string | null;
@@ -47,12 +48,21 @@ export type RecommendationsRow = {
   items: unknown;
 }
 
+export type GoodreadsReadsRow = {
+  title: string;
+  author: string;
+  year: number | null;
+  date_read: string | null;
+  rating: number | null;
+  imported_at: string;
+}
+
 export interface Database {
   public: {
     Tables: {
       works: {
         Row: WorksRow;
-        Insert: WorksRow;
+        Insert: Omit<WorksRow, "author_sort"> & { author_sort?: string | null };
         Update: Partial<WorksRow>;
         Relationships: [];
       };
@@ -78,6 +88,12 @@ export interface Database {
         Row: RecommendationsRow;
         Insert: RecommendationsRow;
         Update: Partial<RecommendationsRow>;
+        Relationships: [];
+      };
+      goodreads_reads: {
+        Row: GoodreadsReadsRow;
+        Insert: Omit<GoodreadsReadsRow, "imported_at"> & { imported_at?: string };
+        Update: Partial<GoodreadsReadsRow>;
         Relationships: [];
       };
     };

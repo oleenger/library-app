@@ -9,6 +9,7 @@ CREATE TABLE works (
   id                  TEXT PRIMARY KEY,
   title               TEXT NOT NULL,
   author              TEXT NOT NULL,
+  author_sort         TEXT,          -- 'Last, First' sort key; nullable, editable
   first_published     INTEGER,
   original_language   TEXT,
   period              TEXT,
@@ -42,5 +43,17 @@ CREATE TABLE read_status (
   work_id   TEXT PRIMARY KEY REFERENCES works (id),
   date_read TEXT,       -- ISO yyyy-mm-dd, or NULL when the export had no date
   rating    INTEGER,    -- 1..5, or NULL when unrated (Goodreads 0)
-  source    TEXT
+  source    TEXT        -- 'exact' | 'llm' | 'manual'
+);
+
+-- The persisted Goodreads "read" shelf, kept so books added to the library after
+-- an export was uploaded can be reconciled without re-uploading the CSV.
+CREATE TABLE goodreads_reads (
+  title       TEXT NOT NULL,
+  author      TEXT NOT NULL,
+  year        INTEGER,
+  date_read   TEXT,
+  rating      INTEGER,
+  imported_at TEXT,
+  PRIMARY KEY (title, author)
 );
