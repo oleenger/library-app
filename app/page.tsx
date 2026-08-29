@@ -74,6 +74,20 @@ export default async function HomePage() {
       </header>
 
       <main className="enter-up mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
+        <nav className="flex gap-2 pt-6 sm:hidden">
+          <Link
+            href="/reads"
+            className="flex-1 rounded-xl border border-paper-edge bg-paper px-3 py-2.5 text-center text-[0.8rem] font-semibold text-ink-soft shadow-sm transition hover:border-ink-faint hover:text-ink"
+          >
+            My Read Books
+          </Link>
+          <Link
+            href="/recommendations"
+            className="flex-1 rounded-xl border border-paper-edge bg-paper px-3 py-2.5 text-center text-[0.8rem] font-semibold text-ink-soft shadow-sm transition hover:border-ink-faint hover:text-ink"
+          >
+            My Recommendations
+          </Link>
+        </nav>
         <LibraryView works={works} reading={<ReadingStats stats={reading} />} />
       </main>
     </div>
