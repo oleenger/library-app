@@ -65,7 +65,7 @@ export function LibraryView({ works, reading }: Props) {
     <div className="pt-8 sm:pt-12">
       {/* Search + reading summary */}
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex flex-1 items-center gap-2.5">
+        <div className="sticky top-16 z-20 -mx-4 flex flex-1 items-center gap-2.5 bg-canvas/95 px-4 py-3 backdrop-blur-md sm:static sm:mx-0 sm:bg-transparent sm:px-0 sm:py-0 sm:backdrop-blur-none">
           <label className="relative flex-1">
             <span className="sr-only">Search by title or author</span>
             <svg
@@ -300,7 +300,7 @@ function BookRow({ work }: { work: Work }) {
     <li>
       <Link
         href={`/book/${work.id}`}
-        className="group flex items-center gap-4 px-5 py-4 transition-colors hover:bg-paper-sunken/60 sm:px-6"
+        className="group flex items-center gap-4 px-5 py-4 transition-colors hover:bg-paper-sunken/60 active:bg-paper-sunken sm:px-6"
       >
         <span
           className="h-10 w-1 shrink-0 rounded-full"
@@ -312,13 +312,24 @@ function BookRow({ work }: { work: Work }) {
             {work.title}
           </h3>
           <p className="mt-0.5 truncate text-sm text-ink-soft">{work.author}</p>
-          {/* period shown inline on phones, where the tag column is hidden */}
-          <span
-            className="mt-1.5 inline-flex items-center gap-1.5 text-xs font-medium sm:hidden"
-            style={{ color }}
-          >
-            <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: color }} aria-hidden />
-            {shortPeriod(c.period)}
+          {/* period + read status shown inline on phones, where the tag columns are hidden */}
+          <span className="mt-1.5 flex items-center gap-2 text-xs font-medium sm:hidden">
+            <span className="inline-flex items-center gap-1.5" style={{ color }}>
+              <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: color }} aria-hidden />
+              {shortPeriod(c.period)}
+            </span>
+            {work.reading && (
+              <span className="inline-flex items-center gap-1 text-emerald-700">
+                <svg viewBox="0 0 20 20" fill="currentColor" className="h-3.5 w-3.5" aria-hidden>
+                  <path
+                    fillRule="evenodd"
+                    d="M16.7 5.3a1 1 0 0 1 0 1.4l-7 7a1 1 0 0 1-1.4 0l-3.5-3.5a1 1 0 1 1 1.4-1.4l2.8 2.8 6.3-6.3a1 1 0 0 1 1.4 0Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                Read
+              </span>
+            )}
           </span>
         </div>
         {work.reading && (

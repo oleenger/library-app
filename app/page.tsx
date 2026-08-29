@@ -51,7 +51,7 @@ export default async function HomePage() {
             </Link>
             <Link
               href="/capture"
-              className="inline-flex items-center gap-2 rounded-xl bg-accent px-3.5 py-2 text-[0.8rem] font-semibold text-white shadow-sm transition hover:bg-ink focus-visible:ring-2 focus-visible:ring-accent"
+              className="hidden items-center gap-2 rounded-xl bg-accent px-3.5 py-2 text-[0.8rem] font-semibold text-white shadow-sm transition hover:bg-ink focus-visible:ring-2 focus-visible:ring-accent sm:inline-flex"
             >
               <svg
                 viewBox="0 0 24 24"

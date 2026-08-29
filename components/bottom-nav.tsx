@@ -74,7 +74,7 @@ export function BottomNav() {
 
       <nav
         aria-label="Primary"
-        className="fixed inset-x-0 bottom-0 z-50 border-t border-paper-edge bg-canvas/90 backdrop-blur-md sm:hidden"
+        className="fixed inset-x-0 bottom-0 z-50 border-t border-paper-edge bg-canvas/90 shadow-[0_-1px_16px_rgba(20,24,20,0.05)] backdrop-blur-md sm:hidden"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         <ul className="mx-auto flex max-w-md items-stretch justify-around">
@@ -85,11 +85,17 @@ export function BottomNav() {
                 <Link
                   href={d.href}
                   aria-current={active ? "page" : undefined}
-                  className={`flex flex-col items-center gap-1 py-2.5 text-[0.65rem] font-semibold tracking-wide transition-colors ${
+                  className={`flex flex-col items-center gap-1 pb-1.5 pt-2 text-[0.65rem] font-semibold tracking-wide transition-colors ${
                     active ? "text-accent" : "text-ink-faint hover:text-ink-soft"
                   }`}
                 >
-                  {d.icon}
+                  <span
+                    className={`grid h-8 w-16 place-items-center rounded-full transition-colors ${
+                      active ? "bg-accent/12" : "bg-transparent"
+                    }`}
+                  >
+                    {d.icon}
+                  </span>
                   {d.label}
                 </Link>
               </li>
