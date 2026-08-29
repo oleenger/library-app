@@ -36,6 +36,12 @@ export default function HomePage() {
               <HeaderStat label="Span" value={span} className="hidden sm:block" />
             </dl>
             <Link
+              href="/recommendations"
+              className="hidden items-center gap-2 rounded-xl border border-paper-edge bg-paper px-3.5 py-2 text-[0.8rem] font-semibold text-ink-soft shadow-sm transition hover:border-ink-faint hover:text-ink sm:inline-flex"
+            >
+              Recommendations
+            </Link>
+            <Link
               href="/reading"
               className="hidden items-center gap-2 rounded-xl border border-paper-edge bg-paper px-3.5 py-2 text-[0.8rem] font-semibold text-ink-soft shadow-sm transition hover:border-ink-faint hover:text-ink sm:inline-flex"
             >

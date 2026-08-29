@@ -29,3 +29,6 @@ next-env.d.ts
 
 # local SQLite catalogue (regenerated from data/books.csv via `npm run import`)
 /data/*.db
+
+# derived LLM recommendation cache (regenerated on demand from reading history)
+/data/recommendations.json
