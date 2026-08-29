@@ -89,6 +89,126 @@ Keeping this as a skill (rather than an inline prompt) means it can be versioned
 - Confidence threshold for auto-suggesting a match vs. forcing manual confirmation.
 - Cost/latency envelope per photo and per batch.
 
-## 9. Summary
+## 9. Implementation suggestions
+
+The model reading is verified, so this section covers the plumbing. Stack is Next.js 15 (App Router), React 19, TypeScript — suggestions align with that.
+
+### 9.1 Capture (client)
+
+Rear camera on Android Chrome / iOS Safari with one attribute — no camera SDK:
+
+```tsx
+<input type="file" accept="image/*" capture="environment"
+       multiple onChange={onPick} />
+```
+
+Downscale before upload to control token cost and latency. Longest edge ~1600px keeps spine text legible while cutting a 10 MB photo to a few hundred KB:
+
+```ts
+async function downscale(file: File, maxEdge = 1600): Promise<Blob> {
+  const bmp = await createImageBitmap(file);
+  const scale = Math.min(1, maxEdge / Math.max(bmp.width, bmp.height));
+  const canvas = new OffscreenCanvas(bmp.width * scale, bmp.height * scale);
+  canvas.getContext("2d")!.drawImage(bmp, 0, 0, canvas.width, canvas.height);
+  return canvas.convertToBlob({ type: "image/jpeg", quality: 0.85 });
+}
+```
+
+### 9.2 Upload + extract (server)
+
+A route handler keeps the API key server-side. Send the image to a vision-capable Claude model with the extraction skill and a **tool schema** so the response is structured, not free-form:
+
+```ts
+// app/api/intake/extract/route.ts
+import Anthropic from "@anthropic-ai/sdk";
+
+export async function POST(req: Request) {
+  const form = await req.formData();
+  const file = form.get("photo") as File;
+  const b64 = Buffer.from(await file.arrayBuffer()).toString("base64");
+
+  const client = new Anthropic(); // ANTHROPIC_API_KEY from env
+  const msg = await client.messages.create({
+    model: process.env.CLASSIFIER_MODEL!,        // hold model id in config
+    max_tokens: 2048,
+    tools: [EXTRACT_BOOKS_TOOL],                  // strict schema, see 9.3
+    tool_choice: { type: "tool", name: "extract_books" },
+    messages: [{
+      role: "user",
+      content: [
+        { type: "image", source: { type: "base64", media_type: "image/jpeg", data: b64 } },
+        { type: "text", text: EXTRACTION_SKILL }, // the versioned skill (§5)
+      ],
+    }],
+  });
+
+  const candidates = extractToolResult(msg); // validate with Zod before returning
+  return Response.json({ candidates });
+}
+```
+
+New deps: `@anthropic-ai/sdk` and `zod`. Set `export const runtime = "nodejs"` and cap upload size on the route.
+
+### 9.3 Extraction contract (the skill's output)
+
+One tool, one row per book, confidence per book:
+
+```ts
+const EXTRACT_BOOKS_TOOL = {
+  name: "extract_books",
+  description: "Return one entry per distinguishable book visible in the image.",
+  input_schema: {
+    type: "object",
+    properties: {
+      books: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            title:      { type: "string" },
+            author:     { type: "string" },
+            year:       { type: "integer" },      // best guess, optional
+            isbn:       { type: "string" },       // only if legible
+            confidence: { type: "number" },       // 0..1
+            unreadable: { type: "boolean" },      // partially obscured spine
+          },
+          required: ["title", "author", "confidence"],
+        },
+      },
+    },
+    required: ["books"],
+  },
+} as const;
+```
+
+Mirror this with a Zod schema and parse the tool result before it leaves the server — same discipline as §6.3. Reject/flag anything that fails rather than persisting it.
+
+### 9.4 From candidates to library
+
+1. **Resolve metadata** — for each confirmed candidate, look up Google Books → Open Library (§5.2) to fill ISBN, cover, publisher.
+2. **Review UI** — a candidate list per photo: thumbnail, title, author, confidence badge; confirm / edit / discard. Sort lowest-confidence first. Reuse the review patterns from §6.5.
+3. **Match & insert** — feed confirmed rows through the existing CSV insert/taxonomy path (§5.1), matching against existing works to avoid duplicate `works`.
+4. **Classify** — run §6 classification *after* insert, on the resolved work — not from the photo.
+
+### 9.5 Suggested data model additions
+
+| Table | Purpose |
+|---|---|
+| `intake_batches` | One row per capture session: created-at, photo count, status |
+| `intake_candidates` | Extracted rows: batch id, raw LLM fields, confidence, resolved metadata, review status (`pending`/`confirmed`/`discarded`), linked work/edition once inserted |
+
+Keeping candidates as their own table means a batch can be reviewed over time and provides provenance ("this book came from photo X").
+
+### 9.6 Build order
+
+1. Static `<input capture>` → route handler → log the parsed candidates (prove the pipe).
+2. Add client downscale + Zod validation.
+3. Add the candidate table + review UI.
+4. Wire metadata resolution and the existing insert/match path.
+5. Trigger classification on confirmed works.
+
+Steps 1–2 are the "plumbing" and are small; the review UI (step 3) is the main product work.
+
+## 10. Summary
 
 Photo intake is a **bulk, LLM-driven front door** to the same book-adding pipeline the CSV migration already uses. A versioned skill turns an image into candidate rows; everything downstream — metadata, review, taxonomy, insert — is existing machinery. It complements barcode scanning (precise, single) with a fast, batch-oriented path, while keeping the user firmly in control.
