@@ -78,6 +78,54 @@ async function thumbnailDataUrl(blob: Blob, maxEdge = 240): Promise<string> {
   }
 }
 
+// POST with a hard timeout so a hung request surfaces a clear message instead of
+// spinning forever. Aborts after `ms` and rethrows as an AbortError.
+async function postWithTimeout(
+  url: string,
+  init: RequestInit,
+  ms: number,
+): Promise<Response> {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), ms);
+  try {
+    return await fetch(url, { ...init, signal: ctrl.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+// Turn a failed request into a short, human message. Distinguishes a timeout and
+// a network-layer failure ("Failed to fetch") from everything else.
+function describeFetchError(err: unknown): string {
+  if (err instanceof DOMException && err.name === "AbortError") {
+    return "Timed out — the network dropped or the server took too long. Try again.";
+  }
+  if (err instanceof TypeError) {
+    return "Network error — couldn't reach the server. Check your connection and retry.";
+  }
+  return String(err);
+}
+
+// Read an error response without assuming JSON: a platform 5xx page is HTML, and
+// calling res.json() on it throws, masking the real status.
+async function readErrorBody(res: Response): Promise<string> {
+  const text = await res.text().catch(() => "");
+  try {
+    const j = JSON.parse(text) as { error?: string; detail?: unknown; missing?: string[] };
+    if (j.error) {
+      const extra = j.detail
+        ? `: ${String(j.detail).slice(0, 140)}`
+        : j.missing
+          ? `: ${j.missing.join(", ")}`
+          : "";
+      return `${j.error}${extra}`;
+    }
+  } catch {
+    // not JSON — fall through to the status line
+  }
+  return `HTTP ${res.status}`;
+}
+
 // Full candidate shape returned by the extract route. Everything except
 // confidence/unreadable maps onto a master-CSV column.
 type Candidate = {
@@ -226,23 +274,19 @@ export default function CapturePage() {
 
         const body = new FormData();
         body.append("photo", scaled, "shot.jpg");
-        const res = await fetch("/api/intake/extract", { method: "POST", body });
-        const json = await res.json();
+        const res = await postWithTimeout(
+          "/api/intake/extract",
+          { method: "POST", body },
+          90_000,
+        );
         if (res.ok) {
+          const json = await res.json();
           patch({ status: "ok", candidates: json.candidates ?? [] });
         } else {
-          const extra = json.detail
-            ? `: ${String(json.detail).slice(0, 140)}`
-            : json.missing
-              ? `: ${json.missing.join(", ")}`
-              : "";
-          patch({
-            status: "error",
-            error: json.error ? `${json.error}${extra}` : `HTTP ${res.status}`,
-          });
+          patch({ status: "error", error: await readErrorBody(res) });
         }
       } catch (err) {
-        patch({ status: "error", error: String(err) });
+        patch({ status: "error", error: describeFetchError(err) });
       }
     }
   }
@@ -277,13 +321,17 @@ export default function CapturePage() {
     setCommitting(true);
     try {
       const candidates = kept.map(({ id, keep, ...c }) => c); // strip UI fields
-      const res = await fetch("/api/intake/commit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ candidates }),
-      });
-      const json = await res.json();
+      const res = await postWithTimeout(
+        "/api/intake/commit",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ candidates }),
+        },
+        45_000,
+      );
       if (res.ok) {
+        const json = await res.json();
         setResult(json as CommitResult);
         setMode("done");
         window.scrollTo({ top: 0 });
@@ -291,7 +339,7 @@ export default function CapturePage() {
         setResult({
           added: 0,
           duplicates: [],
-          rejected: [{ index: -1, issues: json.error ?? `HTTP ${res.status}` }],
+          rejected: [{ index: -1, issues: await readErrorBody(res) }],
         });
         setMode("done");
       }
@@ -299,7 +347,7 @@ export default function CapturePage() {
       setResult({
         added: 0,
         duplicates: [],
-        rejected: [{ index: -1, issues: String(err) }],
+        rejected: [{ index: -1, issues: describeFetchError(err) }],
       });
       setMode("done");
     } finally {

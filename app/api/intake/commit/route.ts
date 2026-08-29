@@ -13,6 +13,7 @@ import { CandidateSchema } from "@/lib/intake/schema";
 import { z } from "zod";
 
 export const runtime = "nodejs";
+export const maxDuration = 30;
 
 const BodySchema = z.object({
   candidates: z.array(z.unknown()).min(1),
@@ -50,47 +51,57 @@ export async function POST(req: Request) {
     );
   }
 
-  const existing = await existingEditionSignatures();
-  const seen = new Set<string>();
-  const rows: BookRow[] = [];
-  const duplicates: { title: string; author: string }[] = [];
-  const rejected: { index: number; issues: unknown }[] = [];
+  try {
+    const existing = await existingEditionSignatures();
+    const seen = new Set<string>();
+    const rows: BookRow[] = [];
+    const duplicates: { title: string; author: string }[] = [];
+    const rejected: { index: number; issues: unknown }[] = [];
 
-  parsedBody.data.candidates.forEach((raw, index) => {
-    // Re-validate on the server: the client may have edited fields, and this
-    // enforces the taxonomy enums for period / movements.
-    const parsed = CandidateSchema.safeParse(raw);
-    if (!parsed.success) {
-      rejected.push({ index, issues: parsed.error.issues });
-      return;
-    }
-    const c = parsed.data;
-    const row = candidateToRow(c);
-    // Dedup at the (work, edition) level: a copy is a duplicate only if this
-    // exact edition of this work is already owned or already seen in this batch.
-    // Two distinct editions of the same title therefore both survive, and a new
-    // edition of an already-owned title is no longer wrongly discarded.
-    const { signature } = editionIdentity(row);
-    if (existing.has(signature) || seen.has(signature)) {
-      duplicates.push({ title: c.title, author: c.author });
-      return;
-    }
-    seen.add(signature);
-    rows.push(row);
-  });
+    parsedBody.data.candidates.forEach((raw, index) => {
+      // Re-validate on the server: the client may have edited fields, and this
+      // enforces the taxonomy enums for period / movements.
+      const parsed = CandidateSchema.safeParse(raw);
+      if (!parsed.success) {
+        rejected.push({ index, issues: parsed.error.issues });
+        return;
+      }
+      const c = parsed.data;
+      const row = candidateToRow(c);
+      // Dedup at the (work, edition) level: a copy is a duplicate only if this
+      // exact edition of this work is already owned or already seen in this batch.
+      // Two distinct editions of the same title therefore both survive, and a new
+      // edition of an already-owned title is no longer wrongly discarded.
+      const { signature } = editionIdentity(row);
+      if (existing.has(signature) || seen.has(signature)) {
+        duplicates.push({ title: c.title, author: c.author });
+        return;
+      }
+      seen.add(signature);
+      rows.push(row);
+    });
 
-  let added = 0;
-  let importSummary: Awaited<ReturnType<typeof upsertGrouped>> | null = null;
-  if (rows.length > 0) {
-    const grouped = groupRows(rows);
-    importSummary = await upsertGrouped(grouped);
-    added = rows.length; // copies actually committed (may span fewer works)
+    let added = 0;
+    let importSummary: Awaited<ReturnType<typeof upsertGrouped>> | null = null;
+    if (rows.length > 0) {
+      const grouped = groupRows(rows);
+      importSummary = await upsertGrouped(grouped);
+      added = rows.length; // copies actually committed (may span fewer works)
+    }
+
+    return Response.json({
+      added,
+      duplicates,
+      rejected,
+      import: importSummary,
+    });
+  } catch (err) {
+    // Surface DB / network failures as clean JSON rather than crashing the
+    // connection (which the client would only see as an opaque "Failed to fetch").
+    console.error("[intake/commit] failed:", err);
+    return Response.json(
+      { error: "commit failed", detail: String(err) },
+      { status: 500 },
+    );
   }
-
-  return Response.json({
-    added,
-    duplicates,
-    rejected,
-    import: importSummary,
-  });
 }
