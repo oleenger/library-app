@@ -46,50 +46,50 @@ export default async function BookDetailPage({
     .filter((e): e is NonNullable<typeof e> => Boolean(e));
 
   return (
-    <main className="mx-auto max-w-6xl px-4 pb-16 sm:px-7 lg:px-10">
-      <nav className="flex h-20 items-center justify-between border-b border-ink">
+    <main className="mx-auto max-w-5xl px-4 pb-16 sm:px-6 lg:px-8">
+      <nav className="flex h-16 items-center justify-between border-b border-paper-edge sm:h-20">
         <Link href="/" className="group flex items-center gap-3 text-sm">
-          <span className="grid h-9 w-9 place-items-center rounded-full border border-paper-edge bg-paper-raised transition-colors group-hover:border-ink">
+          <span className="grid h-9 w-9 place-items-center rounded-xl border border-paper-edge bg-paper-raised shadow-sm transition-colors group-hover:border-ink-faint">
             ←
           </span>
-          <span className="font-semibold uppercase tracking-[0.12em]">The Library</span>
+          <span className="font-semibold">The Library</span>
         </Link>
-        <span className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-ink-faint">
+        <span className="text-xs text-ink-faint">
           Work record
         </span>
       </nav>
 
-      <header className="enter-up grid gap-10 border-b border-ink py-12 sm:py-16 lg:grid-cols-[minmax(0,1fr)_14rem] lg:items-end lg:py-24">
+      <header className="enter-up grid gap-8 border-b border-paper-edge py-10 sm:grid-cols-[minmax(0,1fr)_12rem] sm:items-end sm:py-14">
         <div>
-          <div className="flex items-center gap-2 text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-ink-faint">
+          <div className="flex items-center gap-2 text-xs font-medium text-ink-soft">
             <span className={`h-2 w-2 rounded-full ${periodDot(c.period)}`} aria-hidden />
             {c.period ?? "Unclassified"}
           </div>
-          <h1 className="mt-5 max-w-4xl font-serif text-[clamp(3rem,8vw,6.75rem)] leading-[0.92] tracking-[-0.045em]">
+          <h1 className="mt-4 max-w-3xl font-serif text-4xl leading-tight tracking-[-0.035em] sm:text-5xl lg:text-6xl">
             {work.title}
           </h1>
-          <p className="mt-6 text-base text-ink-soft sm:text-lg">by {work.author}</p>
+          <p className="mt-4 text-base text-ink-soft">by {work.author}</p>
         </div>
         <div className="border-l border-paper-edge pl-5">
-          <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-ink-faint">
+          <p className="text-xs text-ink-faint">
             First published
           </p>
-          <p className="mt-3 font-serif text-5xl tabular-nums">
+          <p className="mt-2 font-serif text-4xl tabular-nums">
             {formatYear(work.originalYear)}
           </p>
         </div>
       </header>
 
-      <section className="enter-up-late grid gap-10 py-10 lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-16 lg:py-16">
+      <section className="enter-up-late grid gap-8 py-10 md:grid-cols-[12rem_minmax(0,1fr)] md:gap-12 sm:py-12">
         <div>
-          <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-accent">
+          <p className="text-xs font-semibold text-accent">
             Classification
           </p>
-          <p className="mt-3 max-w-xs font-serif text-2xl leading-tight">
-            Where this work sits in the collection.
+          <p className="mt-2 max-w-xs text-sm leading-6 text-ink-soft">
+            Bibliographic and collection details.
           </p>
         </div>
-        <dl className="border-t border-ink">
+        <dl className="border-t border-paper-edge">
         <Field label="Year first published" value={formatYear(work.originalYear)} />
         <Field label="Original language" value={work.language ?? "—"} />
         <Field label="Period" value={c.period ?? "—"} />
@@ -100,8 +100,8 @@ export default async function BookDetailPage({
       </section>
 
       {editions.length > 0 && (
-        <section className="border-t border-ink py-10 sm:py-14">
-          <h2 className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-accent">
+        <section className="border-t border-paper-edge py-10 sm:py-12">
+          <h2 className="text-xs font-semibold text-accent">
             {editions.length === 1 ? "Edition owned" : `Editions owned (${editions.length})`}
           </h2>
           <ul className="mt-5 grid gap-3 sm:grid-cols-2">

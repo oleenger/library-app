@@ -9,19 +9,19 @@ export default {
     extend: {
       colors: {
         paper: {
-          DEFAULT: "#f3f0e9",
-          raised: "#fffefa",
-          edge: "#d9d5cc",
+          DEFAULT: "#f6f7f4",
+          raised: "#ffffff",
+          edge: "#dedfd9",
         },
         ink: {
-          DEFAULT: "#171713",
-          soft: "#5e5c55",
-          faint: "#8d8a81",
+          DEFAULT: "#18201d",
+          soft: "#5b6560",
+          faint: "#929a96",
         },
-        accent: "#e7472e",
+        accent: "#246b54",
       },
       fontFamily: {
-        serif: ["'Iowan Old Style'", "'Baskerville'", "'Times New Roman'", "serif"],
+        serif: ["'Iowan Old Style'", "'Baskerville'", "Georgia", "serif"],
         sans: ["'Avenir Next'", "'Helvetica Neue'", "Helvetica", "sans-serif"],
       },
     },

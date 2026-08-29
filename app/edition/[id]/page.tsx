@@ -31,35 +31,35 @@ export default async function EditionDetailPage({
     .filter((w): w is NonNullable<typeof w> => Boolean(w));
 
   return (
-    <main className="mx-auto max-w-6xl px-4 pb-16 sm:px-7 lg:px-10">
-      <nav className="flex h-20 items-center justify-between border-b border-ink">
+    <main className="mx-auto max-w-5xl px-4 pb-16 sm:px-6 lg:px-8">
+      <nav className="flex h-16 items-center justify-between border-b border-paper-edge sm:h-20">
         <Link href="/" className="group flex items-center gap-3 text-sm">
-          <span className="grid h-9 w-9 place-items-center rounded-full border border-paper-edge bg-paper-raised transition-colors group-hover:border-ink">
+          <span className="grid h-9 w-9 place-items-center rounded-xl border border-paper-edge bg-paper-raised shadow-sm transition-colors group-hover:border-ink-faint">
             ←
           </span>
-          <span className="font-semibold uppercase tracking-[0.12em]">The Library</span>
+          <span className="font-semibold">The Library</span>
         </Link>
-        <span className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-ink-faint">
+        <span className="text-xs text-ink-faint">
           Edition record
         </span>
       </nav>
 
-      <header className="enter-up border-b border-ink py-12 sm:py-16 lg:py-24">
-        <span className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-accent">
+      <header className="enter-up border-b border-paper-edge py-10 sm:py-14">
+        <span className="text-xs font-semibold text-accent">
           Owned edition
         </span>
-        <h1 className="mt-5 max-w-4xl font-serif text-[clamp(3rem,8vw,6.75rem)] leading-[0.92] tracking-[-0.045em]">
+        <h1 className="mt-4 max-w-3xl font-serif text-4xl leading-tight tracking-[-0.035em] sm:text-5xl lg:text-6xl">
           {edition.name}
         </h1>
-        <p className="mt-6 text-base text-ink-soft sm:text-lg">
+        <p className="mt-4 text-base text-ink-soft">
           {edition.publisher ?? "Publisher unknown"}
           {edition.language && ` · ${edition.language}`}
         </p>
       </header>
 
-      <section className="enter-up-late py-10 sm:py-14">
-        <div className="flex items-end justify-between border-b border-ink pb-4">
-          <h2 className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-ink-faint">
+      <section className="enter-up-late py-10 sm:py-12">
+        <div className="flex items-end justify-between border-b border-paper-edge pb-4">
+          <h2 className="text-xs font-semibold text-ink-soft">
           {works.length === 1 ? "Work in this edition" : "Works in this edition"}
           </h2>
           <span className="font-serif text-3xl tabular-nums">{works.length}</span>
