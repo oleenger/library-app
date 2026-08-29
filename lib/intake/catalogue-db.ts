@@ -6,7 +6,7 @@
 // the same book twice is a no-op, and re-seeding never duplicates rows.
 
 import { admin } from "../supabase/admin";
-import type { GroupResult } from "./importer";
+import { editionSignature, type GroupResult } from "./importer";
 
 export interface WriteSummary {
   works: number;
@@ -20,6 +20,35 @@ export async function existingWorkIds(): Promise<Set<string>> {
   const { data, error } = await admin().from("works").select("id").limit(100_000);
   if (error) throw new Error(`work id lookup failed: ${error.message}`);
   return new Set((data ?? []).map((r) => r.id));
+}
+
+/**
+ * Content signatures of every (work, edition) link already owned. Dedup at
+ * commit time matches candidates against these by attribute — not by id — so a
+ * copy already in the library is recognised even if it was persisted under an
+ * earlier edition-id scheme, and a genuinely new edition of an owned work is
+ * NOT mistaken for a duplicate.
+ */
+export async function existingEditionSignatures(): Promise<Set<string>> {
+  const db = admin();
+  const [edRes, linkRes] = await Promise.all([
+    db.from("editions").select("id, name, publisher, language").limit(100_000),
+    db.from("work_editions").select("work_id, edition_id").limit(100_000),
+  ]);
+  if (edRes.error) throw new Error(`edition lookup failed: ${edRes.error.message}`);
+  if (linkRes.error) throw new Error(`edition link lookup failed: ${linkRes.error.message}`);
+
+  const byId = new Map<string, { name: string; publisher: string | null; language: string | null }>();
+  for (const e of edRes.data ?? []) {
+    byId.set(e.id, { name: e.name, publisher: e.publisher, language: e.language });
+  }
+
+  const sigs = new Set<string>();
+  for (const l of linkRes.data ?? []) {
+    const e = byId.get(l.edition_id);
+    if (e) sigs.add(editionSignature(l.work_id, e.name, e.publisher, e.language));
+  }
+  return sigs;
 }
 
 /**
