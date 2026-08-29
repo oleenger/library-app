@@ -3,6 +3,7 @@ import { getWorks } from "@/lib/books";
 import { getStats, getReadingStats } from "@/lib/insights";
 import { formatYear } from "@/lib/display";
 import { LibraryClient } from "@/components/library-client";
+import { PullToRefresh } from "@/components/pull-to-refresh";
 
 // Catalogue is read live from Supabase per request, so render dynamically.
 export const dynamic = "force-dynamic";
@@ -19,6 +20,7 @@ export default async function HomePage() {
       : "—";
 
   return (
+    <PullToRefresh>
     <div className="min-h-screen">
       <header className="sticky top-0 z-30 border-b border-paper-edge bg-canvas/80 shadow-header backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -76,6 +78,7 @@ export default async function HomePage() {
         <LibraryClient initialWorks={works} />
       </main>
     </div>
+    </PullToRefresh>
   );
 }
 

@@ -14,6 +14,9 @@
   html {
     @apply bg-canvas;
     scroll-behavior: smooth;
+    /* Own the vertical overscroll so the custom pull-to-refresh gesture
+       replaces the browser's native one instead of racing it. */
+    overscroll-behavior-y: contain;
   }
 
   body {
