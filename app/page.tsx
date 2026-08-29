@@ -2,8 +2,7 @@ import Link from "next/link";
 import { getWorks } from "@/lib/books";
 import { getStats, getReadingStats } from "@/lib/insights";
 import { formatYear } from "@/lib/display";
-import { LibraryView } from "@/components/library-view";
-import { ReadingStats } from "@/components/reading-stats";
+import { LibraryClient } from "@/components/library-client";
 
 // Catalogue is read live from Supabase per request, so render dynamically.
 export const dynamic = "force-dynamic";
@@ -88,7 +87,7 @@ export default async function HomePage() {
             My Recommendations
           </Link>
         </nav>
-        <LibraryView works={works} reading={<ReadingStats stats={reading} />} />
+        <LibraryClient initialWorks={works} />
       </main>
     </div>
   );

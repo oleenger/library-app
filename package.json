@@ -14,6 +14,7 @@
     "@serwist/next": "^9.5.12",
     "@supabase/ssr": "^0.12.5",
     "@supabase/supabase-js": "^2.112.4",
+    "dexie": "^4.4.5",
     "next": "^15.5.24",
     "papaparse": "5.4.1",
     "react": "19.0.0",
