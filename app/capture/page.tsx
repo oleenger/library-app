@@ -455,6 +455,7 @@ export default function CapturePage() {
           <CaptureStage
             shots={shots}
             onPick={onPick}
+            onReset={reset}
             uploaded={uploaded}
             kb={kb}
           />
@@ -516,11 +517,13 @@ export default function CapturePage() {
 function CaptureStage({
   shots,
   onPick,
+  onReset,
   uploaded,
   kb,
 }: {
   shots: Shot[];
   onPick: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onReset: () => void;
   uploaded: number;
   kb: (n: number) => string;
 }) {
@@ -554,9 +557,18 @@ function CaptureStage({
         <section className="mt-10">
           <div className="flex items-baseline justify-between">
             <h2 className="font-serif text-xl text-ink">This session</h2>
-            <p className="text-[0.8rem] text-ink-faint">
-              {uploaded} of {shots.length} uploaded
-            </p>
+            <div className="flex items-baseline gap-3">
+              <p className="text-[0.8rem] text-ink-faint">
+                {uploaded} of {shots.length} uploaded
+              </p>
+              <button
+                type="button"
+                onClick={onReset}
+                className="text-[0.8rem] font-medium text-ink-soft underline-offset-2 transition hover:text-red-700 hover:underline"
+              >
+                Start over
+              </button>
+            </div>
           </div>
 
           <ul className="mt-4 grid gap-4 lg:grid-cols-2">

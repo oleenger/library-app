@@ -69,8 +69,10 @@ export function BottomNav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Login is a standalone full-screen surface — no app chrome.
-  if (pathname === "/login") return null;
+  // Login is a standalone full-screen surface — no app chrome. Capture is a
+  // focused task with its own bottom action bar (Review / Add), so the nav would
+  // only collide with and hide that bar; the in-page "← Library" link is enough.
+  if (pathname === "/login" || pathname === "/capture") return null;
 
   const showFab = pathname !== "/capture";
 
