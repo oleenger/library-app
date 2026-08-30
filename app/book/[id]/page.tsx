@@ -178,7 +178,7 @@ export default async function BookDetailPage({
                 const subtitle = [
                   isCollection ? edition.publisher : null,
                   edition.language,
-                  "Print edition",
+                  edition.format === "ebook" ? "Electronic edition" : "Print edition",
                 ]
                   .filter(Boolean)
                   .join(" · ");

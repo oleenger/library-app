@@ -21,6 +21,7 @@ interface EditionRow {
   name: string;
   publisher: string | null;
   language: string | null;
+  format: string | null;
 }
 interface LinkRow {
   work_id: string;
@@ -86,6 +87,7 @@ const loadCatalogue = cache(async (): Promise<Catalogue> => {
       name: e.name,
       publisher: e.publisher,
       language: e.language,
+      format: e.format ?? "print",
       workIds: [],
     });
   }
@@ -98,30 +100,41 @@ const loadCatalogue = cache(async (): Promise<Catalogue> => {
     editions.get(l.edition_id)?.workIds.push(l.work_id);
   }
 
-  const works: Work[] = workRows.map((r) => ({
-    id: r.id,
-    title: r.title,
-    author: r.author,
-    authorSort: r.author_sort,
-    originalYear: r.first_published,
-    language: r.original_language,
-    notes: r.notes,
-    editionIds: editionIdsByWork.get(r.id) ?? [],
-    classification: {
-      period: r.period,
-      primaryMovement: r.primary_movement,
-      secondaryMovements: r.secondary_movements
-        ? r.secondary_movements.split("|").map((m) => m.trim()).filter(Boolean)
-        : [],
-    },
-    reading: readByWork.has(r.id)
-      ? {
-          dateRead: readByWork.get(r.id)!.date_read,
-          rating: readByWork.get(r.id)!.rating,
-          source: readByWork.get(r.id)!.source,
-        }
-      : null,
-  }));
+  const works: Work[] = workRows.map((r) => {
+    const editionIds = editionIdsByWork.get(r.id) ?? [];
+    const formats = [
+      ...new Set(
+        editionIds
+          .map((eid) => editions.get(eid)?.format ?? "print")
+          .filter(Boolean),
+      ),
+    ];
+    return {
+      id: r.id,
+      title: r.title,
+      author: r.author,
+      authorSort: r.author_sort,
+      originalYear: r.first_published,
+      language: r.original_language,
+      notes: r.notes,
+      editionIds,
+      formats,
+      classification: {
+        period: r.period,
+        primaryMovement: r.primary_movement,
+        secondaryMovements: r.secondary_movements
+          ? r.secondary_movements.split("|").map((m) => m.trim()).filter(Boolean)
+          : [],
+      },
+      reading: readByWork.has(r.id)
+        ? {
+            dateRead: readByWork.get(r.id)!.date_read,
+            rating: readByWork.get(r.id)!.rating,
+            source: readByWork.get(r.id)!.source,
+          }
+        : null,
+    };
+  });
 
   return { works, editions };
 });

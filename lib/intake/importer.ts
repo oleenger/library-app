@@ -21,6 +21,8 @@ export interface BookRow {
   primary_movement?: string;
   secondary_movements?: string;
   notes?: string;
+  /** Physical copy vs electronic. Blank/absent defaults to "print". */
+  format?: string;
 }
 
 // Column order of data/library_master.csv — the single canonical header.
@@ -36,7 +38,18 @@ export const MASTER_COLUMNS: (keyof BookRow)[] = [
   "primary_movement",
   "secondary_movements",
   "notes",
+  "format",
 ];
+
+/** Normalise a format cell; blank/unknown falls back to "print". */
+export function normalizeFormat(value: string | undefined): string {
+  const t = value?.trim().toLowerCase();
+  if (!t) return "print";
+  if (t === "kindle" || t === "ebook" || t === "electronic" || t === "e-book") {
+    return "ebook";
+  }
+  return t === "print" ? "print" : t;
+}
 
 // --- deterministic identity ------------------------------------------------
 
@@ -85,10 +98,11 @@ export function editionIdFor(
   editionName: string | null,
   publisher: string | null,
   language: string | null,
+  format: string,
 ): string {
   return editionName
-    ? `ed--${slugify(editionName)}--${slugify(publisher ?? "")}`
-    : `ed--${workId}--${slugify(publisher ?? "")}--${slugify(language ?? "")}`;
+    ? `ed--${slugify(editionName)}--${slugify(publisher ?? "")}--${slugify(format)}`
+    : `ed--${workId}--${slugify(publisher ?? "")}--${slugify(language ?? "")}--${slugify(format)}`;
 }
 
 /**
@@ -101,8 +115,9 @@ export function editionSignature(
   name: string,
   publisher: string | null,
   language: string | null,
+  format: string,
 ): string {
-  return [workId, slugify(name), slugify(publisher ?? ""), slugify(language ?? "")].join("\u0000");
+  return [workId, slugify(name), slugify(publisher ?? ""), slugify(language ?? ""), slugify(format)].join("\u0000");
 }
 
 /** Work id, edition id, and dedup signature for the edition a candidate describes. */
@@ -113,11 +128,12 @@ export function editionIdentity(
   const editionName = nullable(row.edition);
   const publisher = nullable(row.publisher);
   const language = nullable(row.edition_language);
+  const format = normalizeFormat(row.format);
   const name = editionName ?? row.title.trim();
   return {
     workId,
-    editionId: editionIdFor(workId, editionName, publisher, language),
-    signature: editionSignature(workId, name, publisher, language),
+    editionId: editionIdFor(workId, editionName, publisher, language, format),
+    signature: editionSignature(workId, name, publisher, language, format),
   };
 }
 
@@ -139,6 +155,7 @@ export interface EditionRecord {
   name: string;
   publisher: string | null;
   language: string | null;
+  format: string;
 }
 export interface LinkRecord {
   work_id: string;
@@ -195,11 +212,13 @@ export function groupRows(rows: BookRow[]): GroupResult {
     // publisher + language so two distinct printings stay distinct.
     const editionName = nullable(row.edition);
     const publisher = nullable(row.publisher);
+    const format = normalizeFormat(row.format);
     const editionId = editionIdFor(
       workId,
       editionName,
       publisher,
       nullable(row.edition_language),
+      format,
     );
 
     const period = nullable(row.period);
@@ -238,6 +257,7 @@ export function groupRows(rows: BookRow[]): GroupResult {
         name: editionName ?? title,
         publisher,
         language: nullable(row.edition_language),
+        format,
       });
     }
 

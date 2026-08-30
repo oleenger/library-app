@@ -33,21 +33,21 @@ export async function existingWorkIds(): Promise<Set<string>> {
 export async function existingEditionSignatures(): Promise<Set<string>> {
   const db = admin();
   const [edRes, linkRes] = await Promise.all([
-    db.from("editions").select("id, name, publisher, language").limit(100_000),
+    db.from("editions").select("id, name, publisher, language, format").limit(100_000),
     db.from("work_editions").select("work_id, edition_id").limit(100_000),
   ]);
   if (edRes.error) throw new Error(`edition lookup failed: ${edRes.error.message}`);
   if (linkRes.error) throw new Error(`edition link lookup failed: ${linkRes.error.message}`);
 
-  const byId = new Map<string, { name: string; publisher: string | null; language: string | null }>();
+  const byId = new Map<string, { name: string; publisher: string | null; language: string | null; format: string }>();
   for (const e of edRes.data ?? []) {
-    byId.set(e.id, { name: e.name, publisher: e.publisher, language: e.language });
+    byId.set(e.id, { name: e.name, publisher: e.publisher, language: e.language, format: e.format ?? "print" });
   }
 
   const sigs = new Set<string>();
   for (const l of linkRes.data ?? []) {
     const e = byId.get(l.edition_id);
-    if (e) sigs.add(editionSignature(l.work_id, e.name, e.publisher, e.language));
+    if (e) sigs.add(editionSignature(l.work_id, e.name, e.publisher, e.language, e.format));
   }
   return sigs;
 }

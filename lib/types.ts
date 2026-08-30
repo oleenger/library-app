@@ -23,6 +23,12 @@ export interface Work {
   notes: string | null;
   /** The owned edition(s) of this work. A work may be owned in several editions. */
   editionIds: string[];
+  /**
+   * Distinct formats across this work's owned editions, e.g. ["print"],
+   * ["ebook"], or both. Derived from the linked editions so the library view can
+   * split physical from electronic copies without loading every edition.
+   */
+  formats: string[];
   classification: Classification;
   /** Reading history for this work, or null if it has not been marked read. */
   reading: WorkReading | null;
@@ -50,6 +56,8 @@ export interface Edition {
   publisher: string | null;
   /** Language of the owned edition (may differ from the work's original language). */
   language: string | null;
+  /** Physical vs electronic copy: "print" | "ebook". */
+  format: string;
   /** Works contained in this edition. */
   workIds: string[];
 }

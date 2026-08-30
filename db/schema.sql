@@ -23,7 +23,8 @@ CREATE TABLE editions (
   id        TEXT PRIMARY KEY,
   name      TEXT NOT NULL,
   publisher TEXT,
-  language  TEXT
+  language  TEXT,
+  format    TEXT NOT NULL DEFAULT 'print'   -- 'print' | 'ebook'; part of edition identity
 );
 
 -- Many-to-many: an edition may hold several works (an omnibus), and a work may be

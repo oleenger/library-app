@@ -84,17 +84,23 @@ export function LibraryView({ works, initialQuery = "" }: Props) {
       />
 
       <main className="enter-up mx-auto max-w-7xl px-4 pb-28 pt-4 sm:px-6 lg:px-8">
-        {/* Count + read-status toggle, above the table */}
-        <div className="mb-3 flex items-center justify-between px-1">
+        {/* Count + format / read-status toggles, above the table */}
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2 px-1">
           <p className="text-sm text-ink-soft" aria-live="polite">
             <span className="font-serif text-lg text-ink">{filtered.length}</span>{" "}
             {filtered.length === 1 ? "book" : "books"}
             {active ? " found" : ""}
           </p>
-          <ReadFilter
-            value={filters.readStatus}
-            onChange={(v) => setFilters((f) => ({ ...f, readStatus: v }))}
-          />
+          <div className="flex flex-wrap items-center gap-2">
+            <FormatFilter
+              value={filters.format}
+              onChange={(v) => setFilters((f) => ({ ...f, format: v }))}
+            />
+            <ReadFilter
+              value={filters.readStatus}
+              onChange={(v) => setFilters((f) => ({ ...f, readStatus: v }))}
+            />
+          </div>
         </div>
 
         <div className="overflow-hidden rounded-2xl border border-paper-edge bg-paper shadow-card">
@@ -150,6 +156,42 @@ export function LibraryView({ works, initialQuery = "" }: Props) {
   );
 }
 
+/** Segmented All / Physical / Electronic control. */
+function FormatFilter({
+  value,
+  onChange,
+}: {
+  value: Filters["format"];
+  onChange: (value: Filters["format"]) => void;
+}) {
+  return (
+    <div className="inline-flex shrink-0 rounded-[0.7rem] border border-paper-edge bg-paper p-0.5">
+      {(
+        [
+          ["", "All"],
+          ["print", "Physical"],
+          ["ebook", "Electronic"],
+        ] as const
+      ).map(([v, label]) => {
+        const isSel = value === v;
+        return (
+          <button
+            key={v || "all"}
+            type="button"
+            onClick={() => onChange(v)}
+            aria-pressed={isSel}
+            className={`rounded-[0.5rem] px-3 py-1 text-xs font-semibold transition-colors ${
+              isSel ? "bg-ink text-canvas shadow-sm" : "text-ink-soft hover:text-ink"
+            }`}
+          >
+            {label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 /** Segmented All / Read / Unread control. */
 function ReadFilter({
   value,
@@ -159,7 +201,7 @@ function ReadFilter({
   onChange: (value: Filters["readStatus"]) => void;
 }) {
   return (
-    <div className="inline-flex shrink-0 rounded-full border border-paper-edge bg-paper p-0.5">
+    <div className="inline-flex shrink-0 rounded-[0.7rem] border border-paper-edge bg-paper p-0.5">
       {(
         [
           ["", "All"],
@@ -174,7 +216,7 @@ function ReadFilter({
             type="button"
             onClick={() => onChange(v)}
             aria-pressed={isSel}
-            className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
+            className={`rounded-[0.5rem] px-3 py-1 text-xs font-semibold transition-colors ${
               isSel ? "bg-ink text-canvas shadow-sm" : "text-ink-soft hover:text-ink"
             }`}
           >

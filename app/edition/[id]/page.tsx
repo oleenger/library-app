@@ -54,6 +54,7 @@ export default async function EditionDetailPage({
               "Publisher unknown"
             )}
             {edition.language && ` · ${edition.language}`}
+            {` · ${edition.format === "ebook" ? "Electronic edition" : "Print edition"}`}
           </p>
         </header>
 
