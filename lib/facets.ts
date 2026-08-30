@@ -17,6 +17,8 @@ export interface Filters {
   author: string;
   /** "" = all, "read" = only read, "unread" = only unread. */
   readStatus: "" | "read" | "unread";
+  /** "" = all, "print" = only physical, "ebook" = only electronic. */
+  format: "" | "print" | "ebook";
 }
 
 export const EMPTY_FILTERS: Filters = {
@@ -25,6 +27,7 @@ export const EMPTY_FILTERS: Filters = {
   movement: "",
   author: "",
   readStatus: "",
+  format: "",
 };
 
 /** The facet axes that carry discrete, countable values. */
@@ -37,7 +40,7 @@ export interface FacetOption {
 }
 
 export function hasActiveFilters(f: Filters): boolean {
-  return Boolean(f.query || f.period || f.movement || f.author || f.readStatus);
+  return Boolean(f.query || f.period || f.movement || f.author || f.readStatus || f.format);
 }
 
 function workHasMovement(work: Work, movement: string): boolean {
@@ -68,6 +71,7 @@ function matches(work: Work, f: Filters, skip: keyof Filters | null): boolean {
   }
   if (f.readStatus === "read" && !work.reading) return false;
   if (f.readStatus === "unread" && work.reading) return false;
+  if (f.format && !work.formats.includes(f.format)) return false;
   return true;
 }
 

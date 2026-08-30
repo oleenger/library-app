@@ -23,6 +23,7 @@ export type EditionsRow = {
   name: string;
   publisher: string | null;
   language: string | null;
+  format: string;
 }
 
 export type WorkEditionsRow = {

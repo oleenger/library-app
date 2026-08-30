@@ -75,7 +75,9 @@ export function BookEditForm({ work }: Props) {
         setSaving(false);
         return;
       }
-      router.push(`/book/${work.id}`);
+      // A merge returns the surviving work's id (differs from this one when the
+      // edited title/author matched an existing work and they were folded).
+      router.push(`/book/${json.id ?? work.id}`);
       router.refresh();
     } catch (err) {
       setError(String(err));

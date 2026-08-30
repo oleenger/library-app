@@ -32,8 +32,21 @@ function clean(v: string | null | undefined): string | null {
   return t ? t : null;
 }
 
-/** Update the mutable fields of a work. Throws on off-taxonomy values. */
-export async function updateWork(id: string, edit: WorkEdit): Promise<void> {
+/**
+ * Update the mutable fields of a work. Throws on off-taxonomy values.
+ *
+ * If the new (title, author) collides with a *different* existing work — the
+ * common case being renaming an electronic copy to match its physical twin so
+ * the two consolidate — the edited work is merged into that existing work
+ * instead of tripping the `UNIQUE (title, author)` constraint: its editions are
+ * re-pointed at the survivor and the now-empty work is deleted. The returned
+ * `id` is the surviving work (unchanged for a plain edit, the pre-existing twin
+ * for a merge) so the caller can retarget the read status and redirect.
+ */
+export async function updateWork(
+  id: string,
+  edit: WorkEdit,
+): Promise<{ id: string; merged: boolean }> {
   const title = edit.title?.trim();
   const author = edit.author?.trim();
   if (!title || !author) throw new Error("title and author are required");
@@ -54,8 +67,28 @@ export async function updateWork(id: string, edit: WorkEdit): Promise<void> {
   }
 
   const authorSort = clean(edit.authorSort) ?? deriveAuthorSort(author);
+  const db = admin();
 
-  const { error } = await admin()
+  // A different work already carrying the target identity means this edit is a
+  // consolidation: fold this work's editions into it rather than fail the
+  // unique key. Matched with exact equality to mirror the case-sensitive
+  // UNIQUE (title, author) constraint — using ilike here would treat % and _ in
+  // a title as wildcards and could throw on more than one loose match.
+  const { data: twin, error: twinErr } = await db
+    .from("works")
+    .select("id")
+    .eq("title", title)
+    .eq("author", author)
+    .neq("id", id)
+    .maybeSingle();
+  if (twinErr) throw new Error(`work merge lookup failed: ${twinErr.message}`);
+
+  if (twin) {
+    await mergeWorkInto(id, twin.id);
+    return { id: twin.id, merged: true };
+  }
+
+  const { error } = await db
     .from("works")
     .update({
       title,
@@ -70,6 +103,47 @@ export async function updateWork(id: string, edit: WorkEdit): Promise<void> {
     })
     .eq("id", id);
   if (error) throw new Error(`work update failed: ${error.message}`);
+  return { id, merged: false };
+}
+
+/**
+ * Fold `fromId` into `toId`: re-point every edition link onto the survivor
+ * (dropping links it already holds so the (work_id, edition_id) primary key is
+ * never violated), then delete the emptied work. No edition is orphaned because
+ * each of `fromId`'s editions ends up linked to `toId`. The survivor keeps its
+ * own read status; `fromId`'s read_status row is swept by the delete cascade.
+ */
+async function mergeWorkInto(fromId: string, toId: string): Promise<void> {
+  const db = admin();
+
+  const { data: fromLinks, error: fromErr } = await db
+    .from("work_editions")
+    .select("edition_id")
+    .eq("work_id", fromId);
+  if (fromErr) throw new Error(`merge link lookup failed: ${fromErr.message}`);
+
+  const { data: toLinks, error: toErr } = await db
+    .from("work_editions")
+    .select("edition_id")
+    .eq("work_id", toId);
+  if (toErr) throw new Error(`merge link lookup failed: ${toErr.message}`);
+  const held = new Set((toLinks ?? []).map((l) => l.edition_id));
+
+  for (const { edition_id } of fromLinks ?? []) {
+    if (held.has(edition_id)) continue; // survivor already owns this edition
+    const { error: mvErr } = await db
+      .from("work_editions")
+      .update({ work_id: toId })
+      .eq("work_id", fromId)
+      .eq("edition_id", edition_id);
+    if (mvErr) throw new Error(`merge link move failed: ${mvErr.message}`);
+    held.add(edition_id);
+  }
+
+  // Any links left on fromId are duplicates the survivor already had; the work
+  // delete cascade removes them and the fromId read_status row.
+  const { error: delErr } = await db.from("works").delete().eq("id", fromId);
+  if (delErr) throw new Error(`merge delete failed: ${delErr.message}`);
 }
 
 /**

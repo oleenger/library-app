@@ -47,8 +47,9 @@ export async function PATCH(
   }
   const b = parsed.data;
 
+  let result: { id: string; merged: boolean };
   try {
-    await updateWork(id, {
+    result = await updateWork(id, {
       title: b.title,
       author: b.author,
       authorSort: b.authorSort,
@@ -59,8 +60,9 @@ export async function PATCH(
       secondaryMovements: b.secondaryMovements ?? [],
       notes: b.notes,
     });
+    // On a merge the edited work is gone; apply the read edit to the survivor.
     await setReadStatus(
-      id,
+      result.id,
       { read: b.read, dateRead: b.dateRead, rating: b.rating },
       { title: b.title, author: b.author },
     );
@@ -72,7 +74,7 @@ export async function PATCH(
     );
   }
 
-  return Response.json({ ok: true, id });
+  return Response.json({ ok: true, id: result.id, merged: result.merged });
 }
 
 export async function DELETE(
