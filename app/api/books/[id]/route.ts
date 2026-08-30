@@ -3,7 +3,7 @@
 
 import { z } from "zod";
 import { getWork } from "@/lib/books";
-import { updateWork, setReadStatus } from "@/lib/catalogue/edit";
+import { updateWork, setReadStatus, deleteWork } from "@/lib/catalogue/edit";
 
 export const runtime = "nodejs";
 
@@ -68,6 +68,28 @@ export async function PATCH(
     console.error("[books/edit] failed:", err);
     return Response.json(
       { error: "update failed", detail: String(err) },
+      { status: 400 },
+    );
+  }
+
+  return Response.json({ ok: true, id });
+}
+
+export async function DELETE(
+  _req: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { id } = await params;
+
+  const work = await getWork(id);
+  if (!work) return Response.json({ error: "not found" }, { status: 404 });
+
+  try {
+    await deleteWork(id);
+  } catch (err) {
+    console.error("[books/delete] failed:", err);
+    return Response.json(
+      { error: "delete failed", detail: String(err) },
       { status: 400 },
     );
   }

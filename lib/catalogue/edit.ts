@@ -73,6 +73,43 @@ export async function updateWork(id: string, edit: WorkEdit): Promise<void> {
 }
 
 /**
+ * Permanently delete a work. The `work_editions` links and any `read_status`
+ * row are removed automatically by the `on delete cascade` foreign keys; this
+ * then sweeps up any editions left with no remaining links so the catalogue
+ * keeps no orphaned edition rows.
+ */
+export async function deleteWork(id: string): Promise<void> {
+  const db = admin();
+
+  // Editions this work points at, so we can prune the now-orphaned ones after
+  // the cascade removes the link rows.
+  const { data: links, error: linkErr } = await db
+    .from("work_editions")
+    .select("edition_id")
+    .eq("work_id", id);
+  if (linkErr) throw new Error(`work delete lookup failed: ${linkErr.message}`);
+  const editionIds = (links ?? []).map((l) => l.edition_id);
+
+  const { error } = await db.from("works").delete().eq("id", id);
+  if (error) throw new Error(`work delete failed: ${error.message}`);
+
+  for (const editionId of editionIds) {
+    const { count, error: cErr } = await db
+      .from("work_editions")
+      .select("edition_id", { count: "exact", head: true })
+      .eq("edition_id", editionId);
+    if (cErr) throw new Error(`edition sweep failed: ${cErr.message}`);
+    if ((count ?? 0) === 0) {
+      const { error: dErr } = await db
+        .from("editions")
+        .delete()
+        .eq("id", editionId);
+      if (dErr) throw new Error(`orphan edition delete failed: ${dErr.message}`);
+    }
+  }
+}
+
+/**
  * Set or clear a work's read status by hand. A set write is stamped
  * source = 'manual' so the Goodreads reconcile pass will never overwrite it;
  * clearing removes the row entirely.

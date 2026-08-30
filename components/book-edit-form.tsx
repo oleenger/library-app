@@ -39,6 +39,7 @@ export function BookEditForm({ work }: Props) {
 
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   function toggleSecondary(m: string) {
     setSecondary((s) => (s.includes(m) ? s.filter((x) => x !== m) : [...s, m]));
@@ -79,6 +80,32 @@ export function BookEditForm({ work }: Props) {
     } catch (err) {
       setError(String(err));
       setSaving(false);
+    }
+  }
+
+  async function remove() {
+    if (
+      !window.confirm(
+        `Delete “${work.title}” by ${work.author}? This cannot be undone.`,
+      )
+    ) {
+      return;
+    }
+    setDeleting(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/books/${work.id}`, { method: "DELETE" });
+      if (!res.ok) {
+        const json = await res.json().catch(() => ({}));
+        setError(json.detail ?? json.error ?? "Delete failed");
+        setDeleting(false);
+        return;
+      }
+      router.push("/");
+      router.refresh();
+    } catch (err) {
+      setError(String(err));
+      setDeleting(false);
     }
   }
 
@@ -241,7 +268,7 @@ export function BookEditForm({ work }: Props) {
       <div className="flex items-center gap-3">
         <button
           type="submit"
-          disabled={saving}
+          disabled={saving || deleting}
           className="inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-ink disabled:cursor-not-allowed disabled:opacity-50"
         >
           {saving ? "Saving…" : "Save changes"}
@@ -252,6 +279,14 @@ export function BookEditForm({ work }: Props) {
         >
           Cancel
         </Link>
+        <button
+          type="button"
+          onClick={() => void remove()}
+          disabled={saving || deleting}
+          className="ml-auto inline-flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-5 py-2.5 text-sm font-semibold text-red-700 transition hover:border-red-300 hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {deleting ? "Deleting…" : "Delete book"}
+        </button>
       </div>
     </form>
   );
