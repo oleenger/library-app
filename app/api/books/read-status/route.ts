@@ -3,7 +3,9 @@
 // removes the rows. Owner-only via the global middleware gate.
 
 import { z } from "zod";
+import { revalidateTag } from "next/cache";
 import { bulkSetReadStatus } from "@/lib/catalogue/edit";
+import { CATALOGUE_TAG } from "@/lib/cache-tags";
 
 export const runtime = "nodejs";
 
@@ -30,6 +32,7 @@ export async function POST(req: Request) {
 
   try {
     const affected = await bulkSetReadStatus(parsed.data.workIds, parsed.data.read);
+    revalidateTag(CATALOGUE_TAG);
     return Response.json({ ok: true, affected, read: parsed.data.read });
   } catch (err) {
     console.error("[books/read-status] bulk failed:", err);

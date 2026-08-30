@@ -1,6 +1,8 @@
 import { cache } from "react";
+import { unstable_cache } from "next/cache";
 import type { Edition, Work } from "./types";
 import { PERIODS } from "./taxonomy";
+import { CATALOGUE_TAG } from "./cache-tags";
 import { admin } from "./supabase/admin";
 
 // Row shapes returned by the Supabase catalogue tables.
@@ -44,13 +46,10 @@ interface Catalogue {
 const MAX_ROWS = 10_000;
 
 /**
- * Load and assemble the whole catalogue from Supabase. Wrapped in React
- * `cache()` so multiple calls within one server render (e.g. a book page that
- * needs a work and its editions) share a single set of queries. The cache is
- * per-request, so a write in another request is always reflected on the next
- * render — no manual invalidation needed.
+ * Query and assemble the whole catalogue from Supabase. This is the raw read;
+ * callers go through `loadCatalogue`, which layers caching on top.
  */
-const loadCatalogue = cache(async (): Promise<Catalogue> => {
+const queryCatalogue = async (): Promise<Catalogue> => {
   const db = admin();
 
   const [worksRes, editionsRes, linksRes, readsRes] = await Promise.all([
@@ -137,6 +136,30 @@ const loadCatalogue = cache(async (): Promise<Catalogue> => {
   });
 
   return { works, editions };
+};
+
+// Persistent Data Cache layer. The serialisable snapshot (a Map can't be
+// cached, so editions ride along as an array) is stored under the `catalogue`
+// tag with no time-based expiry: it is only recomputed after a mutation route
+// or a pull-to-refresh calls `revalidateTag(CATALOGUE_TAG)`. This is what stops
+// every page render from hitting Supabase.
+const loadCatalogueSnapshot = unstable_cache(
+  async (): Promise<{ works: Work[]; editions: Edition[] }> => {
+    const { works, editions } = await queryCatalogue();
+    return { works, editions: [...editions.values()] };
+  },
+  ["catalogue-snapshot"],
+  { tags: [CATALOGUE_TAG], revalidate: false },
+);
+
+// Per-render assembly: rebuild the editions Map once per request from the
+// cached snapshot. React `cache()` dedupes repeat calls within one render.
+const loadCatalogue = cache(async (): Promise<Catalogue> => {
+  const { works, editions } = await loadCatalogueSnapshot();
+  return {
+    works,
+    editions: new Map(editions.map((e) => [e.id, e] as const)),
+  };
 });
 
 /** All works, deduplicated and sorted by author surname then title. */

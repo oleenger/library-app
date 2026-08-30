@@ -26,6 +26,8 @@ import { libraryFingerprint, readingFingerprint } from "@/lib/recommend/fingerpr
 import { generateCanonGaps, generateRecommendations } from "@/lib/recommend/generate";
 import { readCache, writeSet, type RecKind, type StoredSet } from "@/lib/recommend/store";
 import type { CanonFocus, Recommendation } from "@/lib/recommend/schema";
+import { revalidateTag } from "next/cache";
+import { RECOMMENDATIONS_TAG } from "@/lib/cache-tags";
 
 export const runtime = "nodejs";
 
@@ -134,6 +136,7 @@ export async function POST(req: Request) {
 
   try {
     const set = await run;
+    revalidateTag(RECOMMENDATIONS_TAG);
     return Response.json({ kind, ...set, cached: false });
   } catch (err) {
     return Response.json(

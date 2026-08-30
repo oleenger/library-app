@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { refreshCatalogue } from "@/lib/actions/refresh";
 
 const THRESHOLD = 70; // px of resisted pull needed to trigger a refresh
 const MAX = 100; // px the surface can be dragged
@@ -48,13 +49,23 @@ export function PullToRefresh({ children }: { children: React.ReactNode }) {
         setRefreshing(true);
         pullRef.current = THRESHOLD;
         setPull(THRESHOLD);
-        router.refresh();
-        window.setTimeout(() => {
-          busyRef.current = false;
-          setRefreshing(false);
-          pullRef.current = 0;
-          setPull(0);
-        }, 900);
+        // Invalidate the cached catalogue, then re-render this route with the
+        // fresh read. A short floor keeps the spinner legible on a fast refresh.
+        const started = Date.now();
+        void (async () => {
+          try {
+            await refreshCatalogue();
+            router.refresh();
+          } finally {
+            const wait = Math.max(0, 500 - (Date.now() - started));
+            window.setTimeout(() => {
+              busyRef.current = false;
+              setRefreshing(false);
+              pullRef.current = 0;
+              setPull(0);
+            }, wait);
+          }
+        })();
       } else {
         pullRef.current = 0;
         setPull(0);

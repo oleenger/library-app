@@ -2,8 +2,10 @@
 // middleware gate; all taxonomy validation happens in lib/catalogue/edit.ts.
 
 import { z } from "zod";
+import { revalidateTag } from "next/cache";
 import { getWork } from "@/lib/books";
 import { updateWork, setReadStatus, deleteWork } from "@/lib/catalogue/edit";
+import { CATALOGUE_TAG } from "@/lib/cache-tags";
 
 export const runtime = "nodejs";
 
@@ -74,6 +76,7 @@ export async function PATCH(
     );
   }
 
+  revalidateTag(CATALOGUE_TAG);
   return Response.json({ ok: true, id: result.id, merged: result.merged });
 }
 
@@ -96,5 +99,6 @@ export async function DELETE(
     );
   }
 
+  revalidateTag(CATALOGUE_TAG);
   return Response.json({ ok: true, id });
 }

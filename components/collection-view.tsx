@@ -7,6 +7,7 @@ import Link from "next/link";
 import type { Work } from "@/lib/types";
 import { formatYear, periodColor, shortPeriod } from "@/lib/display";
 import { AppHeader } from "@/components/app-header";
+import { PullToRefresh } from "@/components/pull-to-refresh";
 
 export interface CollectionViewProps {
   /** Small uppercase label above the title, e.g. "Author" or "Publisher". */
@@ -21,8 +22,9 @@ export function CollectionView({ eyebrow, title, works }: CollectionViewProps) {
   const readCount = works.filter((w) => w.reading).length;
 
   return (
-    <div className="min-h-screen">
-      <AppHeader mode="back" />
+    <PullToRefresh>
+      <div className="min-h-screen">
+        <AppHeader mode="back" />
 
       <main className="enter-up mx-auto max-w-7xl px-4 pb-28 pt-6 sm:px-6 lg:px-8">
         <header className="mb-4 px-1">
@@ -47,7 +49,8 @@ export function CollectionView({ eyebrow, title, works }: CollectionViewProps) {
           </ol>
         </div>
       </main>
-    </div>
+      </div>
+    </PullToRefresh>
   );
 }
 

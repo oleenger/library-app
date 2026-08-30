@@ -2,6 +2,7 @@ import { getWorks } from "@/lib/books";
 import { loadForeignGoodreadsReads } from "@/lib/reading/goodreads-store";
 import { ReadsClient } from "@/components/reads-client";
 import { AppHeader } from "@/components/app-header";
+import { PullToRefresh } from "@/components/pull-to-refresh";
 
 export const metadata = { title: "Read books — Personal Library" };
 export const dynamic = "force-dynamic";
@@ -13,12 +14,14 @@ export default async function ReadsPage() {
   ]);
 
   return (
-    <div className="min-h-screen">
-      <AppHeader mode="back" />
+    <PullToRefresh>
+      <div className="min-h-screen">
+        <AppHeader mode="back" />
 
-      <main className="enter-up mx-auto max-w-7xl px-4 pb-28 pt-6 sm:px-6 lg:px-8">
-        <ReadsClient initialWorks={works} foreignReads={foreignReads} />
-      </main>
-    </div>
+        <main className="enter-up mx-auto max-w-7xl px-4 pb-28 pt-6 sm:px-6 lg:px-8">
+          <ReadsClient initialWorks={works} foreignReads={foreignReads} />
+        </main>
+      </div>
+    </PullToRefresh>
   );
 }
