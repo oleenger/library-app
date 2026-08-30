@@ -128,6 +128,16 @@ async function readErrorBody(res: Response): Promise<string> {
 
 // Full candidate shape returned by the extract route. Everything except
 // confidence/unreadable maps onto a master-CSV column.
+type VerifyInfo = {
+  status: "verified" | "corrected" | "unverified";
+  match: {
+    title: string;
+    author: string;
+    first_published: number | null;
+    key: string | null;
+  } | null;
+};
+
 type Candidate = {
   title: string;
   author: string;
@@ -142,6 +152,8 @@ type Candidate = {
   confidence: number;
   unreadable?: boolean | null;
   notes?: string | null;
+  // Attached by the extract route from OpenLibrary; UI-only, stripped on commit.
+  _verify?: VerifyInfo;
 };
 
 type Shot = {
@@ -296,8 +308,9 @@ export default function CapturePage() {
   const totalBooks = shots.reduce((n, s) => n + (s.candidates?.length ?? 0), 0);
   const currentStep = mode === "done" ? 3 : mode === "review" ? 2 : shots.length === 0 ? 0 : 1;
 
-  // Flatten every read book into one queue, least-confident first (those need
-  // the most human attention), and switch to the review surface.
+  // Flatten every read book into one queue and switch to the review surface.
+  // Order by attention needed: books with no database match (possible misreads)
+  // and books with a suggested correction come first, then least-confident reads.
   function enterReview() {
     const queue: ReviewItem[] = [];
     shots.forEach((s, si) => {
@@ -305,7 +318,9 @@ export default function CapturePage() {
         queue.push({ ...c, id: `${si}-${ci}`, keep: true });
       });
     });
-    queue.sort((a, b) => a.confidence - b.confidence);
+    const rank = (it: ReviewItem) =>
+      it._verify?.status === "unverified" ? 0 : it._verify?.status === "corrected" ? 1 : 2;
+    queue.sort((a, b) => rank(a) - rank(b) || a.confidence - b.confidence);
     setItems(queue);
     setMode("review");
     window.scrollTo({ top: 0 });
@@ -320,7 +335,7 @@ export default function CapturePage() {
   async function commit() {
     setCommitting(true);
     try {
-      const candidates = kept.map(({ id, keep, ...c }) => c); // strip UI fields
+      const candidates = kept.map(({ id, keep, _verify, ...c }) => c); // strip UI fields
       const res = await postWithTimeout(
         "/api/intake/commit",
         {
@@ -707,7 +722,29 @@ function ReviewStage({
                   {it.unreadable && (
                     <span className="text-[0.68rem] text-amber-600">· partly hidden</span>
                   )}
+                  <VerifyBadge status={it._verify?.status} />
                 </div>
+
+                {it._verify?.status === "corrected" && it._verify.match && (
+                  <CorrectionSuggestion
+                    read={{ title: it.title, author: it.author }}
+                    match={it._verify.match}
+                    onApply={() =>
+                      updateItem(it.id, {
+                        title: it._verify!.match!.title,
+                        author: it._verify!.match!.author,
+                        first_published:
+                          it._verify!.match!.first_published ?? it.first_published ?? null,
+                        _verify: { status: "verified", match: it._verify!.match },
+                      })
+                    }
+                    onDismiss={() =>
+                      updateItem(it.id, {
+                        _verify: { status: "verified", match: it._verify!.match },
+                      })
+                    }
+                  />
+                )}
 
                 <div className="grid gap-2.5 sm:grid-cols-2">
                   <Field label="Title">
@@ -777,6 +814,81 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
       </span>
       {children}
     </label>
+  );
+}
+
+// Small pill showing whether the read book matched a real OpenLibrary record.
+function VerifyBadge({ status }: { status?: VerifyInfo["status"] }) {
+  if (!status) return null;
+  const map = {
+    verified: { label: "✓ Verified", cls: "bg-emerald-50 text-emerald-700 border-emerald-200" },
+    corrected: { label: "≈ Suggestion", cls: "bg-sky-50 text-sky-700 border-sky-200" },
+    unverified: { label: "? Not found", cls: "bg-amber-50 text-amber-700 border-amber-200" },
+  } as const;
+  const s = map[status];
+  return (
+    <span className={`rounded-full border px-2 py-0.5 text-[0.62rem] font-semibold ${s.cls}`}>
+      {s.label}
+    </span>
+  );
+}
+
+// Inline "Read X → Match Y" prompt shown when OpenLibrary returns a canonical
+// record that differs from the transcribed spine. The human accepts or dismisses.
+function CorrectionSuggestion({
+  read,
+  match,
+  onApply,
+  onDismiss,
+}: {
+  read: { title: string; author: string };
+  match: NonNullable<VerifyInfo["match"]>;
+  onApply: () => void;
+  onDismiss: () => void;
+}) {
+  const titleDiffers = read.title.trim().toLowerCase() !== match.title.trim().toLowerCase();
+  const authorDiffers = read.author.trim().toLowerCase() !== match.author.trim().toLowerCase();
+  return (
+    <div className="rounded-xl border border-sky-200 bg-sky-50/70 p-3 text-[0.8rem]">
+      <p className="font-semibold text-sky-800">Did you mean this book?</p>
+      <div className="mt-1.5 space-y-0.5 text-ink-soft">
+        {titleDiffers && (
+          <p>
+            <span className="text-ink-faint">Title </span>
+            <span className="line-through decoration-ink-faint/50">{read.title}</span>
+            {" → "}
+            <span className="font-medium text-ink">{match.title}</span>
+          </p>
+        )}
+        {authorDiffers && (
+          <p>
+            <span className="text-ink-faint">Author </span>
+            <span className="line-through decoration-ink-faint/50">{read.author}</span>
+            {" → "}
+            <span className="font-medium text-ink">{match.author}</span>
+          </p>
+        )}
+        {match.first_published != null && (
+          <p className="text-ink-faint">First published {match.first_published}</p>
+        )}
+      </div>
+      <div className="mt-2 flex gap-2">
+        <button
+          type="button"
+          onClick={onApply}
+          className="rounded-lg bg-sky-600 px-2.5 py-1 text-[0.72rem] font-semibold text-white transition hover:bg-sky-700"
+        >
+          Apply correction
+        </button>
+        <button
+          type="button"
+          onClick={onDismiss}
+          className="rounded-lg border border-paper-edge px-2.5 py-1 text-[0.72rem] font-medium text-ink-soft transition hover:text-ink"
+        >
+          Keep as read
+        </button>
+      </div>
+    </div>
   );
 }
 

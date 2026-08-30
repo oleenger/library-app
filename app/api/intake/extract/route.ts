@@ -6,6 +6,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { getIntakeEnv } from "@/lib/env";
 import { EXTRACT_BOOKS_TOOL, parseExtraction } from "@/lib/intake/schema";
 import { buildExtractionPrompt } from "@/lib/intake/skill";
+import { verifyCandidates } from "@/lib/intake/verify";
 
 export const runtime = "nodejs";
 // Vision extraction can take tens of seconds; give the function room so Vercel
@@ -95,8 +96,17 @@ export async function POST(req: Request) {
     );
   }
 
+  // Verify each candidate against OpenLibrary so obvious misreads surface as
+  // suggested corrections in review. Fail-open: verification never blocks the
+  // extraction result — an unreachable database just yields "unverified" rows.
+  const verify = await verifyCandidates(result.candidates);
+  const candidates = result.candidates.map((c, i) => ({
+    ...c,
+    _verify: verify[i] ?? { status: "unverified" as const, match: null },
+  }));
+
   return Response.json({
-    candidates: result.candidates,
+    candidates,
     dropped: result.dropped,
     usage: {
       input_tokens: msg.usage.input_tokens,
