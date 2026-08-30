@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import type { Work } from "@/lib/types";
 import { periodColor, shortPeriod } from "@/lib/display";
 import {
@@ -42,6 +43,14 @@ export function FilterDrawer({
   );
   const active = hasActiveFilters(filters);
 
+  // Rendered through a portal to <body> so it stays viewport-fixed: the library
+  // list lives under a subtree whose `enter-up` / pull-to-refresh transforms
+  // would otherwise make an ancestor the containing block for this
+  // `position: fixed` overlay, and its off-canvas pane would extend the
+  // document's horizontal scroll width. Mirrors the Reads-page stats pane.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   // Selecting a facet applies it and closes the pane so the narrowed content is
   // visible immediately — no manual close needed.
   function handleToggle(key: FacetKey, value: string) {
@@ -49,7 +58,7 @@ export function FilterDrawer({
     onClose();
   }
 
-  return (
+  const overlay = (
     <div
       className={`fixed inset-0 z-50 ${open ? "" : "pointer-events-none"}`}
       aria-hidden={!open}
@@ -124,6 +133,9 @@ export function FilterDrawer({
       </aside>
     </div>
   );
+
+  if (!mounted) return null;
+  return createPortal(overlay, document.body);
 }
 
 function FacetSection({
