@@ -6,6 +6,7 @@ import type { Work } from "@/lib/types";
 import { formatYear, periodColor, shortPeriod } from "@/lib/display";
 import { AppHeader } from "@/components/app-header";
 import { FilterDrawer } from "@/components/filter-drawer";
+import { PeriodChart } from "@/components/period-chart";
 import {
   applyFilters,
   hasActiveFilters,
@@ -84,13 +85,17 @@ export function LibraryView({ works, initialQuery = "" }: Props) {
       />
 
       <main className="enter-up mx-auto max-w-7xl px-4 pb-28 pt-4 sm:px-6 lg:px-8">
-        {/* Count + format / read-status toggles, above the table */}
-        <div className="mb-3 flex flex-wrap items-center justify-between gap-2 px-1">
-          <p className="text-sm text-ink-soft" aria-live="polite">
-            <span className="font-serif text-lg text-ink">{filtered.length}</span>{" "}
-            {filtered.length === 1 ? "book" : "books"}
-            {active ? " found" : ""}
-          </p>
+        {/* Works-per-period chart, doubling as the headline count. */}
+        <PeriodChart
+          works={works}
+          filters={filters}
+          count={filtered.length}
+          active={active}
+          onSelectPeriod={(p) => toggle("period", p)}
+        />
+
+        {/* Format / read-status toggles, above the table */}
+        <div className="mb-3 flex flex-wrap items-center justify-end gap-2 px-1">
           <div className="flex flex-wrap items-center gap-2">
             <FormatFilter
               value={filters.format}
