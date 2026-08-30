@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import type { ReadsPageData } from "@/lib/insights";
 import { periodColor, shortPeriod } from "@/lib/display";
 import { slugify } from "@/lib/slug";
@@ -15,12 +17,20 @@ interface Props {
  * Right slide-in pane holding the reading breakdowns (by year / period /
  * movement). Mirrors the front-page filter pane so the two surfaces feel like
  * one system.
+ *
+ * Rendered through a portal to <body> so it stays viewport-fixed: the reads
+ * list lives inside `<main className="enter-up">`, whose `animation: … both`
+ * leaves a lingering `transform` that would otherwise make `main` the
+ * containing block for this `position: fixed` overlay.
  */
 export function StatsDrawer({ open, onClose, data }: Props) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const maxYear = Math.max(...data.byYear.map((y) => y.count), 1);
   const maxMovement = Math.max(...data.byMovement.map((m) => m.count), 1);
 
-  return (
+  const overlay = (
     <div
       className={`fixed inset-0 z-50 ${open ? "" : "pointer-events-none"}`}
       aria-hidden={!open}
@@ -139,6 +149,9 @@ export function StatsDrawer({ open, onClose, data }: Props) {
       </aside>
     </div>
   );
+
+  if (!mounted) return null;
+  return createPortal(overlay, document.body);
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
