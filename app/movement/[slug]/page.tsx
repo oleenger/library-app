@@ -6,8 +6,6 @@ import { CollectionView } from "@/components/collection-view";
 // Live catalogue: render on demand so newly added books appear without a rebuild.
 export const dynamic = "force-dynamic";
 
-const ACCENT = "#1c6b50";
-
 /** The display name and works for whichever movement slugifies to `slug`. */
 async function movementWorks(slug: string) {
   const works = await getWorks();
@@ -50,7 +48,6 @@ export default async function MovementPage({
     <CollectionView
       eyebrow="Movement"
       title={name}
-      accent={ACCENT}
       works={works}
     />
   );

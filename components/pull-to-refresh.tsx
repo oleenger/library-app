@@ -81,9 +81,9 @@ export function PullToRefresh({ children }: { children: React.ReactNode }) {
     <>
       <div
         aria-hidden
-        className="pointer-events-none fixed inset-x-0 top-0 z-40 flex justify-center sm:hidden"
+        className="pointer-events-none fixed left-1/2 top-0 z-40 sm:hidden"
         style={{
-          transform: `translateY(${active ? Math.max(pull - 18, 14) : -48}px)`,
+          transform: `translate(-50%, ${active ? Math.max(pull - 18, 14) : -48}px)`,
           opacity: active ? 1 : 0,
           transition: dragging ? "none" : "transform 220ms ease, opacity 220ms ease",
         }}

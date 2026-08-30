@@ -23,6 +23,21 @@ export function periodColor(period: string | null): string {
   return (period && PERIOD_COLOR[period]) || "#7a7166";
 }
 
+// Compact period labels for dense UI (list rows, filter pane).
+const SHORT_PERIOD: Record<string, string> = {
+  "Classical / Antiquity": "Classical",
+  "Renaissance / Early Modern": "Renaissance",
+  "Enlightenment / Neoclassical": "Enlightenment",
+  "Victorian / 19th century": "Victorian",
+  "Modernist / early 20th century": "Modernist",
+  "Postwar / late 20th century": "Postwar",
+};
+
+export function shortPeriod(period: string | null): string {
+  if (!period) return "Unclassified";
+  return SHORT_PERIOD[period] ?? period;
+}
+
 export function formatYear(year: number | null): string {
   if (year === null) return "—";
   return year < 0 ? `${Math.abs(year)} BCE` : `${year}`;
