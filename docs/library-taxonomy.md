@@ -48,6 +48,8 @@ Grouped by the period they are most associated with, but a movement is assigned 
 - **Regionalism / local colour** — specific place, dialect, custom.
 - **Symbolism** — suggestion, imagery, the ineffable (Mallarmé, Baudelaire).
 - **Aestheticism / Decadence** — art for art's sake (Wilde).
+- **National Romanticism** — Romantic nationalism drawing on folklore, saga and national history (early Ibsen, Bjørnson; Norw. nasjonalromantikk).
+- **Neo-Romanticism** — 1890s reaction against realism/naturalism: subjectivity, mood, nature-mysticism, the irrational (Hamsun, Kinck; Scand. nyromantikk).
 
 ### Modernist / early 20th century
 - **Modernism** — formal rupture, fragmentation, subjectivity.

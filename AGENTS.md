@@ -4,3 +4,6 @@
 - create new branch for new features
 - Commit atomic work
 - Check logs for errors before being satisfied work is done
+- When assigning a work's period or movement, use ONLY the controlled vocab in docs/library-taxonomy.md; never invent new labels inline — propose additions separately for approval, and prefer null over forcing a bad fit
+- secondary_movements is a single TEXT column, '|'-delimited (never a JSON array)
+- Always check/sync read status against data/goodreads.csv
