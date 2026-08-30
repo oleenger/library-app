@@ -33,6 +33,13 @@ export function ReadsView({
     [data.books, foreignReads],
   );
 
+  // "Read this year" reflects the whole reading list, library and foreign alike.
+  const readThisYear = useMemo(() => {
+    const year = String(new Date().getFullYear());
+    const foreign = foreignReads.filter((f) => f.dateRead?.startsWith(year)).length;
+    return stats.readThisYear + foreign;
+  }, [foreignReads, stats.readThisYear]);
+
   if (items.length === 0) {
     return (
       <section className="rounded-2xl border border-dashed border-paper-edge bg-paper px-6 py-16 text-center shadow-card">
@@ -54,7 +61,7 @@ export function ReadsView({
 
   return (
     <>
-      <ReadSummary stats={stats} onOpenStats={() => setStatsOpen(true)} />
+      <ReadSummary stats={stats} readThisYear={readThisYear} onOpenStats={() => setStatsOpen(true)} />
 
       <div className="mt-8 space-y-8">
         {groups.map((g) => (
@@ -118,7 +125,7 @@ function ForeignRow({ b }: { b: ReadListItem }) {
   return (
     <div className="flex items-stretch gap-3 px-4 py-3 opacity-70 sm:px-5">
       <div className="min-w-0 flex-1">
-        <h3 className="truncate font-serif text-[0.95rem] font-bold leading-tight text-ink-soft">
+        <h3 className="truncate font-serif text-[0.95rem] font-bold leading-tight text-ink">
           {b.title}
         </h3>
         <p className="mt-0.5 truncate text-xs text-ink-soft">{b.author}</p>
@@ -157,9 +164,11 @@ function RowMeta({ b }: { b: ReadListItem }) {
 /** Styled read-progress summary that stays on the page (not in the pane). */
 function ReadSummary({
   stats,
+  readThisYear,
   onOpenStats,
 }: {
   stats: ReadingStats;
+  readThisYear: number;
   onOpenStats: () => void;
 }) {
   return (
@@ -174,8 +183,8 @@ function ReadSummary({
             </span>
           </p>
           <p className="mt-1.5 text-xs text-ink-soft">
-            {stats.readThisYear > 0 && `${stats.readThisYear} this year`}
-            {stats.readThisYear > 0 && stats.averageRating != null && " · "}
+            {readThisYear > 0 && `${readThisYear} this year`}
+            {readThisYear > 0 && stats.averageRating != null && " · "}
             {stats.averageRating != null &&
               `${stats.averageRating.toFixed(1)}★ avg`}
           </p>
