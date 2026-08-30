@@ -246,6 +246,27 @@ export function mergeReadList(
   return items;
 }
 
+/**
+ * Fold foreign reads into the per-year read counts so the "By year" breakdown
+ * reflects the whole reading list, not just owned books. (Period/movement
+ * breakdowns can't include foreign reads — they carry no classification.)
+ */
+export function mergeByYear(
+  byYear: YearReadStat[],
+  foreign: ForeignRead[],
+): YearReadStat[] {
+  const counts = new Map<number, number>();
+  for (const y of byYear) counts.set(y.year, y.count);
+  for (const f of foreign) {
+    if (!f.dateRead) continue;
+    const year = Number(f.dateRead.slice(0, 4));
+    if (Number.isFinite(year)) counts.set(year, (counts.get(year) ?? 0) + 1);
+  }
+  return [...counts.entries()]
+    .map(([year, count]) => ({ year, count }))
+    .sort((a, b) => b.year - a.year);
+}
+
 /** Reading-history aggregates for the front-page statistics panel. */
 export function getReadingStats(works: Work[]): ReadingStats {
   const total = works.length;

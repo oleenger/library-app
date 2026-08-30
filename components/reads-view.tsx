@@ -13,7 +13,7 @@ import type {
   ReadsPageData,
   ReadingStats,
 } from "@/lib/insights";
-import { mergeReadList } from "@/lib/insights";
+import { mergeByYear, mergeReadList } from "@/lib/insights";
 import { formatReadDate, periodColor, shortPeriod } from "@/lib/display";
 import { StatsDrawer } from "@/components/stats-drawer";
 
@@ -39,6 +39,13 @@ export function ReadsView({
     const foreign = foreignReads.filter((f) => f.dateRead?.startsWith(year)).length;
     return stats.readThisYear + foreign;
   }, [foreignReads, stats.readThisYear]);
+
+  // The Stats pane's "By year" breakdown counts foreign reads too. Period and
+  // movement breakdowns stay library-only (foreign reads carry no taxonomy).
+  const statsData = useMemo(
+    () => ({ ...data, byYear: mergeByYear(data.byYear, foreignReads) }),
+    [data, foreignReads],
+  );
 
   if (items.length === 0) {
     return (
@@ -83,7 +90,7 @@ export function ReadsView({
         ))}
       </div>
 
-      <StatsDrawer open={statsOpen} onClose={() => setStatsOpen(false)} data={data} />
+      <StatsDrawer open={statsOpen} onClose={() => setStatsOpen(false)} data={statsData} />
     </>
   );
 }
