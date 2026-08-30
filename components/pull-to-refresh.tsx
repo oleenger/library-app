@@ -7,6 +7,22 @@ import { refreshCatalogue } from "@/lib/actions/refresh";
 const THRESHOLD = 70; // px of resisted pull needed to trigger a refresh
 const MAX = 100; // px the surface can be dragged
 
+// In the installed PWA the service worker serves pages stale-while-revalidate,
+// so a plain router.refresh() would paint the cached copy. Drop the page caches
+// first (and wait for the SW to confirm) so the refresh fetches live content.
+async function purgeServiceWorkerPageCaches(): Promise<void> {
+  if (typeof navigator === "undefined") return;
+  const controller = navigator.serviceWorker?.controller;
+  if (!controller) return;
+  await new Promise<void>((resolve) => {
+    const channel = new MessageChannel();
+    channel.port1.onmessage = () => resolve();
+    // Never block the refresh on a wedged SW.
+    window.setTimeout(resolve, 400);
+    controller.postMessage({ type: "INVALIDATE_PAGES" }, [channel.port2]);
+  });
+}
+
 /**
  * Mobile pull-to-refresh. When the page is scrolled to the very top, dragging
  * down reveals a spinner and, past the threshold, re-runs the server component
@@ -55,6 +71,7 @@ export function PullToRefresh({ children }: { children: React.ReactNode }) {
         void (async () => {
           try {
             await refreshCatalogue();
+            await purgeServiceWorkerPageCaches();
             router.refresh();
           } finally {
             const wait = Math.max(0, 500 - (Date.now() - started));
