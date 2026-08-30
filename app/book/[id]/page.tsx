@@ -4,6 +4,7 @@ import { getEdition, getWork } from "@/lib/books";
 import { formatYear, formatReadDate } from "@/lib/display";
 import { slugify } from "@/lib/slug";
 import { AppHeader } from "@/components/app-header";
+import { EditionDeleteButton } from "@/components/edition-delete-button";
 
 // Rendered on demand: the catalogue is live in Supabase, so a newly added book
 // is reachable immediately without a rebuild.
@@ -182,10 +183,10 @@ export default async function BookDetailPage({
                   .filter(Boolean)
                   .join(" · ");
                 return (
-                  <li key={edition.id}>
+                  <li key={edition.id} className="flex items-stretch gap-2">
                     <Link
                       href={`/edition/${edition.id}`}
-                      className="group flex items-center gap-4 rounded-2xl border border-paper-edge bg-paper-raised px-4 py-4 shadow-card transition-colors hover:border-ink-faint"
+                      className="group flex flex-1 items-center gap-4 rounded-2xl border border-paper-edge bg-paper-raised px-4 py-4 shadow-card transition-colors hover:border-ink-faint"
                     >
                       <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-accent-soft text-accent">
                         <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -206,6 +207,14 @@ export default async function BookDetailPage({
                         </svg>
                       </span>
                     </Link>
+                    <div className="flex items-center">
+                      <EditionDeleteButton
+                        workId={work.id}
+                        editionId={edition.id}
+                        editionLabel={title}
+                        shared={isCollection}
+                      />
+                    </div>
                   </li>
                 );
               })}

@@ -110,6 +110,51 @@ export async function deleteWork(id: string): Promise<void> {
 }
 
 /**
+ * Remove a single edition from a work. Deletes only the `work_editions` link
+ * for `(workId, editionId)`; the edition row itself is dropped only if no other
+ * work still points at it (the same orphan-sweep `deleteWork` uses), so a shared
+ * omnibus edition survives while it belongs to another work. The work and its
+ * read status are untouched. Returns whether the edition row was also deleted.
+ */
+export async function deleteEditionFromWork(
+  workId: string,
+  editionId: string,
+): Promise<{ editionRemoved: boolean }> {
+  const db = admin();
+
+  // The link must exist for this work — otherwise the caller has the wrong ids.
+  const { data: link, error: findErr } = await db
+    .from("work_editions")
+    .select("edition_id")
+    .eq("work_id", workId)
+    .eq("edition_id", editionId)
+    .maybeSingle();
+  if (findErr) throw new Error(`edition link lookup failed: ${findErr.message}`);
+  if (!link) throw new Error("edition is not linked to this work");
+
+  const { error: unlinkErr } = await db
+    .from("work_editions")
+    .delete()
+    .eq("work_id", workId)
+    .eq("edition_id", editionId);
+  if (unlinkErr) throw new Error(`edition unlink failed: ${unlinkErr.message}`);
+
+  // Prune the edition only if nothing else references it now.
+  const { count, error: cErr } = await db
+    .from("work_editions")
+    .select("edition_id", { count: "exact", head: true })
+    .eq("edition_id", editionId);
+  if (cErr) throw new Error(`edition sweep failed: ${cErr.message}`);
+
+  if ((count ?? 0) === 0) {
+    const { error: dErr } = await db.from("editions").delete().eq("id", editionId);
+    if (dErr) throw new Error(`orphan edition delete failed: ${dErr.message}`);
+    return { editionRemoved: true };
+  }
+  return { editionRemoved: false };
+}
+
+/**
  * Set or clear a work's read status by hand. A set write is stamped
  * source = 'manual' so the Goodreads reconcile pass will never overwrite it;
  * clearing removes the row entirely.
