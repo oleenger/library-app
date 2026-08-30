@@ -9,7 +9,6 @@ import { FilterDrawer } from "@/components/filter-drawer";
 import { PeriodChart } from "@/components/period-chart";
 import {
   applyFilters,
-  hasActiveFilters,
   EMPTY_FILTERS,
   type FacetKey,
   type Filters,
@@ -31,7 +30,6 @@ export function LibraryView({ works, initialQuery = "" }: Props) {
   const [page, setPage] = useState(0);
 
   const filtered = useMemo(() => applyFilters(works, filters), [works, filters]);
-  const active = hasActiveFilters(filters);
   // The header filter button reflects the facet axes it controls (not the
   // read-status toggle, which lives above the table).
   const facetActive = Boolean(filters.period || filters.movement || filters.author);
@@ -73,6 +71,7 @@ export function LibraryView({ works, initialQuery = "" }: Props) {
         onQueryChange={(v) => setFilters((f) => ({ ...f, query: v }))}
         onFilterClick={() => setFilterOpen(true)}
         filterActive={facetActive}
+        count={filtered.length}
       />
 
       <FilterDrawer
@@ -85,33 +84,24 @@ export function LibraryView({ works, initialQuery = "" }: Props) {
       />
 
       <main className="enter-up mx-auto max-w-7xl px-4 pb-28 pt-4 sm:px-6 lg:px-8">
-        {/* Count (sans-serif) + format / read-status toggles, above the chart */}
-        <div className="mb-3 flex flex-wrap items-center justify-between gap-2 px-1">
-          <p className="text-sm text-ink-soft" aria-live="polite">
-            <span className="text-lg font-semibold tabular-nums text-ink">
-              {filtered.length}
-            </span>{" "}
-            {filtered.length === 1 ? "book" : "books"}
-            {active ? " found" : ""}
-          </p>
-          <div className="flex flex-wrap items-center gap-2">
-            <FormatFilter
-              value={filters.format}
-              onChange={(v) => setFilters((f) => ({ ...f, format: v }))}
-            />
-            <ReadFilter
-              value={filters.readStatus}
-              onChange={(v) => setFilters((f) => ({ ...f, readStatus: v }))}
-            />
-          </div>
-        </div>
-
         {/* Works-per-period chart */}
         <PeriodChart
           works={works}
           filters={filters}
           onSelectPeriod={(p) => toggle("period", p)}
         />
+
+        {/* Format (left) / read-status (right) toggles, between chart and table */}
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2 px-1">
+          <FormatFilter
+            value={filters.format}
+            onChange={(v) => setFilters((f) => ({ ...f, format: v }))}
+          />
+          <ReadFilter
+            value={filters.readStatus}
+            onChange={(v) => setFilters((f) => ({ ...f, readStatus: v }))}
+          />
+        </div>
 
         <div className="overflow-hidden rounded-2xl border border-paper-edge bg-paper shadow-card">
           {filtered.length === 0 ? (
@@ -180,7 +170,7 @@ function FormatFilter({
         [
           ["", "All"],
           ["print", "Physical"],
-          ["ebook", "Electronic"],
+          ["ebook", "Ebook"],
         ] as const
       ).map(([v, label]) => {
         const isSel = value === v;
@@ -238,25 +228,6 @@ function ReadFilter({
   );
 }
 
-/** Read status check — outlined circle-check, no label. */
-function ReadMark() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      className="h-4 w-4 text-accent"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <circle cx="12" cy="12" r="9" />
-      <path d="m8.5 12 2.5 2.5 4.5-5" />
-    </svg>
-  );
-}
-
 function BookRow({ work }: { work: Work }) {
   const { classification: c } = work;
   const color = periodColor(c.period);
@@ -299,9 +270,11 @@ function BookRow({ work }: { work: Work }) {
               </span>
             ) : (
               <span
+                className="text-xs tabular-nums text-ink-faint/40"
                 title={work.reading?.dateRead ? `Read ${work.reading.dateRead}` : "Read"}
+                aria-label="Read, no rating"
               >
-                <ReadMark />
+                {"★".repeat(5)}
               </span>
             ))}
         </div>

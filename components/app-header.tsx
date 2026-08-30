@@ -14,6 +14,8 @@ type LibraryProps = {
   onQueryChange: (value: string) => void;
   onFilterClick: () => void;
   filterActive: boolean;
+  /** Live count of matching books, shown beside the search box. */
+  count: number;
 };
 
 type BackProps = {
@@ -36,6 +38,24 @@ function SearchIcon() {
     >
       <circle cx="11" cy="11" r="6" />
       <path d="m16 16 4 4" />
+    </svg>
+  );
+}
+
+function BookIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className="h-4 w-4 text-ink-faint"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <rect x="6" y="3.5" width="12" height="17" rx="1.5" />
+      <path d="M9 3.5v17" />
     </svg>
   );
 }
@@ -73,6 +93,19 @@ export function AppHeader(props: Props) {
           </label>
         ) : (
           <BackSearch />
+        )}
+
+        {props.mode === "library" && (
+          <div
+            className={`flex h-10 shrink-0 items-center gap-1.5 border border-paper-edge bg-paper px-2.5 shadow-sm ${RADIUS}`}
+            title={`${props.count} ${props.count === 1 ? "book" : "books"}`}
+            aria-label={`${props.count} ${props.count === 1 ? "book" : "books"}`}
+          >
+            <BookIcon />
+            <span className="text-sm font-semibold tabular-nums text-ink">
+              {props.count}
+            </span>
+          </div>
         )}
 
         {props.mode === "library" ? (
