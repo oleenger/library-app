@@ -95,6 +95,34 @@ export interface ReadBook {
   source: string | null;
 }
 
+/**
+ * A Goodreads "read" entry that could not be matched to any library work — i.e.
+ * a book the user has read but does not (yet) own/catalogue. Rendered in the
+ * reads list without a link and subtly flagged as outside the library.
+ */
+export interface ForeignRead {
+  title: string;
+  author: string;
+  dateRead: string | null;
+  rating: number | null;
+}
+
+/** A row in the rendered reads list: either a library work or a foreign read. */
+export interface ReadListItem {
+  /** Stable React key. */
+  key: string;
+  /** Work id when the book is in the library; null for foreign reads. */
+  id: string | null;
+  title: string;
+  author: string;
+  dateRead: string | null;
+  rating: number | null;
+  period: string | null;
+  primaryMovement: string | null;
+  /** False for Goodreads reads with no matching library work. */
+  inLibrary: boolean;
+}
+
 export interface ReadsPageData {
   /** Read works, newest Date Read first; undated works sort last. */
   books: ReadBook[];
@@ -168,6 +196,54 @@ export function getReadsPageData(works: Work[]): ReadsPageData {
     .sort((a, b) => b.count - a.count || a.movement.localeCompare(b.movement));
 
   return { books, byYear, byPeriod, byMovement, read: books.length };
+}
+
+/**
+ * Combine the library's read works with foreign Goodreads reads (books read but
+ * not in the library) into one date-desc list for the reads page. Library reads
+ * sort before foreign reads on the same date/title so owned copies lead.
+ */
+export function mergeReadList(
+  books: ReadBook[],
+  foreign: ForeignRead[],
+): ReadListItem[] {
+  const items: ReadListItem[] = books.map((b) => ({
+    key: `lib:${b.id}`,
+    id: b.id,
+    title: b.title,
+    author: b.author,
+    dateRead: b.dateRead,
+    rating: b.rating,
+    period: b.period,
+    primaryMovement: b.primaryMovement,
+    inLibrary: true,
+  }));
+
+  foreign.forEach((f, i) => {
+    items.push({
+      key: `ext:${i}:${f.author}\u0000${f.title}`,
+      id: null,
+      title: f.title,
+      author: f.author,
+      dateRead: f.dateRead,
+      rating: f.rating,
+      period: null,
+      primaryMovement: null,
+      inLibrary: false,
+    });
+  });
+
+  items.sort((a, b) => {
+    if (a.dateRead !== b.dateRead) {
+      if (!a.dateRead) return 1;
+      if (!b.dateRead) return -1;
+      return b.dateRead.localeCompare(a.dateRead);
+    }
+    if (a.inLibrary !== b.inLibrary) return a.inLibrary ? -1 : 1;
+    return a.title.localeCompare(b.title);
+  });
+
+  return items;
 }
 
 /** Reading-history aggregates for the front-page statistics panel. */
