@@ -37,7 +37,7 @@ export function FilterDrawer({
     [works, filters],
   );
   const authors = useMemo(
-    () => facetOptions(works, filters, "author").slice(0, 20),
+    () => facetOptions(works, filters, "author", 15),
     [works, filters],
   );
   const active = hasActiveFilters(filters);
