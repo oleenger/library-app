@@ -71,12 +71,14 @@ export async function updateWork(
 
   // A different work already carrying the target identity means this edit is a
   // consolidation: fold this work's editions into it rather than fail the
-  // unique key. Matched case-insensitively so "Ulysses" and "ulysses" merge.
+  // unique key. Matched with exact equality to mirror the case-sensitive
+  // UNIQUE (title, author) constraint — using ilike here would treat % and _ in
+  // a title as wildcards and could throw on more than one loose match.
   const { data: twin, error: twinErr } = await db
     .from("works")
     .select("id")
-    .ilike("title", title)
-    .ilike("author", author)
+    .eq("title", title)
+    .eq("author", author)
     .neq("id", id)
     .maybeSingle();
   if (twinErr) throw new Error(`work merge lookup failed: ${twinErr.message}`);
