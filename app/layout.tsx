@@ -17,7 +17,10 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
   },
   icons: {
-    icon: "/icon.svg",
+    icon: [
+      { url: "/logo.svg", type: "image/svg+xml" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+    ],
     apple: "/apple-touch-icon.png",
   },
 };
@@ -34,6 +37,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
+        {/* Launch splash — only visible in the installed (standalone) PWA. It
+            self-dismisses via CSS so it never traps content if JS fails to run. */}
+        <div className="app-splash" aria-hidden>
+          <img src="/logo.svg" alt="" width={96} height={96} />
+        </div>
         {children}
         <NavigationLoader />
         <BottomNav />

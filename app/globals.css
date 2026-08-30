@@ -87,4 +87,37 @@
       animation: none;
     }
   }
+
+  /* Launch splash: shown only in the installed PWA. Rendered in the initial
+     HTML so it paints instantly on app launch, then fades itself out via a
+     pure-CSS animation (no JS dependency). Hidden entirely in the browser. */
+  .app-splash {
+    display: none;
+  }
+
+  @media all and (display-mode: standalone) {
+    .app-splash {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      background: #f4f1ea;
+      animation: splash-out 400ms ease 650ms forwards;
+    }
+  }
+
+  @keyframes splash-out {
+    to {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .app-splash {
+      animation-duration: 1ms;
+      animation-delay: 300ms;
+    }
+  }
 }
