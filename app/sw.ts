@@ -25,11 +25,11 @@ declare global {
 declare const self: ServiceWorkerGlobalScope;
 
 // Write / auth routes are never served stale: they must always reflect live
-// server state (login redirects, capture, edit forms, import). Everything else
-// is read-mostly catalogue browsing where stale-between-refreshes is fine.
+// server state (login redirects, capture, edit forms). The Goodreads import
+// page is intentionally NOT here — its shell is a static form and the actual
+// mutation goes through /api/* POSTs, which are never SWR-cached anyway.
 const NO_STALE_PREFIXES = [
   "/capture",
-  "/reading",
   "/reads/manage",
   "/login",
   "/auth",
