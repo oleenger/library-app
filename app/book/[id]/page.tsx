@@ -5,6 +5,7 @@ import { formatYear, formatReadDate } from "@/lib/display";
 import { slugify } from "@/lib/slug";
 import { AppHeader } from "@/components/app-header";
 import { EditionDeleteButton } from "@/components/edition-delete-button";
+import { PullToRefresh } from "@/components/pull-to-refresh";
 
 // Rendered on demand: the catalogue is live in Supabase, so a newly added book
 // is reachable immediately without a rebuild.
@@ -93,8 +94,9 @@ export default async function BookDetailPage({
   const read = work.reading;
 
   return (
-    <div className="min-h-screen">
-      <AppHeader mode="back" />
+    <PullToRefresh>
+      <div className="min-h-screen">
+        <AppHeader mode="back" />
 
       <main className="enter-up mx-auto max-w-3xl px-4 pb-28 pt-6 sm:px-6 lg:px-8">
         {/* Title */}
@@ -236,6 +238,7 @@ export default async function BookDetailPage({
           </Link>
         </div>
       </main>
-    </div>
+      </div>
+    </PullToRefresh>
   );
 }

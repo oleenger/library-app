@@ -4,6 +4,8 @@
 
 import { getWork } from "@/lib/books";
 import { deleteEditionFromWork } from "@/lib/catalogue/edit";
+import { revalidateTag } from "next/cache";
+import { CATALOGUE_TAG } from "@/lib/cache-tags";
 
 export const runtime = "nodejs";
 
@@ -21,6 +23,7 @@ export async function DELETE(
 
   try {
     const { editionRemoved } = await deleteEditionFromWork(id, editionId);
+    revalidateTag(CATALOGUE_TAG);
     return Response.json({ ok: true, id, editionId, editionRemoved });
   } catch (err) {
     console.error("[editions/delete] failed:", err);

@@ -12,6 +12,8 @@ import { existingEditionSignatures, upsertGrouped } from "@/lib/intake/catalogue
 import { reconcileReads } from "@/lib/reading/reconcile";
 import { CandidateSchema } from "@/lib/intake/schema";
 import { z } from "zod";
+import { revalidateTag } from "next/cache";
+import { CATALOGUE_TAG } from "@/lib/cache-tags";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -100,6 +102,8 @@ export async function POST(req: Request) {
         console.error("[intake/commit] reconcile after commit failed:", err);
       }
     }
+
+    if (added > 0) revalidateTag(CATALOGUE_TAG);
 
     return Response.json({
       added,

@@ -7,6 +7,8 @@ import { matchReadsAgainstLibrary } from "@/lib/reading/match";
 import { parseGoodreadsReads } from "@/lib/reading/goodreads";
 import { saveGoodreadsReads } from "@/lib/reading/goodreads-store";
 import { mergeAndWriteReadStatus } from "@/lib/reading/store";
+import { revalidateTag } from "next/cache";
+import { CATALOGUE_TAG } from "@/lib/cache-tags";
 
 export const runtime = "nodejs";
 
@@ -43,6 +45,7 @@ export async function POST(req: Request) {
 
   // Persist only when something matched, so a bad upload is a no-op.
   const merged = await mergeAndWriteReadStatus(result.matches);
+  revalidateTag(CATALOGUE_TAG);
 
   return Response.json({
     totalReadsInExport: result.totalReads,

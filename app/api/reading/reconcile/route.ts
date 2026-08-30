@@ -4,6 +4,8 @@
 // intake commit.
 
 import { reconcileReads } from "@/lib/reading/reconcile";
+import { revalidateTag } from "next/cache";
+import { CATALOGUE_TAG } from "@/lib/cache-tags";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -11,6 +13,7 @@ export const maxDuration = 30;
 export async function POST() {
   try {
     const r = await reconcileReads();
+    revalidateTag(CATALOGUE_TAG);
     return Response.json({
       shelfSize: r.shelfSize,
       matched: r.matches.length,

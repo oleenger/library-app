@@ -251,6 +251,7 @@ function BookRow({ work }: { work: Work }) {
   const { classification: c } = work;
   const color = periodColor(c.period);
   const read = Boolean(work.reading);
+  const rating = work.reading?.rating ?? null;
   return (
     <li>
       <Link
@@ -276,15 +277,23 @@ function BookRow({ work }: { work: Work }) {
           <span className="text-xs tabular-nums text-ink-faint">
             {formatYear(work.originalYear)}
           </span>
-          {read && (
-            <span
-              title={
-                work.reading?.dateRead ? `Read ${work.reading.dateRead}` : "Read"
-              }
-            >
-              <ReadMark />
-            </span>
-          )}
+          {read &&
+            (rating != null ? (
+              <span
+                className="text-xs tabular-nums text-accent"
+                title={work.reading?.dateRead ? `Read ${work.reading.dateRead}` : "Read"}
+                aria-label={`${rating} out of 5`}
+              >
+                {"★".repeat(rating)}
+                <span className="text-ink-faint/40">{"★".repeat(5 - rating)}</span>
+              </span>
+            ) : (
+              <span
+                title={work.reading?.dateRead ? `Read ${work.reading.dateRead}` : "Read"}
+              >
+                <ReadMark />
+              </span>
+            ))}
         </div>
       </Link>
     </li>

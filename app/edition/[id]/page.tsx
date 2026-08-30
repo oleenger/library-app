@@ -4,6 +4,7 @@ import { getEdition, getWork } from "@/lib/books";
 import { formatYear } from "@/lib/display";
 import { slugify } from "@/lib/slug";
 import { AppHeader } from "@/components/app-header";
+import { PullToRefresh } from "@/components/pull-to-refresh";
 
 export const dynamic = "force-dynamic";
 
@@ -31,8 +32,9 @@ export default async function EditionDetailPage({
   ).filter((w): w is NonNullable<typeof w> => Boolean(w));
 
   return (
-    <div className="min-h-screen">
-      <AppHeader mode="back" />
+    <PullToRefresh>
+      <div className="min-h-screen">
+        <AppHeader mode="back" />
 
       <main className="enter-up mx-auto max-w-7xl px-4 pb-28 pt-6 sm:px-6 lg:px-8">
         <header className="mb-4 px-1">
@@ -84,6 +86,7 @@ export default async function EditionDetailPage({
           </ol>
         </div>
       </main>
-    </div>
+      </div>
+    </PullToRefresh>
   );
 }

@@ -10,6 +10,8 @@
 // coverage for canon) actually changes.
 
 import { admin } from "../supabase/admin";
+import { unstable_cache } from "next/cache";
+import { RECOMMENDATIONS_TAG } from "../cache-tags";
 import type { CanonFocus, Recommendation } from "./schema";
 
 export type RecKind = "taste" | "canon";
@@ -50,19 +52,23 @@ function toStored<T>(row: Row): StoredSet<T> {
   };
 }
 
-export async function readCache(): Promise<RecommendationCache> {
-  const { data, error } = await admin()
-    .from("recommendations")
-    .select("kind, fingerprint, generated_at, model, based_on, items");
-  if (error) throw new Error(`recommendation cache read failed: ${error.message}`);
+export const readCache = unstable_cache(
+  async (): Promise<RecommendationCache> => {
+    const { data, error } = await admin()
+      .from("recommendations")
+      .select("kind, fingerprint, generated_at, model, based_on, items");
+    if (error) throw new Error(`recommendation cache read failed: ${error.message}`);
 
-  const cache: RecommendationCache = {};
-  for (const row of (data ?? []) as Row[]) {
-    if (row.kind === "taste") cache.taste = toStored<Recommendation>(row);
-    else if (row.kind === "canon") cache.canon = toStored<CanonFocus>(row);
-  }
-  return cache;
-}
+    const cache: RecommendationCache = {};
+    for (const row of (data ?? []) as Row[]) {
+      if (row.kind === "taste") cache.taste = toStored<Recommendation>(row);
+      else if (row.kind === "canon") cache.canon = toStored<CanonFocus>(row);
+    }
+    return cache;
+  },
+  ["recommendation-cache"],
+  { tags: [RECOMMENDATIONS_TAG], revalidate: false },
+);
 
 /** Persist one kind's set without disturbing the other. */
 export async function writeSet(kind: "taste", set: StoredSet<Recommendation>): Promise<void>;
