@@ -1,23 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { formatYear, periodColor } from "@/lib/display";
+import { formatYear, periodColor, shortPeriod } from "@/lib/display";
 import type { StoredSet, RecKind } from "@/lib/recommend/store";
 import type { CanonFocus, CanonGap, Recommendation } from "@/lib/recommend/schema";
-
-const SHORT_PERIOD: Record<string, string> = {
-  "Classical / Antiquity": "Classical",
-  "Renaissance / Early Modern": "Renaissance",
-  "Enlightenment / Neoclassical": "Enlightenment",
-  "Victorian / 19th century": "Victorian",
-  "Modernist / early 20th century": "Modernist",
-  "Postwar / late 20th century": "Postwar",
-};
-
-function shortPeriod(period: string | null | undefined): string {
-  if (!period) return "Unclassified";
-  return SHORT_PERIOD[period] ?? period;
-}
 
 function formatWhen(iso: string): string {
   const d = new Date(iso);
@@ -260,33 +246,26 @@ function BookRow({ item }: { item: Recommendation | CanonGap }) {
   const period = item.period ?? null;
   const color = periodColor(period);
   const importance = "importance" in item ? item.importance : null;
+  const tag = item.primary_movement ?? shortPeriod(period);
 
   return (
-    <li className="flex items-center gap-4 px-5 py-4 sm:px-6">
-      <span
-        className="h-10 w-1 shrink-0 rounded-full"
-        style={{ backgroundColor: color }}
-        aria-hidden
-      />
+    <li className="flex items-stretch gap-3 px-4 py-3 sm:px-5">
       {importance != null && <ScoreBadge value={importance} />}
       <div className="min-w-0 flex-1">
-        <h3 className="truncate font-serif text-lg leading-tight text-ink">{item.title}</h3>
-        <p className="mt-0.5 truncate text-sm text-ink-soft">{item.author}</p>
-        <span
-          className="mt-1.5 inline-flex items-center gap-1.5 text-xs font-medium sm:hidden"
-          style={{ color }}
-        >
-          <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: color }} aria-hidden />
-          {item.primary_movement ?? shortPeriod(period)}
+        <h3 className="truncate font-serif text-[0.95rem] font-bold leading-tight text-ink">
+          {item.title}
+        </h3>
+        <p className="mt-0.5 truncate text-xs text-ink-soft">{item.author}</p>
+        <p className="mt-1.5 flex items-center gap-1.5 text-[0.7rem] font-medium">
+          <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ backgroundColor: color }} aria-hidden />
+          <span className="truncate" style={{ color }}>{tag}</span>
+        </p>
+      </div>
+      <div className="flex shrink-0 flex-col items-end justify-between">
+        <span className="text-xs tabular-nums text-ink-faint">
+          {formatYear(item.first_published ?? null)}
         </span>
       </div>
-      <span className="hidden shrink-0 items-center gap-2 rounded-full border border-paper-edge bg-paper px-3 py-1 text-xs font-medium text-ink-soft sm:inline-flex">
-        <span className="h-2 w-2 rounded-full" style={{ backgroundColor: color }} aria-hidden />
-        {item.primary_movement ?? shortPeriod(period)}
-      </span>
-      <span className="w-12 shrink-0 text-right text-sm tabular-nums text-ink-faint">
-        {formatYear(item.first_published ?? null)}
-      </span>
     </li>
   );
 }

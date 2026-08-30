@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import { getWorks } from "@/lib/books";
-import { periodColor } from "@/lib/display";
 import { slugify } from "@/lib/slug";
 import { CollectionView } from "@/components/collection-view";
 
@@ -40,7 +39,6 @@ export default async function PeriodPage({
     <CollectionView
       eyebrow="Period"
       title={period}
-      accent={periodColor(period)}
       works={works}
     />
   );

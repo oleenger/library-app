@@ -2,16 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
 
 type Dest = {
   href: string;
   label: string;
   icon: React.ReactNode;
+  dummy?: boolean;
 };
 
-// Material bottom nav: 3–5 primary destinations. Capture is an ACTION → FAB.
-const DESTINATIONS: Dest[] = [
+// Bottom nav: two destinations on each side of a center capture (scan) action.
+const LEFT: Dest[] = [
   {
     href: "/",
     label: "Library",
@@ -33,12 +33,28 @@ const DESTINATIONS: Dest[] = [
       </svg>
     ),
   },
+];
+
+const RIGHT: Dest[] = [
   {
     href: "/recommendations",
-    label: "For You",
+    label: "For you",
     icon: (
       <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-        <path d="m12 3.5 2.4 4.9 5.4.8-3.9 3.8.92 5.4L12 15.9l-4.82 2.5.92-5.4-3.9-3.8 5.4-.8L12 3.5Z" />
+        <path d="M12 4.5 13.6 9l4.4 1.6-4.4 1.6L12 16.7l-1.6-4.5L6 10.6 10.4 9 12 4.5Z" />
+        <path d="M18.5 4v3M20 5.5h-3M6 17v2M7 18H5" />
+      </svg>
+    ),
+  },
+  {
+    href: "#",
+    label: "More",
+    dummy: true,
+    icon: (
+      <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor" aria-hidden>
+        <circle cx="6" cy="12" r="1.6" />
+        <circle cx="12" cy="12" r="1.6" />
+        <circle cx="18" cy="12" r="1.6" />
       </svg>
     ),
   },
@@ -51,89 +67,78 @@ function isActive(pathname: string, href: string) {
 
 export function BottomNav() {
   const pathname = usePathname();
-  const [fabVisible, setFabVisible] = useState(true);
-  const lastY = useRef(0);
 
-  // Material "scroll-away" FAB: retreat on downward scroll, return on scroll-up
-  // or near the top, so it never sits on top of content while reading.
-  useEffect(() => {
-    lastY.current = window.scrollY;
-    function onScroll() {
-      const y = window.scrollY;
-      const delta = y - lastY.current;
-      if (y < 120 || delta < -6) setFabVisible(true);
-      else if (delta > 6) setFabVisible(false);
-      lastY.current = y;
-    }
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  // Login is a standalone full-screen surface — no app chrome. Capture is a
-  // focused task with its own bottom action bar (Review / Add), so the nav would
-  // only collide with and hide that bar; the in-page "← Library" link is enough.
+  // Login/capture are focused full-screen surfaces — no app chrome.
   if (pathname === "/login" || pathname === "/capture") return null;
 
-  const showFab = pathname !== "/capture";
-
-  function onTabClick(e: React.MouseEvent, href: string) {
-    // Tapping the already-active tab scrolls back to the top (iOS/Material convention).
+  function onTabClick(e: React.MouseEvent, href: string, dummy?: boolean) {
+    if (dummy) {
+      e.preventDefault();
+      return;
+    }
+    // Returning to the Library resets it to the first page of results.
+    if (href === "/") {
+      window.dispatchEvent(new Event("library:home"));
+    }
+    // Tapping the already-active tab scrolls back to the top.
     if (isActive(pathname, href)) {
       e.preventDefault();
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }
 
-  return (
-    <>
-      {showFab && (
+  function renderTab(d: Dest) {
+    const active = !d.dummy && isActive(pathname, d.href);
+    return (
+      <li key={d.label} className="flex-1">
         <Link
-          href="/capture"
-          aria-label="Add books"
-          className={`fixed right-5 z-50 grid h-14 w-14 place-items-center rounded-2xl bg-accent text-white shadow-lg shadow-accent/30 transition-all duration-300 hover:bg-ink active:scale-95 sm:hidden ${
-            fabVisible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-24 opacity-0"
+          href={d.href}
+          onClick={(e) => onTabClick(e, d.href, d.dummy)}
+          aria-current={active ? "page" : undefined}
+          className={`flex flex-col items-center gap-1 pb-1.5 pt-2 text-[0.65rem] font-semibold tracking-wide transition-colors ${
+            active ? "text-accent" : "text-ink-faint hover:text-ink-soft"
           }`}
-          style={{ bottom: "calc(env(safe-area-inset-bottom) + 5.5rem)" }}
         >
-          <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-            <path d="M14.5 4h-5L8 6H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-4l-1.5-2Z" />
-            <circle cx="12" cy="13" r="3.2" />
-          </svg>
+          <span
+            className={`grid h-8 w-14 place-items-center rounded-full transition-colors ${
+              active ? "bg-accent/12" : "bg-transparent"
+            }`}
+          >
+            {d.icon}
+          </span>
+          {d.label}
         </Link>
-      )}
+      </li>
+    );
+  }
 
-      <nav
-        aria-label="Primary"
-        className="fixed inset-x-0 bottom-0 z-50 border-t border-paper-edge bg-canvas/90 shadow-[0_-1px_16px_rgba(20,24,20,0.05)] backdrop-blur-md sm:hidden"
-        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
-      >
-        <ul className="mx-auto flex max-w-md items-stretch justify-around">
-          {DESTINATIONS.map((d) => {
-            const active = isActive(pathname, d.href);
-            return (
-              <li key={d.href} className="flex-1">
-                <Link
-                  href={d.href}
-                  onClick={(e) => onTabClick(e, d.href)}
-                  aria-current={active ? "page" : undefined}
-                  className={`flex flex-col items-center gap-1 pb-1.5 pt-2 text-[0.65rem] font-semibold tracking-wide transition-colors ${
-                    active ? "text-accent" : "text-ink-faint hover:text-ink-soft"
-                  }`}
-                >
-                  <span
-                    className={`grid h-8 w-16 place-items-center rounded-full transition-colors ${
-                      active ? "bg-accent/12" : "bg-transparent"
-                    }`}
-                  >
-                    {d.icon}
-                  </span>
-                  {d.label}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
-    </>
+  return (
+    <nav
+      aria-label="Primary"
+      className="fixed inset-x-0 bottom-0 z-50 border-t border-paper-edge bg-canvas/90 shadow-[0_-1px_16px_rgba(20,24,20,0.05)] backdrop-blur-md sm:hidden"
+      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+    >
+      <ul className="mx-auto flex max-w-md items-end justify-around px-2">
+        {LEFT.map(renderTab)}
+
+        {/* Center capture (scan) action */}
+        <li className="flex-1">
+          <div className="flex flex-col items-center pb-1.5">
+            <Link
+              href="/capture"
+              aria-label="Add books"
+              className="-mt-5 grid h-14 w-14 place-items-center rounded-2xl bg-accent text-white shadow-lg shadow-accent/30 transition-all hover:bg-ink active:scale-95"
+            >
+              <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2" />
+                <path d="M8 12h8" />
+              </svg>
+            </Link>
+          </div>
+        </li>
+
+        {RIGHT.map(renderTab)}
+      </ul>
+    </nav>
   );
 }

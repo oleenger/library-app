@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import type { Work } from "@/lib/types";
-import { getReadsPageData } from "@/lib/insights";
+import { getReadsPageData, getReadingStats } from "@/lib/insights";
 import { useOfflineWorks } from "@/lib/offline/use-offline-works";
 import { ReadsView } from "@/components/reads-view";
 
@@ -11,6 +11,7 @@ import { ReadsView } from "@/components/reads-view";
 export function ReadsClient({ initialWorks }: { initialWorks: Work[] }) {
   const works = useOfflineWorks(initialWorks);
   const data = useMemo(() => getReadsPageData(works), [works]);
+  const stats = useMemo(() => getReadingStats(works), [works]);
 
-  return <ReadsView data={data} />;
+  return <ReadsView data={data} stats={stats} />;
 }
