@@ -6,21 +6,48 @@
 // filter pane).
 
 import Link from "next/link";
-import { useState } from "react";
-import type { ReadsPageData, ReadingStats } from "@/lib/insights";
+import { useMemo, useState } from "react";
+import type {
+  ForeignRead,
+  ReadListItem,
+  ReadsPageData,
+  ReadingStats,
+} from "@/lib/insights";
+import { mergeByYear, mergeReadList } from "@/lib/insights";
 import { formatReadDate, periodColor, shortPeriod } from "@/lib/display";
 import { StatsDrawer } from "@/components/stats-drawer";
 
 export function ReadsView({
   data,
   stats,
+  foreignReads,
 }: {
   data: ReadsPageData;
   stats: ReadingStats;
+  foreignReads: ForeignRead[];
 }) {
   const [statsOpen, setStatsOpen] = useState(false);
 
-  if (data.read === 0) {
+  const items = useMemo(
+    () => mergeReadList(data.books, foreignReads),
+    [data.books, foreignReads],
+  );
+
+  // "Read this year" reflects the whole reading list, library and foreign alike.
+  const readThisYear = useMemo(() => {
+    const year = String(new Date().getFullYear());
+    const foreign = foreignReads.filter((f) => f.dateRead?.startsWith(year)).length;
+    return stats.readThisYear + foreign;
+  }, [foreignReads, stats.readThisYear]);
+
+  // The Stats pane's "By year" breakdown counts foreign reads too. Period and
+  // movement breakdowns stay library-only (foreign reads carry no taxonomy).
+  const statsData = useMemo(
+    () => ({ ...data, byYear: mergeByYear(data.byYear, foreignReads) }),
+    [data, foreignReads],
+  );
+
+  if (items.length === 0) {
     return (
       <section className="rounded-2xl border border-dashed border-paper-edge bg-paper px-6 py-16 text-center shadow-card">
         <h2 className="font-serif text-2xl text-ink">No reads yet</h2>
@@ -37,11 +64,11 @@ export function ReadsView({
     );
   }
 
-  const groups = groupByYear(data.books);
+  const groups = groupByYear(items);
 
   return (
     <>
-      <ReadSummary stats={stats} onOpenStats={() => setStatsOpen(true)} />
+      <ReadSummary stats={stats} readThisYear={readThisYear} onOpenStats={() => setStatsOpen(true)} />
 
       <div className="mt-8 space-y-8">
         {groups.map((g) => (
@@ -55,45 +82,7 @@ export function ReadsView({
             <div className="overflow-hidden rounded-2xl border border-paper-edge bg-paper shadow-card">
               <ul className="divide-y divide-paper-edge">
                 {g.books.map((b) => (
-                  <li key={b.id}>
-                    <Link
-                      href={`/book/${b.id}`}
-                      className="group flex items-stretch gap-3 px-4 py-3 transition-colors hover:bg-paper-sunken/60 sm:px-5"
-                    >
-                      <div className="min-w-0 flex-1">
-                        <h3 className="truncate font-serif text-[0.95rem] font-bold leading-tight text-ink transition-colors group-hover:text-accent">
-                          {b.title}
-                        </h3>
-                        <p className="mt-0.5 truncate text-xs text-ink-soft">{b.author}</p>
-                        <p className="mt-1.5 flex items-center gap-1.5 truncate text-[0.7rem] font-medium">
-                          <span style={{ color: periodColor(b.period) }}>
-                            {shortPeriod(b.period)}
-                          </span>
-                          {b.primaryMovement && (
-                            <>
-                              <span className="text-ink-faint/60">·</span>
-                              <span className="truncate text-ink-soft">
-                                {b.primaryMovement}
-                              </span>
-                            </>
-                          )}
-                        </p>
-                      </div>
-                      <div className="flex shrink-0 flex-col items-end justify-center gap-1 text-right">
-                        <span className="text-xs tabular-nums text-ink-faint">
-                          {formatReadDate(b.dateRead)}
-                        </span>
-                        {b.rating != null && (
-                          <span className="text-xs tabular-nums text-accent">
-                            {"★".repeat(b.rating)}
-                            <span className="text-ink-faint/40">
-                              {"★".repeat(5 - b.rating)}
-                            </span>
-                          </span>
-                        )}
-                      </div>
-                    </Link>
-                  </li>
+                  <li key={b.key}>{b.inLibrary ? <LibraryRow b={b} /> : <ForeignRow b={b} />}</li>
                 ))}
               </ul>
             </div>
@@ -101,17 +90,92 @@ export function ReadsView({
         ))}
       </div>
 
-      <StatsDrawer open={statsOpen} onClose={() => setStatsOpen(false)} data={data} />
+      <StatsDrawer open={statsOpen} onClose={() => setStatsOpen(false)} data={statsData} />
     </>
+  );
+}
+
+/** A read book that is in the library — links through to its detail page. */
+function LibraryRow({ b }: { b: ReadListItem }) {
+  return (
+    <Link
+      href={`/book/${b.id}`}
+      className="group flex items-stretch gap-3 px-4 py-3 transition-colors hover:bg-paper-sunken/60 sm:px-5"
+    >
+      <div className="min-w-0 flex-1">
+        <h3 className="truncate font-serif text-[0.95rem] font-bold leading-tight text-ink transition-colors group-hover:text-accent">
+          {b.title}
+        </h3>
+        <p className="mt-0.5 truncate text-xs text-ink-soft">{b.author}</p>
+        <p className="mt-1.5 flex items-center gap-1.5 truncate text-[0.7rem] font-medium">
+          <span style={{ color: periodColor(b.period) }}>{shortPeriod(b.period)}</span>
+          {b.primaryMovement && (
+            <>
+              <span className="text-ink-faint/60">·</span>
+              <span className="truncate text-ink-soft">{b.primaryMovement}</span>
+            </>
+          )}
+        </p>
+      </div>
+      <RowMeta b={b} />
+    </Link>
+  );
+}
+
+/**
+ * A read book imported from Goodreads that is NOT in the library. It has no
+ * detail page, so the row is a plain (non-clickable) container. The whole row
+ * is set slightly muted and carries a subtle "Not in library" tag so it reads
+ * as outside the collection without shouting.
+ */
+function ForeignRow({ b }: { b: ReadListItem }) {
+  return (
+    <div className="flex items-stretch gap-3 px-4 py-3 opacity-70 sm:px-5">
+      <div className="min-w-0 flex-1">
+        <h3 className="truncate font-serif text-[0.95rem] font-bold leading-tight text-ink">
+          {b.title}
+        </h3>
+        <p className="mt-0.5 truncate text-xs text-ink-soft">{b.author}</p>
+        <p className="mt-1.5 flex items-center gap-1.5 truncate text-[0.7rem] font-medium">
+          <span className="inline-flex items-center gap-1 text-ink-faint">
+            <span
+              className="h-1.5 w-1.5 rounded-full border border-ink-faint/50"
+              aria-hidden
+            />
+            Not in library
+          </span>
+        </p>
+      </div>
+      <RowMeta b={b} />
+    </div>
+  );
+}
+
+/** Right-aligned date + rating, shared by both row kinds. */
+function RowMeta({ b }: { b: ReadListItem }) {
+  return (
+    <div className="flex shrink-0 flex-col items-end justify-center gap-1 text-right">
+      <span className="text-xs tabular-nums text-ink-faint">
+        {formatReadDate(b.dateRead)}
+      </span>
+      {b.rating != null && (
+        <span className="text-xs tabular-nums text-accent">
+          {"★".repeat(b.rating)}
+          <span className="text-ink-faint/40">{"★".repeat(5 - b.rating)}</span>
+        </span>
+      )}
+    </div>
   );
 }
 
 /** Styled read-progress summary that stays on the page (not in the pane). */
 function ReadSummary({
   stats,
+  readThisYear,
   onOpenStats,
 }: {
   stats: ReadingStats;
+  readThisYear: number;
   onOpenStats: () => void;
 }) {
   return (
@@ -126,8 +190,8 @@ function ReadSummary({
             </span>
           </p>
           <p className="mt-1.5 text-xs text-ink-soft">
-            {stats.readThisYear > 0 && `${stats.readThisYear} this year`}
-            {stats.readThisYear > 0 && stats.averageRating != null && " · "}
+            {readThisYear > 0 && `${readThisYear} this year`}
+            {readThisYear > 0 && stats.averageRating != null && " · "}
             {stats.averageRating != null &&
               `${stats.averageRating.toFixed(1)}★ avg`}
           </p>
@@ -191,11 +255,11 @@ function Donut({ percent }: { percent: number }) {
 // Period accent for the row's period label (movement stays uncoloured).
 interface YearGroup {
   label: string;
-  books: ReadsPageData["books"];
+  books: ReadListItem[];
 }
 
 /** Split the (already date-desc sorted) list into year headers; undated last. */
-function groupByYear(books: ReadsPageData["books"]): YearGroup[] {
+function groupByYear(books: ReadListItem[]): YearGroup[] {
   const groups: YearGroup[] = [];
   let current: YearGroup | null = null;
   for (const b of books) {

@@ -6,6 +6,8 @@
 
 import { admin } from "../supabase/admin";
 import type { GoodreadsRead } from "./goodreads";
+import { readKey } from "./normalize";
+import type { ForeignRead } from "../insights";
 
 interface Row {
   title: string;
@@ -59,4 +61,46 @@ export async function countGoodreadsReads(): Promise<number> {
     .select("*", { count: "exact", head: true });
   if (error) throw new Error(`goodreads_reads count failed: ${error.message}`);
   return count ?? 0;
+}
+
+/**
+ * The persisted Goodreads "read" shelf entries that do NOT match any library
+ * work — books read but not in the collection. Uses the same deterministic
+ * title+author normalisation as the Tier-1 matcher, so anything the importer
+ * would have paired to a work is excluded here (no duplicate rows on the reads
+ * page). Translated titles paired only by the LLM tier are the one edge case
+ * this cannot detect without a call, and are deliberately left out of scope.
+ */
+export async function loadForeignGoodreadsReads(): Promise<ForeignRead[]> {
+  const db = admin();
+  const [shelfRes, worksRes] = await Promise.all([
+    db.from("goodreads_reads").select("title, author, date_read, rating").limit(100_000),
+    db.from("works").select("title, author").limit(100_000),
+  ]);
+  if (shelfRes.error) {
+    throw new Error(`goodreads_reads read failed: ${shelfRes.error.message}`);
+  }
+  if (worksRes.error) {
+    throw new Error(`library load failed: ${worksRes.error.message}`);
+  }
+
+  const libraryKeys = new Set<string>();
+  for (const w of worksRes.data ?? []) {
+    const title = w.title?.trim();
+    const author = w.author?.trim();
+    if (title && author) libraryKeys.add(readKey(title, author));
+  }
+
+  const foreign: ForeignRead[] = [];
+  for (const r of shelfRes.data ?? []) {
+    if (!r.title || !r.author) continue;
+    if (libraryKeys.has(readKey(r.title, r.author))) continue;
+    foreign.push({
+      title: r.title,
+      author: r.author,
+      dateRead: r.date_read,
+      rating: r.rating,
+    });
+  }
+  return foreign;
 }

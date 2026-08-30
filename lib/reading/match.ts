@@ -17,6 +17,7 @@ import { getReadingMatchEnv } from "../env";
 import { admin } from "../supabase/admin";
 import type { ReadRecord } from "./store";
 import { parseGoodreadsReads, type GoodreadsRead } from "./goodreads";
+import { normAuthor, readKey as key } from "./normalize";
 
 interface LibraryWork {
   workId: string;
@@ -37,26 +38,7 @@ export interface MatchResult {
 }
 
 // --- normalisation -------------------------------------------------------
-
-const stripDiacritics = (s: string) =>
-  s.normalize("NFKD").replace(/[\u0300-\u036f]/g, "");
-
-function normTitle(raw: string): string {
-  return stripDiacritics(raw.toLowerCase())
-    .replace(/\([^)]*\)/g, " ") // drop series / edition parentheticals
-    .replace(/[^a-z0-9]+/g, " ")
-    .trim();
-}
-
-function normAuthor(raw: string): string {
-  let s = raw.trim();
-  // "Last, First" -> "First Last" (library uses natural order; guard anyway).
-  const comma = s.match(/^([^,]+),\s*(.+)$/);
-  if (comma) s = `${comma[2]} ${comma[1]}`;
-  return stripDiacritics(s.toLowerCase()).replace(/[^a-z0-9]+/g, " ").trim();
-}
-
-const key = (title: string, author: string) => `${normAuthor(author)}\u0000${normTitle(title)}`;
+// (see ./normalize — shared with the reads-page foreign-shelf loader)
 
 // --- library source ------------------------------------------------------
 
