@@ -38,7 +38,7 @@ const LEFT: Dest[] = [
 const RIGHT: Dest[] = [
   {
     href: "/recommendations",
-    label: "For you",
+    label: "Canon",
     icon: (
       <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <path d="M12 4.5 13.6 9l4.4 1.6-4.4 1.6L12 16.7l-1.6-4.5L6 10.6 10.4 9 12 4.5Z" />
@@ -47,14 +47,14 @@ const RIGHT: Dest[] = [
     ),
   },
   {
-    href: "#",
-    label: "More",
-    dummy: true,
+    href: "/lineage",
+    label: "Lineage",
     icon: (
-      <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor" aria-hidden>
-        <circle cx="6" cy="12" r="1.6" />
-        <circle cx="12" cy="12" r="1.6" />
-        <circle cx="18" cy="12" r="1.6" />
+      <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        <circle cx="12" cy="5" r="2.2" />
+        <circle cx="5.5" cy="18.5" r="2.2" />
+        <circle cx="18.5" cy="18.5" r="2.2" />
+        <path d="M12 7.2v3.3m0 0-5 5.5m5-5.5 5 5.5" />
       </svg>
     ),
   },

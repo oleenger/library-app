@@ -66,22 +66,27 @@ export const RecommendResultSchema = z.object({
 export type Recommendation = z.infer<typeof RecommendationSchema>;
 
 // --- Canon gaps ----------------------------------------------------------
-// A structural view, not a taste view: which major/canonical works the library
-// lacks to be well-rounded across periods and movements, each scored 1..10 by
-// how foundational it is (10 = a cornerstone every serious library must hold,
-// e.g. Pride and Prejudice for Romanticism, Gravity's Rainbow for Postmodernism).
-// Results are grouped under the focus areas (periods/movements) the reader
-// favours, so gaps are shown "under each thing I'm into".
+// A structural view, not a taste view: the foundational canon of the periods
+// and movements the reader favours. Each work is scored 1..10 by how
+// foundational it is (10 = a cornerstone every serious library must hold, e.g.
+// Pride and Prejudice for Romanticism, Gravity's Rainbow for Postmodernism) and
+// given a reading `order` within its area. The list includes works the reader
+// already owns (waypoints) alongside the ones they lack (gaps), so the same data
+// renders either as a ranked gap list ("By importance") or an ordered reading
+// path ("As a path"). Owned/gap status is a live join against holdings, done in
+// the view — not baked into the model output.
 
 export const CANON_GAPS_TOOL: Anthropic.Tool = {
   name: "identify_canon_gaps",
   description:
-    "Organise the major, canonical works MISSING from the library under the " +
-    "periods and movements the reader clearly favours. Use the coverage counts " +
-    "to infer the reader's focus areas (where they own the most), then under " +
-    "each area list the foundational works they still lack. Never list a work " +
-    "already present in the library. Score each work 1..10 by canonical " +
-    "importance. Return about 30 works in total across all areas.",
+    "Lay out the foundational canon of the periods and movements the reader " +
+    "clearly favours, so it can be read either as a ranked gap list or as an " +
+    "ordered reading path. Use the coverage counts to infer the reader's focus " +
+    "areas (where they own the most), then under each area list its cornerstone " +
+    "works — INCLUDING the ones the reader already owns, which serve as waypoints " +
+    "in the path. Score each work 1..10 by canonical importance AND give it a " +
+    "reading `order` within its area. Return about 30 works in total across all " +
+    "areas.",
   input_schema: {
     type: "object",
     properties: {
@@ -102,7 +107,10 @@ export const CANON_GAPS_TOOL: Anthropic.Tool = {
             },
             works: {
               type: "array",
-              description: "Major canonical works the reader lacks in this area, most important first.",
+              description:
+                "The area's cornerstone works — both the ones the reader owns " +
+                "(waypoints) and the ones they lack (gaps) — in canonical " +
+                "reading order.",
               items: {
                 type: "object",
                 properties: {
@@ -118,12 +126,23 @@ export const CANON_GAPS_TOOL: Anthropic.Tool = {
                       "(Pride and Prejudice / Romanticism; Gravity's Rainbow / " +
                       "Postmodernism). 7-9 = major. 4-6 = notable. 1-3 = minor.",
                   },
+                  order: {
+                    type: "integer",
+                    description:
+                      "1-based reading position within this area, pedagogical " +
+                      "(not strictly chronological): an accessible entry point may " +
+                      "precede an earlier-but-harder work, and the summit sits last. " +
+                      "Number every work in the area consecutively from 1.",
+                  },
                   reason: {
                     type: "string",
-                    description: "Short note on why this work matters and which gap it fills.",
+                    description:
+                      "One line on why this work sits at this position and what it " +
+                      "sets up for the next — a rationale for the reading order, not " +
+                      "just a blurb.",
                   },
                 },
-                required: ["title", "author", "importance"],
+                required: ["title", "author", "importance", "order", "reason"],
               },
             },
           },
@@ -142,6 +161,8 @@ export const CanonGapSchema = z.object({
   period: z.enum(PERIODS).nullish(),
   primary_movement: z.enum(MOVEMENTS).nullish(),
   importance: z.number().int().min(1).max(10),
+  /** 1-based reading position within the area (pedagogical order). */
+  order: z.number().int().min(1).nullish(),
   reason: z.string().nullish(),
 });
 

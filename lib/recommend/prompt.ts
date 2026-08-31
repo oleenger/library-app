@@ -2,12 +2,32 @@
 // We send only read works (the taste signal), sorted so the strongest signal —
 // highly-rated titles — leads, and we cap the list so the prompt stays bounded
 // regardless of library size (worst-case token cost is capped by design).
+//
+// The owned library is NOT dumped into the taste prompt: it crowds out the taste
+// signal and LLMs dedup-by-list unreliably anyway. Overlap with the shelf is
+// removed in code after the call (see generate.ts). We keep the reader's taste
+// in three buckets — loved, disliked, recent — so the model has both positive
+// and negative signal plus a sense of where their taste is heading.
 
 import type { Work } from "../types";
 import { MOVEMENTS, PERIODS } from "../taxonomy";
 
 /** Max read works included in the prompt; caps per-call input size. */
 const MAX_HISTORY = 120;
+/** Ratings at or below this count as negative signal (things to steer away from). */
+const DISLIKE_MAX = 2;
+/** How many most-recent reads to surface as a "where taste is heading" signal. */
+const RECENT_COUNT = 12;
+
+/** Shared literary-advisor persona; sent as the system prompt for both kinds. */
+export const RECOMMEND_SYSTEM = [
+  "You are a sharp, well-read literary advisor with wide-ranging taste across",
+  "periods, languages, and movements. You know the canon cold, but you also know",
+  "the underread gems, the translations worth chasing, and the unexpected pairing",
+  "that makes a reader say 'how did you know'. You are confident and specific, not",
+  "cautious. A recommendation that is merely safe and obvious is a failure; a",
+  "recommendation that is surprising yet clearly right for this reader is the goal.",
+].join("\n");
 
 interface HistoryLine {
   title: string;
@@ -15,6 +35,7 @@ interface HistoryLine {
   rating: number | null;
   period: string | null;
   movement: string | null;
+  dateRead: string | null;
 }
 
 function toLine(w: Work): HistoryLine {
@@ -24,6 +45,7 @@ function toLine(w: Work): HistoryLine {
     rating: w.reading?.rating ?? null,
     period: w.classification.period,
     movement: w.classification.primaryMovement,
+    dateRead: w.reading?.dateRead ?? null,
   };
 }
 
@@ -35,60 +57,91 @@ function byStrength(a: HistoryLine, b: HistoryLine): number {
   return a.title.localeCompare(b.title);
 }
 
+/** Most recently read first; entries without a date sort last. */
+function byRecency(a: HistoryLine, b: HistoryLine): number {
+  const da = a.dateRead ?? "";
+  const db = b.dateRead ?? "";
+  if (da !== db) return db.localeCompare(da);
+  return a.title.localeCompare(b.title);
+}
+
+function formatLine(h: HistoryLine): string {
+  const stars = h.rating != null ? `${h.rating}/5` : "unrated";
+  const tags = [h.period, h.movement].filter(Boolean).join(", ");
+  return `- "${h.title}" by ${h.author} (${stars})${tags ? ` [${tags}]` : ""}`;
+}
+
 export interface RecommendPrompt {
+  /** System persona for the call. */
+  system: string;
+  /** User-turn text: the reader's taste evidence + task. */
   text: string;
   /** How many read works were actually included (after the cap). */
   basedOn: number;
 }
 
 export function buildRecommendPrompt(works: Work[]): RecommendPrompt {
-  const history = works
-    .filter((w) => w.reading)
-    .map(toLine)
+  const read = works.filter((w) => w.reading).map(toLine);
+
+  // Positive signal: loved/liked works, strongest first, capped.
+  const loved = read
+    .filter((h) => h.rating == null || h.rating > DISLIKE_MAX)
     .sort(byStrength)
     .slice(0, MAX_HISTORY);
 
-  // Titles the model must not recommend back: the entire owned library, not just
-  // the read subset — recommending a book already on the shelf is useless.
-  const owned = works
-    .map((w) => `${w.title} — ${w.author}`)
-    .sort((a, b) => a.localeCompare(b));
+  // Negative signal: works the reader actively disliked. Small but valuable —
+  // it lets the model steer away from a direction, not just toward one.
+  const disliked = read
+    .filter((h) => h.rating != null && h.rating <= DISLIKE_MAX)
+    .sort(byStrength);
 
-  const historyText = history
-    .map((h) => {
-      const stars = h.rating != null ? `${h.rating}/5` : "unrated";
-      const tags = [h.period, h.movement].filter(Boolean).join(", ");
-      return `- "${h.title}" by ${h.author} (${stars})${tags ? ` [${tags}]` : ""}`;
-    })
-    .join("\n");
+  // Trajectory signal: what they've been reading lately (dated reads only).
+  const recent = read
+    .filter((h) => h.dateRead)
+    .sort(byRecency)
+    .slice(0, RECENT_COUNT);
+
+  const lovedText = loved.map(formatLine).join("\n");
+  const dislikedText = disliked.map(formatLine).join("\n");
+  const recentText = recent.map(formatLine).join("\n");
 
   const text = [
-    "You are a well-read literary advisor. Recommend books this reader would love,",
-    "based strictly on the evidence in their reading history below. Weight",
-    "highly-rated titles most; look for the authors, periods, and movements they",
-    "return to, and offer a mix of safe hits and one or two adventurous but",
-    "defensible picks.",
+    "Recommend books this reader would love, drawing on the taste evidence below.",
+    "Read the whole picture — the authors, periods, and movements they return to,",
+    "what they rate highly, what they abandoned or disliked, and where their taste",
+    "has been heading lately — then use your own broad knowledge to make picks that",
+    "are genuinely exciting, not just adjacent. Aim for a mix: a few confident hits",
+    "and one or two bolder, non-obvious picks you can defend.",
     "",
-    "Hard rules:",
+    "Guidance:",
     "- Recommend only real, published books.",
-    "- Never recommend a book that appears in the OWNED LIBRARY list (they already have it).",
-    "- Every recommendation must cite concrete evidence from the history (name the",
-    "  titles/authors/movements that justify it).",
-    "- Return 3 to 8 recommendations via the recommend_books tool.",
+    "- Do NOT recommend books the reader has already read (listed below). Anything",
+    "  already on their shelf is removed automatically, so favour breadth over",
+    "  hedging — don't waste a slot on something they likely own.",
+    "- Prefer the underread, the in-translation, and the surprising-but-right over",
+    "  the obvious bestseller they've certainly already heard of.",
+    "- Give each pick a short, vivid reason that connects it to their taste; be",
+    "  specific, but you may reason beyond the literal history when the leap is sound.",
+    "- Return 3 to 8 recommendations via the recommend_books tool, best first.",
     "",
-    "READING HISTORY (strongest signal first):",
-    historyText || "(none)",
+    "LOVED / LIKED (strongest signal first):",
+    lovedText || "(none yet)",
     "",
-    "OWNED LIBRARY (do not recommend any of these back):",
-    owned.join("\n"),
+    "DISLIKED (steer away from what these have in common):",
+    dislikedText || "(none recorded)",
+    "",
+    "READING LATELY (where their taste is heading):",
+    recentText || "(no dated reads)",
   ].join("\n");
 
-  return { text, basedOn: history.length };
+  return { system: RECOMMEND_SYSTEM, text, basedOn: loved.length };
 }
 
 // --- Canon gaps ----------------------------------------------------------
 
 export interface CanonPrompt {
+  /** System persona for the call. */
+  system: string;
   text: string;
   /** Number of owned works the coverage was computed from. */
   basedOn: number;
@@ -128,25 +181,38 @@ export function buildCanonPrompt(works: Work[]): CanonPrompt {
     .sort((a, b) => a.localeCompare(b));
 
   const text = [
-    "You are a literary curator helping a reader deepen the collection in the",
-    "areas they clearly love. Group your recommendations UNDER the reader's focus",
-    "areas — the periods and movements they favour — and under each list the major,",
-    "canonical works they are still MISSING.",
+    "As a literary curator, map out the foundational canon of the areas this",
+    "reader clearly loves, so it can be read either as a ranked list of gaps or",
+    "as an ordered reading path. Group your works UNDER the reader's focus areas —",
+    "the periods and movements they favour — and under each lay out that area's",
+    "cornerstone works IN READING ORDER.",
     "",
     "Method:",
     "- The reader's strongest areas (most owned) are given below; treat these as",
     "  the focus areas. Use the exact period/movement names shown.",
     "- Choose 4-6 focus areas total. Favour the reader's clear interests; you may",
     "  add at most one adjacent area worth developing.",
-    "- Under each area, list the foundational works they lack, most important first.",
-    "- Score each work 1..10. 10 = an absolute cornerstone of that area no serious",
-    "  collection can omit (e.g. Pride and Prejudice for Romanticism, Gravity's",
-    "  Rainbow for Postmodernism). 7-9 = major; 4-6 = notable; 1-3 = minor.",
+    "- Under each area, list its cornerstone works — INCLUDING the ones the reader",
+    "  already owns (marked in the OWNED LIBRARY list below). Owned works are",
+    "  waypoints in the path, not omissions: a reader following the path passes",
+    "  through books they already have. Do NOT skip an owned cornerstone.",
+    "- Give every work both an `importance` (1..10) and a reading `order`.",
+    "  - importance: 10 = an absolute cornerstone no serious collection can omit",
+    "    (Pride and Prejudice for Romanticism, Gravity's Rainbow for Postmodernism);",
+    "    7-9 = major; 4-6 = notable; 1-3 = minor.",
+    "  - order: number the works within each area 1, 2, 3 … in the sequence you'd",
+    "    have the reader take them. Order is PEDAGOGICAL, not strictly chronological:",
+    "    an accessible entry point may precede an earlier-but-harder work, and the",
+    "    hardest summit belongs last. This ordering is the whole point of a path.",
+    "- Give each work a one-line `reason` that justifies its POSITION — why it sits",
+    "  here and what it sets up for what follows — not just a description.",
     "- Return ABOUT 30 works in total across all focus areas.",
     "",
     "Hard rules:",
     "- Recommend only real, published books.",
-    "- Never recommend a work already in the OWNED LIBRARY list.",
+    "- Include owned cornerstones as waypoints; do not treat the OWNED LIBRARY list",
+    "  as an exclusion list. It is there so you can weave the reader's own books",
+    "  into the path in the right places.",
     "",
     `READER'S STRONGEST PERIODS: ${topPeriods.join(", ") || "(none yet)"}`,
     `READER'S STRONGEST MOVEMENTS: ${topMovements.join(", ") || "(none yet)"}`,
@@ -157,9 +223,9 @@ export function buildCanonPrompt(works: Work[]): CanonPrompt {
     "MOVEMENT COVERAGE (owned works per movement):",
     movementCoverage,
     "",
-    "OWNED LIBRARY (do not recommend any of these back):",
+    "OWNED LIBRARY (weave these in as waypoints where they belong):",
     owned.join("\n"),
   ].join("\n");
 
-  return { text, basedOn: works.length };
+  return { system: RECOMMEND_SYSTEM, text, basedOn: works.length };
 }

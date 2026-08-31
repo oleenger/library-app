@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getWorks } from "@/lib/books";
 import { slugify } from "@/lib/slug";
+import { isMovement } from "@/lib/taxonomy";
 import { CollectionView } from "@/components/collection-view";
 
 // Live catalogue: render on demand so newly added books appear without a rebuild.
@@ -49,6 +50,7 @@ export default async function MovementPage({
       eyebrow="Movement"
       title={name}
       works={works}
+      lineageSlug={isMovement(name) ? slugify(name) : undefined}
     />
   );
 }
