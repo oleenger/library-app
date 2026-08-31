@@ -4,9 +4,9 @@ import { slugify } from "@/lib/slug";
 import { MOVEMENTS, movementPeriod, isCrossPeriod, type Movement } from "@/lib/taxonomy";
 import { lineageNode } from "@/lib/lineage";
 import { canonPath } from "@/lib/canon/paths";
-import { buildOwnedIndex, isCanonWorkOwned } from "@/lib/recommend/match";
+import { workKey, surnameKey, surnamesMatch } from "@/lib/recommend/match";
 import { shortPeriod } from "@/lib/display";
-import { LineageView, type LineageChip, type LineageExample } from "@/components/lineage-view";
+import { LineageView, type LineageChip, type LineageExample, type CanonEntry } from "@/components/lineage-view";
 import type { Work } from "@/lib/types";
 
 // Live catalogue: render on demand so holding counts reflect the current library
@@ -49,6 +49,27 @@ function toChips(
   }));
 }
 
+/**
+ * Find the reader's own copy of a canonical work, if held: exact title+author
+ * first, then a same-year loose-surname fallback so a translated edition still
+ * resolves. Returns the owning work so an owned essential can link to its page.
+ */
+function findOwnedWork(
+  works: Work[],
+  title: string,
+  author: string,
+  year: number,
+): Work | undefined {
+  const key = workKey(title, author);
+  const exact = works.find((w) => workKey(w.title, w.author) === key);
+  if (exact) return exact;
+  const target = surnameKey(author);
+  return works.find(
+    (w) =>
+      w.originalYear === year && surnamesMatch(target, surnameKey(w.author)),
+  );
+}
+
 async function lineageData(slug: string) {
   const movement = resolveMovement(slug);
   if (!movement) return null;
@@ -73,17 +94,27 @@ async function lineageData(slug: string) {
     .filter(Boolean)
     .join(" · ");
 
-  // Canon coverage: how many of the movement's curated canon the reader owns,
-  // matched translation-tolerantly against live holdings.
+  // Canon: the movement's essential works, joined live against the reader's
+  // shelf so each is marked owned (a waypoint) or a gap. The essentials — not
+  // the reader's incidental holdings — are the point of this view.
   const canon = canonPath(movement);
+  let canonWorks: CanonEntry[] = [];
   let canonOwned = 0;
-  let canonTotal = 0;
   if (canon) {
-    const owned = buildOwnedIndex(works);
-    canonTotal = canon.works.length;
-    canonOwned = canon.works.filter((w) =>
-      isCanonWorkOwned(owned, w.title, w.author, w.year),
-    ).length;
+    canonWorks = [...canon.works]
+      .sort((a, b) => a.year - b.year)
+      .map((w) => {
+        const owned = findOwnedWork(works, w.title, w.author, w.year);
+        return {
+          title: w.title,
+          author: w.author,
+          year: w.year,
+          importance: w.importance,
+          owned: owned != null,
+          ownedId: owned?.id ?? null,
+        };
+      });
+    canonOwned = canonWorks.filter((w) => w.owned).length;
   }
 
   return {
@@ -94,8 +125,10 @@ async function lineageData(slug: string) {
     count: holdings.length,
     examples,
     hasCanon: canon != null,
+    canonBlurb: canon?.blurb,
+    canonWorks,
     canonOwned,
-    canonTotal,
+    canonTotal: canonWorks.length,
     reactedAgainst: toChips(node.reactedAgainst, counts),
     ledTo: toChips(node.ledTo, counts),
     alongside: toChips(node.alongside, counts),

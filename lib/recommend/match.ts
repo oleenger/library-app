@@ -51,7 +51,7 @@ export function surnameKey(author: string): string {
  * avoid short-name collisions. Paired with an equal publication year at the call
  * site, this is tight enough to keep false positives rare.
  */
-function surnamesMatch(a: string, b: string): boolean {
+export function surnamesMatch(a: string, b: string): boolean {
   if (a.length < 4 || b.length < 4) return a === b;
   if (a === b || a.startsWith(b) || b.startsWith(a)) return true;
   return a.slice(0, 5) === b.slice(0, 5);
