@@ -105,6 +105,12 @@
       background: #f4f1ea;
       animation: splash-out 400ms ease 650ms forwards;
     }
+
+    /* Already shown this session (set pre-paint in layout): never replay the
+       splash on subsequent full-page loads during navigation. */
+    html.splash-seen .app-splash {
+      display: none;
+    }
   }
 
   @keyframes splash-out {

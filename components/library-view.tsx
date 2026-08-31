@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { Work } from "@/lib/types";
 import { formatYear, periodColor, shortPeriod } from "@/lib/display";
 import { AppHeader } from "@/components/app-header";
@@ -27,38 +27,46 @@ export function LibraryView({ works, initialQuery = "" }: Props) {
     query: initialQuery,
   });
   const [filterOpen, setFilterOpen] = useState(false);
-  const [page, setPage] = useState(0);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const filtered = useMemo(() => applyFilters(works, filters), [works, filters]);
   // The header filter button reflects the facet axes it controls (not the
   // read-status toggle, which lives above the table).
   const facetActive = Boolean(filters.period || filters.movement || filters.author);
 
-  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-  // A changed result set (search / filter / read-status) returns to page one.
+  // A changed result set (search / filter / read-status) starts from the top.
   useEffect(() => {
-    setPage(0);
+    setVisibleCount(PAGE_SIZE);
   }, [filters]);
-  // Tapping the logo or the Library tab returns to the first page of results.
+  // Tapping the logo or the Library tab returns to the top of results.
   useEffect(() => {
     function home() {
-      setPage(0);
+      setVisibleCount(PAGE_SIZE);
     }
     window.addEventListener("library:home", home);
     return () => window.removeEventListener("library:home", home);
   }, []);
-  // Guard against a stale page index if the list shrinks under the cursor.
-  const safePage = Math.min(page, pageCount - 1);
-  const start = safePage * PAGE_SIZE;
-  const paged = filtered.slice(start, start + PAGE_SIZE);
 
-  function goTo(next: number) {
-    setPage(next);
-    if (typeof window !== "undefined") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  }
+  const paged = filtered.slice(0, visibleCount);
+  const hasMore = visibleCount < filtered.length;
 
+  // Load the next batch when the sentinel scrolls into view.
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (!hasMore) return;
+    const el = sentinelRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          setVisibleCount((c) => c + PAGE_SIZE);
+        }
+      },
+      { rootMargin: "400px" },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [hasMore]);
   function toggle(key: FacetKey, value: string) {
     setFilters((f) => ({ ...f, [key]: f[key] === value ? "" : value }));
   }
@@ -120,36 +128,12 @@ export function LibraryView({ works, initialQuery = "" }: Props) {
           )}
         </div>
 
-        {pageCount > 1 && (
-          <nav
-            className="mt-4 flex flex-col items-center gap-2 px-1"
-            aria-label="Pagination"
-          >
-            <div className="flex w-full items-center justify-between">
-              <button
-                type="button"
-                onClick={() => goTo(safePage - 1)}
-                disabled={safePage === 0}
-                className="rounded-[0.7rem] border border-paper-edge bg-paper px-4 py-2 text-sm text-ink transition hover:text-accent disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                Previous
-              </button>
-              <p className="text-sm text-ink-soft">
-                Page <span className="text-ink">{safePage + 1}</span> of {pageCount}
-              </p>
-              <button
-                type="button"
-                onClick={() => goTo(safePage + 1)}
-                disabled={safePage >= pageCount - 1}
-                className="rounded-[0.7rem] border border-paper-edge bg-paper px-4 py-2 text-sm text-ink transition hover:text-accent disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                Next
-              </button>
-            </div>
-            <p className="text-xs text-ink-faint">
-              Showing {start + 1}–{start + paged.length} of {filtered.length}
-            </p>
-          </nav>
+        {hasMore && <div ref={sentinelRef} aria-hidden className="h-1" />}
+
+        {filtered.length > 0 && (
+          <p className="mt-4 px-1 text-center text-xs text-ink-faint">
+            Showing {paged.length} of {filtered.length}
+          </p>
         )}
       </main>
     </div>
