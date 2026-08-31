@@ -2,6 +2,7 @@ import { getWorks } from "@/lib/books";
 import { slugify } from "@/lib/slug";
 import { MOVEMENTS, MOVEMENT_PERIODS, PERIODS, type Period } from "@/lib/taxonomy";
 import { LineageMap, type LineageBand } from "@/components/lineage-map";
+import { buildLineageGraph } from "@/lib/lineage-graph";
 import type { Work } from "@/lib/types";
 
 // Live catalogue: counts reflect the current library without a rebuild.
@@ -63,5 +64,7 @@ export default async function LineageMapPage() {
 
   const owned = MOVEMENTS.filter((m) => (counts.get(m) ?? 0) > 0).length;
 
-  return <LineageMap bands={bands} total={MOVEMENTS.length} owned={owned} />;
+  const graph = buildLineageGraph(counts);
+
+  return <LineageMap bands={bands} total={MOVEMENTS.length} owned={owned} graph={graph} />;
 }

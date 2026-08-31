@@ -11,6 +11,8 @@ import { AppHeader } from "@/components/app-header";
 import { PullToRefresh } from "@/components/pull-to-refresh";
 import { MovementChip } from "@/components/lineage-view";
 import type { LineageChip } from "@/components/lineage-view";
+import { LineageGraph } from "@/components/lineage-graph";
+import type { LineageGraph as LineageGraphData } from "@/lib/lineage-graph";
 
 /** One band: a period (or the cross-period bucket) and the movements in it. */
 export interface LineageBand {
@@ -22,12 +24,15 @@ export function LineageMap({
   bands,
   total,
   owned,
+  graph,
 }: {
   bands: LineageBand[];
   /** Total movements in the taxonomy. */
   total: number;
   /** How many movements the user owns at least one work in. */
   owned: number;
+  /** Positioned lineage graph for the timeline diagram. */
+  graph: LineageGraphData;
 }) {
   return (
     <PullToRefresh>
@@ -49,6 +54,24 @@ export function LineageMap({
               library.
             </p>
           </header>
+
+          {/* Timeline graph: the connected led-to flow across periods. */}
+          <section className="mb-10">
+            <LineageGraph graph={graph} />
+            <p className="mt-3 px-1 text-xs text-ink-faint">
+              Arrows trace what each movement led to; dashed loops link movements
+              within one period. Faded, dashed nodes aren&apos;t in your library yet.
+            </p>
+          </section>
+
+          <div className="mb-4 px-1">
+            <h2 className="font-serif text-2xl leading-tight tracking-[-0.01em] text-ink">
+              Full index
+            </h2>
+            <p className="mt-1 text-sm text-ink-soft">
+              Every movement, grouped by period.
+            </p>
+          </div>
 
           <div className="space-y-8">
             {bands.map((band) => {
