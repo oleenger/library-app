@@ -1,272 +1,348 @@
 "use client";
 
-import { useState } from "react";
-import { formatYear, periodColor, shortPeriod } from "@/lib/display";
-import type { StoredSet, RecKind } from "@/lib/recommend/store";
-import type { CanonFocus, CanonGap, Recommendation } from "@/lib/recommend/schema";
+import { useMemo, useState } from "react";
+import { formatYear, periodColor } from "@/lib/display";
+import type { CanonPathView, CanonWorkView } from "@/lib/canon/select";
+import { LineageEntryCard } from "@/components/lineage-entry-card";
+import { slugify } from "@/lib/slug";
 
-function formatWhen(iso: string): string {
-  const d = new Date(iso);
-  return Number.isNaN(d.getTime())
-    ? ""
-    : d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
-}
-
+/**
+ * Reading Paths: one card per movement the reader favours, drawn from the static
+ * curated canon (lib/canon/paths.ts) and joined to live holdings server-side.
+ * Each card reads two ways — as an ordered reading path (owned books inline as
+ * green waypoints, missing works as dashed numbered gaps, each step with a
+ * rationale) or as the flat by-importance ranking. Nothing here is generated:
+ * order and notes are hand-curated.
+ */
 export function RecommendationsView({
-  taste,
-  canon,
-  tasteStale,
-  canonStale,
-  readCount,
+  paths,
   workCount,
+  initialMovement,
 }: {
-  taste: StoredSet<Recommendation> | null;
-  canon: StoredSet<CanonFocus> | null;
-  tasteStale: boolean;
-  canonStale: boolean;
-  readCount: number;
+  paths: CanonPathView[];
   workCount: number;
+  initialMovement?: string | null;
 }) {
-  return (
-    <div className="space-y-14">
-      <RecSection
-        kind="taste"
-        title="From your reading history"
-        subtitle="Books to read next, inferred from what you've read and rated."
-        initial={taste}
-        stale={tasteStale}
-        enabled={readCount >= 3}
-        disabledHint="Mark at least 3 books as read to get recommendations."
-        renderContent={(set) => <TasteContent set={set} />}
-      />
+  const preselect =
+    initialMovement && paths.some((p) => p.movement === initialMovement)
+      ? initialMovement
+      : paths[0]?.movement ?? "";
+  const [selected, setSelected] = useState<string>(preselect);
 
-      <RecSection
-        kind="canon"
-        title="Canon gaps"
-        subtitle="Major works you're missing, grouped under the periods and movements you're into."
-        initial={canon}
-        stale={canonStale}
-        enabled={workCount >= 5}
-        disabledHint="Add at least 5 books first."
-        renderContent={(set) => <CanonContent set={set} />}
-      />
-    </div>
-  );
-}
-
-type State =
-  | { phase: "idle" }
-  | { phase: "loading" }
-  | { phase: "error"; message: string; retryAfter?: number };
-
-function itemCount<T>(set: StoredSet<T> | null): number {
-  return set?.items?.length ?? 0;
-}
-
-function RecSection<T>({
-  kind,
-  title,
-  subtitle,
-  initial,
-  stale,
-  enabled,
-  disabledHint,
-  renderContent,
-}: {
-  kind: RecKind;
-  title: string;
-  subtitle: string;
-  initial: StoredSet<T> | null;
-  stale: boolean;
-  enabled: boolean;
-  disabledHint: string;
-  renderContent: (set: StoredSet<T>) => React.ReactNode;
-}) {
-  const [set, setSet] = useState<StoredSet<T> | null>(initial);
-  const [isStale, setIsStale] = useState(stale);
-  const [state, setState] = useState<State>({ phase: "idle" });
-
-  const loading = state.phase === "loading";
-  const hasItems = itemCount(set) > 0;
-
-  async function generate(refresh: boolean) {
-    if (!enabled || loading) return;
-    setState({ phase: "loading" });
-    try {
-      const q = new URLSearchParams({ kind });
-      if (refresh) q.set("refresh", "1");
-      const res = await fetch(`/api/recommendations?${q}`, { method: "POST" });
-      const json = await res.json();
-      if (!res.ok) {
-        setState({
-          phase: "error",
-          message: json.hint ?? json.error ?? "Generation failed",
-          retryAfter: json.retryAfter,
-        });
-        return;
-      }
-      setSet(json as StoredSet<T>);
-      setIsStale(false);
-      setState({ phase: "idle" });
-    } catch (err) {
-      setState({ phase: "error", message: String(err) });
-    }
+  if (workCount < 5) {
+    return (
+      <section>
+        <div className="mb-4">
+          <h2 className="font-serif text-2xl leading-tight sm:text-3xl">Canon</h2>
+          <p className="mt-1 text-sm text-ink-soft">
+            The canonical works behind the movements your shelves lean into.
+          </p>
+        </div>
+        <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          Add at least 5 books first.
+        </p>
+      </section>
+    );
   }
 
+  const held = paths.filter((p) => p.holdings > 0);
+  const rest = paths.filter((p) => p.holdings === 0);
+  const current = paths.find((p) => p.movement === selected) ?? paths[0] ?? null;
+
   return (
-    <section>
-      <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h2 className="font-serif text-2xl leading-tight sm:text-3xl">{title}</h2>
-          <p className="mt-1 text-sm text-ink-soft">{subtitle}</p>
-        </div>
-        {enabled && hasItems && !isStale && (
-          <button
-            type="button"
-            onClick={() => generate(true)}
-            disabled={loading}
-            className="rounded-xl border border-paper-edge bg-paper px-3.5 py-2 text-[0.8rem] font-semibold text-ink-soft shadow-sm transition hover:border-ink-faint hover:text-ink disabled:opacity-50"
-          >
-            {loading ? "Thinking…" : "Regenerate"}
-          </button>
-        )}
+    <section className="space-y-6">
+      <div>
+        <h2 className="font-serif text-2xl leading-tight sm:text-3xl">Canon</h2>
+        <p className="mt-1 text-sm text-ink-soft">
+          The canonical works of a movement — read them as an ordered reading path
+          or ranked by importance. Books you own appear as waypoints.
+        </p>
       </div>
 
-      {!enabled && (
-        <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-          {disabledHint}
-        </p>
-      )}
-
-      {enabled && !hasItems && (
+      {paths.length === 0 ? (
         <div className="rounded-2xl border border-paper-edge bg-paper p-8 text-center shadow-card">
-          <p className="text-[0.95rem] text-ink-soft">Nothing generated yet.</p>
-          <button
-            type="button"
-            onClick={() => generate(false)}
-            disabled={loading}
-            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-ink disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {loading ? "Thinking…" : "Generate"}
-          </button>
+          <p className="text-[0.95rem] text-ink-soft">No curated paths available.</p>
         </div>
-      )}
+      ) : (
+        <>
+          <MovementMenu
+            held={held}
+            rest={rest}
+            value={current?.movement ?? ""}
+            onChange={setSelected}
+          />
 
-      {isStale && hasItems && (
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-paper-edge bg-white px-4 py-3 shadow-sm">
-          <p className="text-sm text-ink-soft">
-            Your library changed since these were generated.
+          {current && (
+            <LineageEntryCard
+              movement={current.movement}
+              slug={slugify(current.movement)}
+            />
+          )}
+
+          {current && <CanonArea key={current.movement} path={current} />}
+
+          <p className="text-xs text-ink-faint">
+            Ordering and notes are curated, not generated. Owned books are matched
+            by title or by author and year, so translated editions still count.
           </p>
-          <button
-            type="button"
-            onClick={() => generate(false)}
-            disabled={loading}
-            className="inline-flex items-center gap-2 rounded-lg bg-accent px-3.5 py-2 text-[0.8rem] font-semibold text-white shadow-sm transition hover:bg-ink disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {loading ? "Thinking…" : "Update"}
-          </button>
-        </div>
-      )}
-
-      {hasItems && set && renderContent(set)}
-
-      {state.phase === "error" && (
-        <p className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {state.message}
-          {state.retryAfter ? ` (try again in ${state.retryAfter}s)` : ""}
-        </p>
-      )}
-
-      {hasItems && set && (
-        <p className="mt-3 text-xs text-ink-faint">
-          Generated {formatWhen(set.generatedAt)} · {set.model}
-        </p>
+        </>
       )}
     </section>
   );
 }
 
-/** Taste picks: one front-page-style card, best match first. */
-function TasteContent({ set }: { set: StoredSet<Recommendation> }) {
+/** Top menu for choosing which movement's path to read. Held movements first. */
+function MovementMenu({
+  held,
+  rest,
+  value,
+  onChange,
+}: {
+  held: CanonPathView[];
+  rest: CanonPathView[];
+  value: string;
+  onChange: (movement: string) => void;
+}) {
+  return (
+    <label className="block">
+      <span className="mb-1.5 block text-[0.7rem] font-medium uppercase tracking-[0.12em] text-ink-faint">
+        Choose a movement
+      </span>
+      <div className="relative">
+        <select
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-full appearance-none rounded-xl border border-paper-edge bg-paper py-3 pl-4 pr-10 font-serif text-base text-ink shadow-sm transition hover:border-ink-faint focus:border-accent focus:outline-none"
+        >
+          {held.length > 0 && (
+            <optgroup label="On your shelves">
+              {held.map((p) => (
+                <option key={p.movement} value={p.movement}>
+                  {p.movement} — {p.ownedCount}/{p.total} owned
+                </option>
+              ))}
+            </optgroup>
+          )}
+          <optgroup label={held.length > 0 ? "More movements" : "All movements"}>
+            {rest.map((p) => (
+              <option key={p.movement} value={p.movement}>
+                {p.movement}
+              </option>
+            ))}
+          </optgroup>
+        </select>
+        <span
+          className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-ink-faint"
+          aria-hidden
+        >
+          <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M5 7.5 10 12.5 15 7.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </span>
+      </div>
+    </label>
+  );
+}
+
+type AreaView = "path" | "importance";
+
+/** A single movement's path, switchable between path and importance views. */
+function CanonArea({ path }: { path: CanonPathView }) {
+  const [view, setView] = useState<AreaView>("path");
+
+  const pct = path.total > 0 ? Math.round((path.ownedCount / path.total) * 100) : 0;
+  const color = periodColor(path.period);
+
+  // Path view keeps the curated reading order; importance view re-ranks a copy.
+  const byImportance = useMemo(
+    () => [...path.works].sort((a, b) => b.importance - a.importance),
+    [path.works],
+  );
+
   return (
     <div className="overflow-hidden rounded-2xl border border-paper-edge bg-paper shadow-card">
-      <div className="flex items-center justify-between border-b border-paper-edge px-5 py-4 sm:px-6">
-        <p className="text-sm text-ink-soft">
-          <span className="font-serif text-lg text-ink">{set.items.length}</span>{" "}
-          {set.items.length === 1 ? "book" : "books"}
-        </p>
-        <span className="text-[0.7rem] font-medium uppercase tracking-[0.12em] text-ink-faint">
-          Best match first
-        </span>
-      </div>
-      <ol className="divide-y divide-paper-edge">
-        {set.items.map((item) => (
-          <BookRow key={item.title + item.author} item={item} />
-        ))}
-      </ol>
-    </div>
-  );
-}
-
-/** Canon gaps: one card per focus area (period/movement you're into). */
-function CanonContent({ set }: { set: StoredSet<CanonFocus> }) {
-  const total = set.items.reduce((n, area) => n + area.works.length, 0);
-  return (
-    <div className="space-y-6">
-      <p className="text-sm text-ink-soft">
-        <span className="font-serif text-lg text-ink">{total}</span>{" "}
-        {total === 1 ? "work" : "works"} across{" "}
-        <span className="font-serif text-lg text-ink">{set.items.length}</span>{" "}
-        {set.items.length === 1 ? "area" : "areas"} you favour.
-      </p>
-      {set.items.map((area) => (
-        <div
-          key={area.focus}
-          className="overflow-hidden rounded-2xl border border-paper-edge bg-paper shadow-card"
-        >
-          <div className="flex items-center justify-between border-b border-paper-edge px-5 py-4 sm:px-6">
-            <h3 className="font-serif text-lg text-ink">{area.focus}</h3>
-            <span className="text-[0.7rem] font-medium uppercase tracking-[0.12em] text-ink-faint">
-              {area.works.length} {area.works.length === 1 ? "work" : "works"}
-            </span>
+      <div className="border-b border-paper-edge px-5 py-4 sm:px-6">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="min-w-0">
+            <h3 className="flex items-center gap-2 font-serif text-lg text-ink">
+              <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: color }} aria-hidden />
+              <span className="truncate">{path.movement}</span>
+            </h3>
+            <p className="mt-0.5 text-xs text-ink-soft">{path.blurb}</p>
           </div>
-          <ol className="divide-y divide-paper-edge">
-            {area.works.map((item) => (
-              <BookRow key={item.title + item.author} item={item} />
-            ))}
-          </ol>
+          <ViewToggle view={view} onChange={setView} />
         </div>
-      ))}
+        <div className="mt-3 flex items-center gap-3">
+          <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-paper-sunken">
+            <div
+              className="h-full rounded-full bg-emerald-500 transition-[width]"
+              style={{ width: `${pct}%` }}
+            />
+          </div>
+          <span className="shrink-0 text-[0.7rem] font-medium uppercase tracking-[0.1em] text-ink-faint">
+            {path.ownedCount} of {path.total} owned · {path.eraLabel}
+          </span>
+        </div>
+      </div>
+
+      {view === "path" ? (
+        <ol className="px-5 py-5 sm:px-6">
+          {path.works.map((item, i) => (
+            <PathStep
+              key={item.title + item.author}
+              item={item}
+              position={i + 1}
+              isLast={i === path.works.length - 1}
+            />
+          ))}
+        </ol>
+      ) : (
+        <ol className="divide-y divide-paper-edge">
+          {byImportance.map((item) => (
+            <ImportanceRow key={item.title + item.author} item={item} />
+          ))}
+        </ol>
+      )}
     </div>
   );
 }
 
-/** A recommended book, laid out like a front-page library row (no explanation). */
-function BookRow({ item }: { item: Recommendation | CanonGap }) {
-  const period = item.period ?? null;
-  const color = periodColor(period);
-  const importance = "importance" in item ? item.importance : null;
-  const tag = item.primary_movement ?? shortPeriod(period);
-
+/** Segmented path/importance switch for one area. */
+function ViewToggle({ view, onChange }: { view: AreaView; onChange: (v: AreaView) => void }) {
+  const opts: { id: AreaView; label: string }[] = [
+    { id: "path", label: "As a path" },
+    { id: "importance", label: "By importance" },
+  ];
   return (
-    <li className="flex items-stretch gap-3 px-4 py-3 sm:px-5">
-      {importance != null && <ScoreBadge value={importance} />}
+    <div className="inline-flex rounded-lg border border-paper-edge bg-paper-sunken p-0.5" role="tablist">
+      {opts.map((o) => {
+        const active = o.id === view;
+        return (
+          <button
+            key={o.id}
+            type="button"
+            role="tab"
+            aria-selected={active}
+            onClick={() => onChange(o.id)}
+            className={`rounded-md px-3 py-1.5 text-[0.75rem] font-semibold transition ${
+              active ? "bg-white text-ink shadow-sm" : "text-ink-faint hover:text-ink-soft"
+            }`}
+          >
+            {o.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/** One step down the reading-path spine: owned waypoint or numbered gap. */
+function PathStep({
+  item,
+  position,
+  isLast,
+}: {
+  item: CanonWorkView;
+  position: number;
+  isLast: boolean;
+}) {
+  return (
+    <li className="relative flex gap-4 pb-6 last:pb-0">
+      {!isLast && (
+        <span className="absolute bottom-1 left-4 top-9 w-px -translate-x-1/2 bg-paper-edge" aria-hidden />
+      )}
+      <StatusDisc owned={item.owned} position={position} />
       <div className="min-w-0 flex-1">
-        <h3 className="truncate font-serif text-[0.95rem] font-bold leading-tight text-ink">
-          {item.title}
-        </h3>
+        <div className="flex items-baseline justify-between gap-3">
+          <h4 className="min-w-0 truncate font-serif text-[0.95rem] font-bold leading-tight text-ink">
+            {item.title}
+          </h4>
+          <span className="shrink-0 text-xs tabular-nums text-ink-faint">
+            {formatYear(item.year)}
+          </span>
+        </div>
         <p className="mt-0.5 truncate text-xs text-ink-soft">{item.author}</p>
-        <p className="mt-1.5 flex items-center gap-1.5 text-[0.7rem] font-medium">
-          <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ backgroundColor: color }} aria-hidden />
-          <span className="truncate" style={{ color }}>{tag}</span>
+        <p className="mt-1.5 text-[0.7rem] font-medium">
+          {item.owned ? (
+            <span className="text-emerald-600">In your library</span>
+          ) : (
+            <span className="text-ink-faint">Gap · reading position {position}</span>
+          )}
         </p>
-      </div>
-      <div className="flex shrink-0 flex-col items-end justify-between">
-        <span className="text-xs tabular-nums text-ink-faint">
-          {formatYear(item.first_published ?? null)}
-        </span>
+        {item.note && (
+          <p className="mt-2 text-[0.8rem] leading-relaxed text-ink-soft">{item.note}</p>
+        )}
       </div>
     </li>
+  );
+}
+
+/** The status disc anchoring a path step: green check when owned, else the gap's reading position. */
+function StatusDisc({ owned, position }: { owned: boolean; position: number }) {
+  if (owned) {
+    return (
+      <span
+        className="relative z-10 grid h-8 w-8 shrink-0 place-items-center rounded-full bg-emerald-500 text-white shadow-sm"
+        title="In your library"
+        aria-label="In your library"
+      >
+        <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden>
+          <path d="M5 10.5l3.5 3.5L15 6.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </span>
+    );
+  }
+  return (
+    <span
+      className="relative z-10 grid h-8 w-8 shrink-0 place-items-center rounded-full border-2 border-dashed border-ink-faint bg-paper font-serif text-sm tabular-nums text-ink-soft"
+      title={`Gap — reading position ${position}`}
+      aria-label={`Gap, reading position ${position}`}
+    >
+      {position}
+    </span>
+  );
+}
+
+/** A by-importance row: importance badge for gaps, green check for owned. */
+function ImportanceRow({ item }: { item: CanonWorkView }) {
+  // Fall back to the path note until an importance-specific rationale is curated.
+  const reason = item.why ?? item.note;
+  return (
+    <li className="flex items-stretch gap-3 px-4 py-3 sm:px-5">
+      {item.owned ? <OwnedBadge /> : <ScoreBadge value={item.importance} />}
+      <div className="min-w-0 flex-1">
+        <div className="flex items-baseline justify-between gap-3">
+          <h4 className="min-w-0 truncate font-serif text-[0.95rem] font-bold leading-tight text-ink">
+            {item.title}
+          </h4>
+          <span className="shrink-0 text-xs tabular-nums text-ink-faint">
+            {formatYear(item.year)}
+          </span>
+        </div>
+        <p className="mt-0.5 truncate text-xs text-ink-soft">{item.author}</p>
+        {item.owned && (
+          <p className="mt-1.5 text-[0.7rem] font-medium text-emerald-600">In your library</p>
+        )}
+        {reason && (
+          <p className="mt-1.5 text-[0.8rem] leading-relaxed text-ink-soft">{reason}</p>
+        )}
+      </div>
+    </li>
+  );
+}
+
+/** Owned marker for the by-importance view — mirrors ScoreBadge's footprint. */
+function OwnedBadge() {
+  return (
+    <span
+      className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-emerald-500 text-white"
+      title="In your library"
+      aria-label="In your library"
+    >
+      <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden>
+        <path d="M5 10.5l3.5 3.5L15 6.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </span>
   );
 }
 

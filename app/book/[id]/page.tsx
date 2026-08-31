@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getEdition, getWork } from "@/lib/books";
 import { formatYear, formatReadDate } from "@/lib/display";
 import { slugify } from "@/lib/slug";
+import { isMovement } from "@/lib/taxonomy";
 import { AppHeader } from "@/components/app-header";
 import { EditionDeleteButton } from "@/components/edition-delete-button";
 import { PullToRefresh } from "@/components/pull-to-refresh";
@@ -69,9 +70,19 @@ export default async function BookDetailPage({
     "—"
   );
   const primaryValue = c.primaryMovement ? (
-    <Link href={`/movement/${slugify(c.primaryMovement)}`} className={facetLinkClass}>
-      {c.primaryMovement}
-    </Link>
+    <span className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+      <Link href={`/movement/${slugify(c.primaryMovement)}`} className={facetLinkClass}>
+        {c.primaryMovement}
+      </Link>
+      {isMovement(c.primaryMovement) && (
+        <Link
+          href={`/lineage/${slugify(c.primaryMovement)}`}
+          className="text-[0.7rem] font-semibold uppercase tracking-[0.1em] text-accent/80 transition-colors hover:text-accent"
+        >
+          Lineage ↗
+        </Link>
+      )}
+    </span>
   ) : (
     "—"
   );

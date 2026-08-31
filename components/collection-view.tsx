@@ -16,9 +16,11 @@ export interface CollectionViewProps {
   title: string;
   /** Works belonging to this collection, already ordered for display. */
   works: Work[];
+  /** When set, show a "View lineage" link to /lineage/[slug] (movement pages). */
+  lineageSlug?: string;
 }
 
-export function CollectionView({ eyebrow, title, works }: CollectionViewProps) {
+export function CollectionView({ eyebrow, title, works, lineageSlug }: CollectionViewProps) {
   const readCount = works.filter((w) => w.reading).length;
 
   return (
@@ -39,6 +41,20 @@ export function CollectionView({ eyebrow, title, works }: CollectionViewProps) {
             {works.length === 1 ? "work" : "works"}
             {readCount > 0 && ` · ${readCount} read`}
           </p>
+          {lineageSlug && (
+            <Link
+              href={`/lineage/${lineageSlug}`}
+              className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-paper-edge bg-paper px-3.5 py-1.5 text-xs font-semibold text-ink-soft shadow-sm transition-colors hover:border-ink-faint hover:text-accent"
+            >
+              <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <circle cx="12" cy="5" r="2" />
+                <circle cx="6" cy="19" r="2" />
+                <circle cx="18" cy="19" r="2" />
+                <path d="M12 7v4m0 0-4.5 4.5M12 11l4.5 4.5" />
+              </svg>
+              View lineage
+            </Link>
+          )}
         </header>
 
         <div className="overflow-hidden rounded-2xl border border-paper-edge bg-paper shadow-card">

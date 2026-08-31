@@ -48,8 +48,6 @@ Grouped by the period they are most associated with, but a movement is assigned 
 - **Regionalism / local colour** — specific place, dialect, custom.
 - **Symbolism** — suggestion, imagery, the ineffable (Mallarmé, Baudelaire).
 - **Aestheticism / Decadence** — art for art's sake (Wilde).
-- **National Romanticism** — Romantic nationalism drawing on folklore, saga and national history (early Ibsen, Bjørnson; Norw. nasjonalromantikk).
-- **Neo-Romanticism** — 1890s reaction against realism/naturalism: subjectivity, mood, nature-mysticism, the irrational (Hamsun, Kinck; Scand. nyromantikk).
 
 ### Modernist / early 20th century
 - **Modernism** — formal rupture, fragmentation, subjectivity.
@@ -75,6 +73,21 @@ Grouped by the period they are most associated with, but a movement is assigned 
 - **Contemporary literary fiction** — general label for present-day literary work without a sharper movement.
 - **Autofiction** — autobiographical fiction blurring author and narrator (Ferrante, Knausgård, Louis).
 
+### Genre & cross-period forms
+
+Forms defined by subject or stance rather than a single era. Two kinds:
+
+**Origin-anchored** — born in one period, later revived; labelled with their home era.
+- **Epic poetry** — long narrative poem of heroic deeds (Homer, Virgil, Dante, Milton). *Home: Classical / Antiquity.*
+- **Tragedy** — classical and dramatic tragedy (Sophocles, the Greeks). *Home: Classical / Antiquity.*
+- **Medieval romance** — chivalric quest and courtly adventure (Sir Gawain). *Home: Medieval.*
+
+**Cross-period modes** — recur across the whole timeline with no single home era. Views label these "Cross-period form", not a period, and colour them neutrally.
+- **Satire** — ridicule of vice and folly (Aristophanes → Swift → Heller).
+- **Science fiction** — speculative science, technology and futures (Shelley → Wells → Le Guin).
+- **Dystopian fiction** — cautionary imagined societies (Zamyatin, Huxley, Orwell, Atwood).
+- **Crime fiction** — detective, mystery and crime narratives (Poe → Christie → present).
+
 ---
 
 ## Assignment rules
@@ -82,8 +95,9 @@ Grouped by the period they are most associated with, but a movement is assigned 
 1. Exactly one **period** per work (or null if genuinely unplaceable).
 2. Exactly one **primary movement** (or null); secondary movements optional.
 3. A movement may span periods — assign by style, not the calendar.
-4. Where a work fits none well, prefer **null** over forcing a label.
-5. The LLM (scanning path) and the import CSV must both draw only from this approved list; new labels are proposed separately, never invented inline.
+4. **Cross-period modes** (Satire, Science fiction, Dystopian fiction, Crime fiction) have no home period; period-keyed views show "Cross-period form" rather than forcing an era.
+5. Where a work fits none well, prefer **null** over forcing a label.
+6. The LLM (scanning path) and the import CSV must both draw only from this approved list; new labels are proposed separately, never invented inline.
 
 ## Notes
 - This list favours breadth of coverage for a general literary collection. Trim movements you'll never use to keep filtering clean.
