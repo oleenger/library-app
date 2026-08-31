@@ -37,8 +37,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        {/* Launch splash — only visible in the installed (standalone) PWA. It
-            self-dismisses via CSS so it never traps content if JS fails to run. */}
+        {/* Mark the document before the splash paints if it has already been
+            shown this session, so full-page loads during navigation don't
+            replay the launch splash. Runs synchronously before paint. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{if(sessionStorage.getItem('splashShown')){document.documentElement.classList.add('splash-seen')}else{sessionStorage.setItem('splashShown','1')}}catch(e){}",
+          }}
+        />
+        {/* Launch splash — only visible in the installed (standalone) PWA on the
+            first load of a session. It self-dismisses via CSS so it never traps
+            content if JS fails to run. */}
         <div className="app-splash" aria-hidden>
           <img src="/logo.svg" alt="" width={96} height={96} />
         </div>
