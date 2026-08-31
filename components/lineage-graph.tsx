@@ -1,111 +1,189 @@
-// Vertical lineage graph: movements stacked chronologically (oldest at the top),
-// grouped by period, with curved connectors in a right-hand gutter tracing the
-// curated `ledTo` flow between them.
+// Vertical lineage graph — a warm "literary metro map". Movements are stations on
+// a timeline running top → bottom (oldest first), grouped by period. All the
+// connective tissue lives in one left-hand lane: a period-coloured rail, station
+// dots (filled = in your library, hollow = a gap), and gradient threads tracing
+// the curated `ledTo` flow from one movement's period-colour to the next.
 //
 // Server component: pure presentation over the pre-computed geometry from
-// lib/lineage-graph.ts. Node rows flow full-width (minus the gutter) so they read
-// like table rows on a phone; the SVG gutter uses fixed row heights from the same
-// geometry, so arcs anchor exactly to each row's mid-height at any container width.
+// lib/lineage-graph.ts. Station rows flow to the container width; the lane uses
+// fixed row heights from the same geometry, so every dot and thread anchors
+// exactly at any width.
 
 import Link from "next/link";
 import { periodColor, shortPeriod } from "@/lib/display";
-import { CARD_H, GUTTER, type LineageGraph } from "@/lib/lineage-graph";
+import { CARD_H, LANE, RAIL_X, type LineageGraph } from "@/lib/lineage-graph";
+
+function BookGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v15H5.5A1.5 1.5 0 0 1 4 17.5v-12Z" />
+      <path d="M11 4h5.5A1.5 1.5 0 0 1 18 5.5v12a1.5 1.5 0 0 1-1.5 1.5H11" />
+    </svg>
+  );
+}
 
 export function LineageGraph({ graph }: { graph: LineageGraph }) {
-  const { nodes, labels, edges, height } = graph;
-  const rowWidth = `calc(100% - ${GUTTER}px)`;
+  const { nodes, labels, edges, rail, height } = graph;
+  const contentWidth = `calc(100% - ${LANE}px)`;
+  const firstCenter = nodes.length ? nodes[0].y + CARD_H / 2 : 0;
+  const lastCenter = nodes.length ? nodes[nodes.length - 1].y + CARD_H / 2 : 0;
 
   return (
     <div className="relative" style={{ height }}>
-      {/* Period headers */}
-      {labels.map((l) => (
-        <div
-          key={l.period}
-          className="absolute left-0 flex items-end pb-1 text-[0.6rem] font-semibold uppercase tracking-[0.13em]"
-          style={{ top: l.y, width: rowWidth, height: 34, color: periodColor(l.period) }}
-        >
-          {shortPeriod(l.period)}
-        </div>
-      ))}
+      {/* Left lane: rail, threads, station dots */}
+      <svg
+        className="absolute left-0 top-0"
+        width={LANE}
+        height={height}
+        viewBox={`0 0 ${LANE} ${height}`}
+        fill="none"
+        aria-hidden
+      >
+        <defs>
+          {edges.map((e) => (
+            <linearGradient
+              key={e.id}
+              id={`thread-${e.id}`}
+              gradientUnits="userSpaceOnUse"
+              x1={RAIL_X}
+              y1={e.yFrom}
+              x2={RAIL_X}
+              y2={e.yTo}
+            >
+              <stop offset="0" stopColor={periodColor(e.fromPeriod)} />
+              <stop offset="1" stopColor={periodColor(e.toPeriod)} />
+            </linearGradient>
+          ))}
+        </defs>
 
-      {/* Node rows */}
-      {nodes.map((n) => {
-        const color = periodColor(n.period);
+        {/* Faint continuous spine beneath everything */}
+        <line
+          x1={RAIL_X}
+          y1={firstCenter}
+          x2={RAIL_X}
+          y2={lastCenter}
+          stroke="#1f1b14"
+          strokeOpacity="0.06"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+        />
+
+        {/* Led-to threads */}
+        {edges.map((e) => (
+          <path
+            key={e.id}
+            d={e.d}
+            stroke={`url(#thread-${e.id})`}
+            strokeWidth="1.75"
+            strokeOpacity={e.kind === "intra" ? 0.5 : 0.8}
+            strokeLinecap="round"
+            fill="none"
+          />
+        ))}
+
+        {/* Period-coloured rail runs */}
+        {rail.map((s) => (
+          <line
+            key={s.period}
+            x1={RAIL_X}
+            y1={s.y1}
+            x2={RAIL_X}
+            y2={s.y2}
+            stroke={periodColor(s.period)}
+            strokeWidth="2.5"
+            strokeOpacity="0.5"
+            strokeLinecap="round"
+          />
+        ))}
+
+        {/* Station dots */}
+        {nodes.map((n) => {
+          const c = periodColor(n.period);
+          const cy = n.y + CARD_H / 2;
+          const empty = n.count === 0;
+          return (
+            <g key={n.movement}>
+              {!empty && <circle cx={RAIL_X} cy={cy} r="9" fill={c} opacity="0.14" />}
+              <circle
+                cx={RAIL_X}
+                cy={cy}
+                r="5"
+                fill={empty ? "#fffdf9" : c}
+                stroke={c}
+                strokeWidth="1.75"
+              />
+            </g>
+          );
+        })}
+      </svg>
+
+      {/* Period headers */}
+      {labels.map((l) => {
+        const c = periodColor(l.period);
+        return (
+          <div
+            key={l.period}
+            className="absolute flex items-center gap-3"
+            style={{ top: l.y, left: LANE, width: contentWidth, height: 42 }}
+          >
+            <span
+              className="shrink-0 text-[0.62rem] font-semibold uppercase tracking-[0.18em]"
+              style={{ color: c }}
+            >
+              {shortPeriod(l.period)}
+            </span>
+            <span
+              className="h-px flex-1"
+              style={{ background: `linear-gradient(90deg, ${c}59, ${c}00)` }}
+            />
+            {l.yearsRange && (
+              <span className="shrink-0 text-[0.62rem] tabular-nums text-ink-faint">
+                {l.yearsRange}
+              </span>
+            )}
+          </div>
+        );
+      })}
+
+      {/* Movement stations */}
+      {nodes.map((n, i) => {
         const empty = n.count === 0;
         return (
           <Link
             key={n.movement}
             href={`/lineage/${n.slug}`}
-            className={`group absolute left-0 flex items-center gap-3 rounded-xl border pl-3 pr-3.5 transition-colors ${
-              empty
-                ? "border-dashed border-paper-edge bg-canvas/40 hover:border-ink-faint"
-                : "border-paper-edge bg-canvas/70 hover:border-ink-faint hover:bg-canvas"
-            }`}
+            className="lineage-station group absolute flex flex-col justify-center"
             style={{
               top: n.y,
-              width: rowWidth,
+              left: LANE,
+              width: contentWidth,
               height: CARD_H,
-              borderLeft: `3px solid ${empty ? "transparent" : color}`,
+              animationDelay: `${Math.min(i * 45, 520)}ms`,
             }}
           >
             <span
-              className={`min-w-0 flex-1 truncate text-[0.9rem] font-semibold leading-tight ${
+              className={`font-serif text-[1.05rem] leading-[1.15] tracking-[-0.01em] transition-colors ${
                 empty ? "text-ink-soft" : "text-ink group-hover:text-accent"
               }`}
             >
               {n.movement}
             </span>
-            {n.years && (
-              <span className="shrink-0 text-[0.68rem] tabular-nums text-ink-faint">
-                {n.years}
-              </span>
-            )}
-            <span
-              className={`grid h-6 min-w-6 shrink-0 place-items-center rounded-full px-1.5 text-[0.68rem] font-semibold tabular-nums ${
-                empty ? "text-ink-faint/70" : "bg-accent-soft text-accent"
-              }`}
-            >
-              {n.count}
+            <span className="mt-1 flex items-center gap-2 text-[0.72rem]">
+              {n.years && (
+                <span className="tabular-nums text-ink-faint">{n.years}</span>
+              )}
+              {n.count > 0 ? (
+                <span className="inline-flex items-center gap-1 font-medium text-accent">
+                  <BookGlyph />
+                  {n.count}
+                </span>
+              ) : (
+                <span className="text-ink-faint/70">not in library</span>
+              )}
             </span>
           </Link>
         );
       })}
-
-      {/* Connector gutter */}
-      <svg
-        className="absolute top-0"
-        style={{ right: 0 }}
-        width={GUTTER}
-        height={height}
-        viewBox={`0 0 ${GUTTER} ${height}`}
-        fill="none"
-        aria-hidden
-      >
-        <defs>
-          <marker
-            id="lineage-arrow"
-            viewBox="0 0 10 10"
-            refX="7"
-            refY="5"
-            markerWidth="6"
-            markerHeight="6"
-            orient="auto"
-          >
-            <path d="M0,0 L10,5 L0,10 z" fill="#968d7c" />
-          </marker>
-        </defs>
-        {edges.map((e) => (
-          <path
-            key={`${e.from}->${e.to}`}
-            d={e.d}
-            stroke="#968d7c"
-            strokeWidth={1.5}
-            strokeOpacity={e.kind === "intra" ? 0.4 : 0.6}
-            strokeDasharray={e.kind === "intra" ? "4 4" : undefined}
-            markerEnd="url(#lineage-arrow)"
-          />
-        ))}
-      </svg>
     </div>
   );
 }

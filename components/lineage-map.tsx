@@ -57,13 +57,13 @@ export function LineageMap({
 
           {/* Timeline graph: the connected led-to flow, oldest at the top. */}
           <section className="mb-10">
-            <div className="rounded-2xl border border-paper-edge bg-paper p-4 shadow-card sm:p-5">
+            <div className="rounded-[1.75rem] border border-paper-edge bg-paper-raised px-4 py-6 shadow-card sm:px-7 sm:py-8">
               <LineageGraph graph={graph} />
             </div>
             <p className="mt-3 px-1 text-xs text-ink-faint">
-              Oldest at the top. Arrows trace what each movement led to; dashed
-              links join movements within one period. Faded, dashed rows
-              aren&apos;t in your library yet.
+              A single line runs oldest to newest. Filled dots are movements in
+              your library; hollow dots are gaps. Colour marks the period, and the
+              threads trace what each movement grew into.
             </p>
           </section>
 
