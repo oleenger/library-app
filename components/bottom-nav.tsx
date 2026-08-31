@@ -48,7 +48,7 @@ const RIGHT: Dest[] = [
   },
   {
     href: "/lineage",
-    label: "Lineage",
+    label: "Movements",
     icon: (
       <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <circle cx="12" cy="5" r="2.2" />

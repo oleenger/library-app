@@ -1,107 +1,111 @@
-// Birds-eye lineage graph: movements laid out on a period timeline (oldest → newest,
-// left → right) with curved edges tracing the curated `ledTo` flow between them.
+// Vertical lineage graph: movements stacked chronologically (oldest at the top),
+// grouped by period, with curved connectors in a right-hand gutter tracing the
+// curated `ledTo` flow between them.
 //
 // Server component: pure presentation over the pre-computed geometry from
-// lib/lineage-graph.ts. The SVG edge layer and the absolutely-positioned node
-// pills share one coordinate space, so nothing needs client-side measurement.
-// Horizontally scrollable on narrow screens.
+// lib/lineage-graph.ts. Node rows flow full-width (minus the gutter) so they read
+// like table rows on a phone; the SVG gutter uses fixed row heights from the same
+// geometry, so arcs anchor exactly to each row's mid-height at any container width.
 
 import Link from "next/link";
 import { periodColor, shortPeriod } from "@/lib/display";
-import { NODE_W, NODE_H, type LineageGraph } from "@/lib/lineage-graph";
+import { CARD_H, GUTTER, type LineageGraph } from "@/lib/lineage-graph";
 
 export function LineageGraph({ graph }: { graph: LineageGraph }) {
-  const { nodes, edges, columns, width, height } = graph;
+  const { nodes, labels, edges, height } = graph;
+  const rowWidth = `calc(100% - ${GUTTER}px)`;
 
   return (
-    <div className="-mx-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">
-      <div className="relative" style={{ width, height, minWidth: width }}>
-        {/* Edge layer */}
-        <svg
-          className="absolute inset-0"
-          width={width}
-          height={height}
-          viewBox={`0 0 ${width} ${height}`}
-          fill="none"
-          aria-hidden
+    <div className="relative" style={{ height }}>
+      {/* Period headers */}
+      {labels.map((l) => (
+        <div
+          key={l.period}
+          className="absolute left-0 flex items-end pb-1 text-[0.6rem] font-semibold uppercase tracking-[0.13em]"
+          style={{ top: l.y, width: rowWidth, height: 34, color: periodColor(l.period) }}
         >
-          <defs>
-            <marker
-              id="lineage-arrow"
-              viewBox="0 0 10 10"
-              refX="8"
-              refY="5"
-              markerWidth="6"
-              markerHeight="6"
-              orient="auto-start-reverse"
-            >
-              <path d="M0,0 L10,5 L0,10 z" fill="#968d7c" />
-            </marker>
-          </defs>
-          {edges.map((e) => (
-            <path
-              key={`${e.from}->${e.to}`}
-              d={e.d}
-              stroke="#968d7c"
-              strokeWidth={1.5}
-              strokeOpacity={e.kind === "loop" ? 0.4 : 0.65}
-              strokeDasharray={e.kind === "loop" ? "4 4" : undefined}
-              markerEnd="url(#lineage-arrow)"
-            />
-          ))}
-        </svg>
+          {shortPeriod(l.period)}
+        </div>
+      ))}
 
-        {/* Column period headers */}
-        {columns.map((c) => (
-          <div
-            key={c.period}
-            className="absolute top-0 text-[0.6rem] font-semibold uppercase tracking-[0.12em]"
-            style={{ left: c.x, width: NODE_W, color: periodColor(c.period) }}
+      {/* Node rows */}
+      {nodes.map((n) => {
+        const color = periodColor(n.period);
+        const empty = n.count === 0;
+        return (
+          <Link
+            key={n.movement}
+            href={`/lineage/${n.slug}`}
+            className={`group absolute left-0 flex items-center gap-3 rounded-xl border pl-3 pr-3.5 transition-colors ${
+              empty
+                ? "border-dashed border-paper-edge bg-canvas/40 hover:border-ink-faint"
+                : "border-paper-edge bg-canvas/70 hover:border-ink-faint hover:bg-canvas"
+            }`}
+            style={{
+              top: n.y,
+              width: rowWidth,
+              height: CARD_H,
+              borderLeft: `3px solid ${empty ? "transparent" : color}`,
+            }}
           >
-            {shortPeriod(c.period)}
-          </div>
-        ))}
-
-        {/* Node pills */}
-        {nodes.map((n) => {
-          const color = periodColor(n.period);
-          const empty = n.count === 0;
-          return (
-            <Link
-              key={n.movement}
-              href={`/lineage/${n.slug}`}
-              className={`group absolute flex flex-col justify-center gap-0.5 rounded-xl border px-3 shadow-sm transition-colors ${
-                empty
-                  ? "border-dashed border-paper-edge bg-paper/60 hover:border-ink-faint"
-                  : "border-paper-edge bg-paper hover:border-ink-faint"
+            <span
+              className={`min-w-0 flex-1 truncate text-[0.9rem] font-semibold leading-tight ${
+                empty ? "text-ink-soft" : "text-ink group-hover:text-accent"
               }`}
-              style={{
-                left: n.x,
-                top: n.y,
-                width: NODE_W,
-                height: NODE_H,
-                borderLeft: `3px solid ${empty ? "transparent" : color}`,
-              }}
             >
-              <span
-                className={`line-clamp-2 text-[0.82rem] font-semibold leading-[1.1] ${
-                  empty ? "text-ink-soft" : "text-ink group-hover:text-accent"
-                }`}
-              >
-                {n.movement}
+              {n.movement}
+            </span>
+            {n.years && (
+              <span className="shrink-0 text-[0.68rem] tabular-nums text-ink-faint">
+                {n.years}
               </span>
-              <span className="flex items-center gap-1.5 text-[0.6rem] text-ink-faint">
-                {n.years && <span className="tabular-nums">{n.years}</span>}
-                <span
-                  className={`ml-auto tabular-nums ${empty ? "opacity-60" : "font-medium text-ink-soft"}`}
-                >
-                  {n.count}
-                </span>
-              </span>
-            </Link>
-          );
-        })}
-      </div>
+            )}
+            <span
+              className={`grid h-6 min-w-6 shrink-0 place-items-center rounded-full px-1.5 text-[0.68rem] font-semibold tabular-nums ${
+                empty ? "text-ink-faint/70" : "bg-accent-soft text-accent"
+              }`}
+            >
+              {n.count}
+            </span>
+          </Link>
+        );
+      })}
+
+      {/* Connector gutter */}
+      <svg
+        className="absolute top-0"
+        style={{ right: 0 }}
+        width={GUTTER}
+        height={height}
+        viewBox={`0 0 ${GUTTER} ${height}`}
+        fill="none"
+        aria-hidden
+      >
+        <defs>
+          <marker
+            id="lineage-arrow"
+            viewBox="0 0 10 10"
+            refX="7"
+            refY="5"
+            markerWidth="6"
+            markerHeight="6"
+            orient="auto"
+          >
+            <path d="M0,0 L10,5 L0,10 z" fill="#968d7c" />
+          </marker>
+        </defs>
+        {edges.map((e) => (
+          <path
+            key={`${e.from}->${e.to}`}
+            d={e.d}
+            stroke="#968d7c"
+            strokeWidth={1.5}
+            strokeOpacity={e.kind === "intra" ? 0.4 : 0.6}
+            strokeDasharray={e.kind === "intra" ? "4 4" : undefined}
+            markerEnd="url(#lineage-arrow)"
+          />
+        ))}
+      </svg>
     </div>
   );
 }
