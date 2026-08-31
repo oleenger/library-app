@@ -55,12 +55,15 @@ export function LineageMap({
             </p>
           </header>
 
-          {/* Timeline graph: the connected led-to flow across periods. */}
+          {/* Timeline graph: the connected led-to flow, oldest at the top. */}
           <section className="mb-10">
-            <LineageGraph graph={graph} />
+            <div className="rounded-2xl border border-paper-edge bg-paper p-4 shadow-card sm:p-5">
+              <LineageGraph graph={graph} />
+            </div>
             <p className="mt-3 px-1 text-xs text-ink-faint">
-              Arrows trace what each movement led to; dashed loops link movements
-              within one period. Faded, dashed nodes aren&apos;t in your library yet.
+              Oldest at the top. Arrows trace what each movement led to; dashed
+              links join movements within one period. Faded, dashed rows
+              aren&apos;t in your library yet.
             </p>
           </section>
 
