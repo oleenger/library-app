@@ -31,8 +31,6 @@ Grouped by the period they are most associated with, but a movement is assigned 
 
 ### Renaissance / Early Modern
 - **Humanism** — classical revival, human-centred inquiry.
-- **Metaphysical poetry** — intellectual conceits, paradox (Donne, Marvell).
-- **Elizabethan / Jacobean drama** — English Renaissance theatre (Shakespeare, Marlowe).
 
 ### Enlightenment / Neoclassical
 - **Neoclassicism / Augustan** — balance, restraint, satire (Pope, Swift).
@@ -45,7 +43,6 @@ Grouped by the period they are most associated with, but a movement is assigned 
 - **Dark Romanticism** — Romanticism's shadow side (Hawthorne, Melville, Poe).
 - **Realism** — accurate depiction of ordinary contemporary life (Eliot, Flaubert, Tolstoy).
 - **Naturalism** — realism plus determinism, environment as force (Zola, Dreiser).
-- **Regionalism / local colour** — specific place, dialect, custom.
 - **Symbolism** — suggestion, imagery, the ineffable (Mallarmé, Baudelaire).
 - **Aestheticism / Decadence** — art for art's sake (Wilde).
 
@@ -62,12 +59,10 @@ Grouped by the period they are most associated with, but a movement is assigned 
 - **Theatre of the Absurd** — meaningless universe on stage (Beckett, Ionesco).
 - **Beat Generation** — spontaneity, counterculture (Kerouac, Ginsberg).
 - **Nouveau Roman** — anti-novel, French formal experiment (Robbe-Grillet).
-- **Oulipo** — constraint-based writing (Perec, Queneau).
 - **Magical realism** — the marvellous within the everyday (García Márquez, Borges, Rushdie).
 - **Postmodernism** — irony, metafiction, pastiche, instability (Pynchon, DeLillo).
 - **Metafiction** — fiction foregrounding its own artifice.
 - **Postcolonial literature** — writing by/about former colonies and their aftermath.
-- **Minimalism** — spare, understated prose (Carver).
 
 ### Contemporary
 - **Contemporary literary fiction** — general label for present-day literary work without a sharper movement.
@@ -76,8 +71,6 @@ Grouped by the period they are most associated with, but a movement is assigned 
 ### Genre & cross-period forms
 Assigned by style, not date; these reach classical/medieval and genre works the era-grouped list above does not.
 - **Epic poetry** — long narrative poem of heroic deeds (Homer, Virgil, Dante, Milton).
-- **Tragedy** — classical and dramatic tragedy (Sophocles).
-- **Medieval romance** — chivalric quest and courtly adventure (Sir Gawain).
 - **Satire** — ridicule of vice and folly (Chaucer, Swift, Heller).
 - **Science fiction** — speculative science, technology and futures.
 - **Dystopian fiction** — cautionary imagined societies.
