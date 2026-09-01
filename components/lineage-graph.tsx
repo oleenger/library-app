@@ -151,7 +151,7 @@ export function LineageGraph({ graph }: { graph: LineageGraph }) {
         return (
           <Link
             key={n.movement}
-            href={`/lineage/${n.slug}`}
+            href={`/recommendations?movement=${encodeURIComponent(n.movement)}`}
             className="lineage-station group absolute flex flex-col justify-center"
             style={{
               top: n.y,

@@ -6,6 +6,7 @@
 // Source of truth:
 //   data/all-books.tsv           essentials per movement (Title Author Year Movement Rank + Other Movements)
 //   data/movement-influences.tsv influence edges (Source Target Relationship Strength Note)
+//   data/reading-paths.tsv       curated reading order per movement (Movement Position Title Author Year Note)
 //
 // Policy (decided with the owner — see repo history):
 //   * Movement names in the TSVs are already normalized to the taxonomy spelling
@@ -25,6 +26,7 @@ import { isMovement } from "../lib/taxonomy";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const BOOKS_TSV = join(ROOT, "data", "all-books.tsv");
 const EDGES_TSV = join(ROOT, "data", "movement-influences.tsv");
+const PATHS_TSV = join(ROOT, "data", "reading-paths.tsv");
 const OUT = join(ROOT, "lib", "canon", "generated", "canon-data.json");
 
 const PRE_MOVEMENT = "None / Pre-movement";
@@ -74,6 +76,14 @@ interface Edge {
   target: string;
   relationship: string;
   strength: string;
+  note: string;
+}
+interface ReadingStep {
+  position: number;
+  title: string;
+  author: string;
+  sortYear: number | null;
+  displayYear: string;
   note: string;
 }
 
@@ -154,13 +164,38 @@ for (const [source, target, relationship, strength, edgeNote] of rows(EDGES_TSV)
   });
 }
 
+// ---- build reading paths --------------------------------------------------
+// One curated, ordered reading sequence per movement. Non-taxonomy movements
+// (the dropped avant-gardes) are skipped, so their paths never reach the app.
+const byPath = new Map<string, ReadingStep[]>();
+for (const [movement, posRaw, title, author, year, stepNote] of rows(PATHS_TSV)) {
+  if (!isMovement(movement)) {
+    note(movement);
+    continue;
+  }
+  const list = byPath.get(movement) ?? byPath.set(movement, []).get(movement)!;
+  list.push({
+    position: Number((posRaw ?? "").trim()) || list.length + 1,
+    title: (title ?? "").trim(),
+    author: (author ?? "").trim(),
+    sortYear: parseSortYear(year ?? ""),
+    displayYear: (year ?? "").trim(),
+    note: (stepNote ?? "").trim(),
+  });
+}
+const readingPaths: Record<string, ReadingStep[]> = {};
+for (const [name, list] of byPath) {
+  readingPaths[name] = [...list].sort((a, b) => a.position - b.position);
+}
+
 // ---- emit -----------------------------------------------------------------
 const out = {
   generatedAt: new Date().toISOString(),
-  source: "data/all-books.tsv + data/movement-influences.tsv",
+  source: "data/all-books.tsv + data/movement-influences.tsv + data/reading-paths.tsv",
   movements,
   preMovement: orderEssentials(preMovement),
   edges,
+  readingPaths,
 };
 
 mkdirSync(dirname(OUT), { recursive: true });
@@ -169,9 +204,12 @@ writeFileSync(OUT, JSON.stringify(out, null, 2) + "\n");
 // ---- report ---------------------------------------------------------------
 const movementCount = Object.keys(movements).length;
 const essentialCount = Object.values(movements).reduce((n, m) => n + m.essentials.length, 0);
+const pathCount = Object.keys(readingPaths).length;
+const stepCount = Object.values(readingPaths).reduce((n, p) => n + p.length, 0);
 console.log(
   `[canon] ${movementCount} movements, ${essentialCount} essential slots, ` +
-    `${preMovement.length} pre-movement, ${edges.length} edges (${droppedEdges} edges dropped).`,
+    `${preMovement.length} pre-movement, ${edges.length} edges (${droppedEdges} edges dropped), ` +
+    `${pathCount} reading paths (${stepCount} steps).`,
 );
 if (dropped.size) {
   const summary = [...dropped.entries()].map(([n, c]) => `${n}×${c}`).join(", ");
