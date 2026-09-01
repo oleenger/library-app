@@ -42,7 +42,7 @@ export const LINEAGE: Partial<Record<Movement, LineageNode>> = {
     note: "Ordinary life rendered plainly — a turn from Romantic idealisation toward observed social reality.",
     reactedAgainst: ["Romanticism"],
     ledTo: ["Naturalism", "Modernism"],
-    alongside: ["Naturalism", "Regionalism / local colour"],
+    alongside: ["Naturalism"],
   },
   Naturalism: {
     years: "1865–1900",
@@ -113,7 +113,7 @@ export const LINEAGE: Partial<Record<Movement, LineageNode>> = {
     note: "Play, pastiche and self-awareness — scepticism toward grand narratives and the stable self.",
     reactedAgainst: ["Modernism"],
     ledTo: ["Autofiction", "Contemporary literary fiction"],
-    alongside: ["Metafiction", "Magical realism", "Minimalism"],
+    alongside: ["Metafiction", "Magical realism"],
   },
   Metafiction: {
     years: "1960–1990",

@@ -31,8 +31,6 @@ Grouped by the period they are most associated with, but a movement is assigned 
 
 ### Renaissance / Early Modern
 - **Humanism** — classical revival, human-centred inquiry.
-- **Metaphysical poetry** — intellectual conceits, paradox (Donne, Marvell).
-- **Elizabethan / Jacobean drama** — English Renaissance theatre (Shakespeare, Marlowe).
 
 ### Enlightenment / Neoclassical
 - **Neoclassicism / Augustan** — balance, restraint, satire (Pope, Swift).
@@ -45,7 +43,6 @@ Grouped by the period they are most associated with, but a movement is assigned 
 - **Dark Romanticism** — Romanticism's shadow side (Hawthorne, Melville, Poe).
 - **Realism** — accurate depiction of ordinary contemporary life (Eliot, Flaubert, Tolstoy).
 - **Naturalism** — realism plus determinism, environment as force (Zola, Dreiser).
-- **Regionalism / local colour** — specific place, dialect, custom.
 - **Symbolism** — suggestion, imagery, the ineffable (Mallarmé, Baudelaire).
 - **Aestheticism / Decadence** — art for art's sake (Wilde).
 
@@ -62,12 +59,10 @@ Grouped by the period they are most associated with, but a movement is assigned 
 - **Theatre of the Absurd** — meaningless universe on stage (Beckett, Ionesco).
 - **Beat Generation** — spontaneity, counterculture (Kerouac, Ginsberg).
 - **Nouveau Roman** — anti-novel, French formal experiment (Robbe-Grillet).
-- **Oulipo** — constraint-based writing (Perec, Queneau).
 - **Magical realism** — the marvellous within the everyday (García Márquez, Borges, Rushdie).
 - **Postmodernism** — irony, metafiction, pastiche, instability (Pynchon, DeLillo).
 - **Metafiction** — fiction foregrounding its own artifice.
 - **Postcolonial literature** — writing by/about former colonies and their aftermath.
-- **Minimalism** — spare, understated prose (Carver).
 
 ### Contemporary
 - **Contemporary literary fiction** — general label for present-day literary work without a sharper movement.
@@ -79,8 +74,6 @@ Forms defined by subject or stance rather than a single era. Two kinds:
 
 **Origin-anchored** — born in one period, later revived; labelled with their home era.
 - **Epic poetry** — long narrative poem of heroic deeds (Homer, Virgil, Dante, Milton). *Home: Classical / Antiquity.*
-- **Tragedy** — classical and dramatic tragedy (Sophocles, the Greeks). *Home: Classical / Antiquity.*
-- **Medieval romance** — chivalric quest and courtly adventure (Sir Gawain). *Home: Medieval.*
 
 **Cross-period modes** — recur across the whole timeline with no single home era. Views label these "Cross-period form", not a period, and colour them neutrally.
 - **Satire** — ridicule of vice and folly (Aristophanes → Swift → Heller).

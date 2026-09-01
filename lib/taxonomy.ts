@@ -24,8 +24,6 @@ export const PERIODS = [
 export const MOVEMENTS = [
   // Renaissance / Early Modern
   "Humanism",
-  "Metaphysical poetry",
-  "Elizabethan / Jacobean drama",
   // Enlightenment / Neoclassical
   "Neoclassicism / Augustan",
   "Enlightenment",
@@ -36,7 +34,6 @@ export const MOVEMENTS = [
   "Dark Romanticism",
   "Realism",
   "Naturalism",
-  "Regionalism / local colour",
   "Symbolism",
   "Aestheticism / Decadence",
   // Modernist / early 20th century
@@ -51,20 +48,16 @@ export const MOVEMENTS = [
   "Theatre of the Absurd",
   "Beat Generation",
   "Nouveau Roman",
-  "Oulipo",
   "Magical realism",
   "Postmodernism",
   "Metafiction",
   "Postcolonial literature",
-  "Minimalism",
   // Contemporary
   "Contemporary literary fiction",
   "Autofiction",
   // Genre & cross-period forms — added beyond docs/library-taxonomy.md to cover
-  // classical/medieval and genre works the era-grouped list did not reach.
+  // genre works the era-grouped list did not reach.
   "Epic poetry", // long narrative poem of heroic deeds (Homer, Virgil, Dante, Milton)
-  "Tragedy", // classical and dramatic tragedy (Sophocles)
-  "Medieval romance", // chivalric quest and courtly adventure (Sir Gawain)
   "Satire", // ridicule of vice and folly (Chaucer, Swift, Heller)
   "Science fiction", // speculative science, technology and futures
   "Dystopian fiction", // cautionary imagined societies
@@ -91,8 +84,6 @@ export type Movement = (typeof MOVEMENTS)[number];
 export const MOVEMENT_PERIODS: Record<Movement, Period | null> = {
   // Renaissance / Early Modern
   Humanism: "Renaissance / Early Modern",
-  "Metaphysical poetry": "Renaissance / Early Modern",
-  "Elizabethan / Jacobean drama": "Renaissance / Early Modern",
   // Enlightenment / Neoclassical
   "Neoclassicism / Augustan": "Enlightenment / Neoclassical",
   Enlightenment: "Enlightenment / Neoclassical",
@@ -103,7 +94,6 @@ export const MOVEMENT_PERIODS: Record<Movement, Period | null> = {
   "Dark Romanticism": "Romantic",
   Realism: "Victorian / 19th century",
   Naturalism: "Victorian / 19th century",
-  "Regionalism / local colour": "Victorian / 19th century",
   Symbolism: "Victorian / 19th century",
   "Aestheticism / Decadence": "Victorian / 19th century",
   // Modernist / early 20th century
@@ -118,20 +108,16 @@ export const MOVEMENT_PERIODS: Record<Movement, Period | null> = {
   "Theatre of the Absurd": "Postwar / late 20th century",
   "Beat Generation": "Postwar / late 20th century",
   "Nouveau Roman": "Postwar / late 20th century",
-  Oulipo: "Postwar / late 20th century",
   "Magical realism": "Postwar / late 20th century",
   Postmodernism: "Postwar / late 20th century",
   Metafiction: "Postwar / late 20th century",
   "Postcolonial literature": "Postwar / late 20th century",
-  Minimalism: "Postwar / late 20th century",
   // Contemporary
   "Contemporary literary fiction": "Contemporary",
   Autofiction: "Contemporary",
   // Genre & cross-period forms.
   // Origin-anchored (a period-born form later revived): keep their home era.
   "Epic poetry": "Classical / Antiquity",
-  Tragedy: "Classical / Antiquity",
-  "Medieval romance": "Medieval",
   // Cross-period modes (recur across the whole timeline, no single home era): null.
   Satire: null,
   "Science fiction": null,
