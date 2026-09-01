@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-01T08:53:57.365Z",
-  "source": "data/all-books.tsv + data/movement-influences.tsv",
+  "generatedAt": "2026-09-01T13:04:58.974Z",
+  "source": "data/all-books.tsv + data/movement-influences.tsv + data/reading-paths.tsv",
   "movements": {
     "Neoclassicism / Augustan": {
       "essentials": [
@@ -4884,5 +4884,1283 @@
       "strength": "secondary",
       "note": "Much postcolonial fiction adopts postmodern strategies"
     }
-  ]
+  ],
+  "readingPaths": {
+    "Neoclassicism / Augustan": [
+      {
+        "position": 1,
+        "title": "A Modest Proposal",
+        "author": "Jonathan Swift",
+        "sortYear": 1729,
+        "displayYear": "1729",
+        "note": "Start small: savage satire in a few pages — the wit in miniature."
+      },
+      {
+        "position": 2,
+        "title": "Candide",
+        "author": "Voltaire",
+        "sortYear": 1759,
+        "displayYear": "1759",
+        "note": "Fast and funny demolition of optimism — the Enlightenment laughing."
+      },
+      {
+        "position": 3,
+        "title": "Gulliver's Travels",
+        "author": "Jonathan Swift",
+        "sortYear": 1726,
+        "displayYear": "1726",
+        "note": "Satire at book length — reason turned on humanity itself."
+      },
+      {
+        "position": 4,
+        "title": "The Rape of the Lock",
+        "author": "Alexander Pope",
+        "sortYear": 1712,
+        "displayYear": "1712",
+        "note": "Mock-epic sparkle — high style spent on a trivial theme."
+      },
+      {
+        "position": 5,
+        "title": "Tartuffe",
+        "author": "Molière",
+        "sortYear": 1664,
+        "displayYear": "1664",
+        "note": "Comedy of manners — hypocrisy skewered on stage."
+      },
+      {
+        "position": 6,
+        "title": "The Misanthrope",
+        "author": "Molière",
+        "sortYear": 1666,
+        "displayYear": "1666",
+        "note": "Sharper and sadder — the limits of honesty."
+      },
+      {
+        "position": 7,
+        "title": "An Essay on Criticism",
+        "author": "Alexander Pope",
+        "sortYear": 1711,
+        "displayYear": "1711",
+        "note": "The rules stated in verse — the age's aesthetic creed."
+      },
+      {
+        "position": 8,
+        "title": "Robinson Crusoe",
+        "author": "Daniel Defoe",
+        "sortYear": 1719,
+        "displayYear": "1719",
+        "note": "The novel forming — reason alone on an island."
+      },
+      {
+        "position": 9,
+        "title": "Tom Jones",
+        "author": "Henry Fielding",
+        "sortYear": 1749,
+        "displayYear": "1749",
+        "note": "The comic novel arrives fully built."
+      },
+      {
+        "position": 10,
+        "title": "Phèdre",
+        "author": "Jean Racine",
+        "sortYear": 1677,
+        "displayYear": "1677",
+        "note": "French tragedy at its most controlled — passion inside strict form."
+      },
+      {
+        "position": 11,
+        "title": "The Way of the World",
+        "author": "William Congreve",
+        "sortYear": 1700,
+        "displayYear": "1700",
+        "note": "Restoration wit at its most intricate."
+      },
+      {
+        "position": 12,
+        "title": "Tristram Shandy",
+        "author": "Laurence Sterne",
+        "sortYear": 1759,
+        "displayYear": "1759",
+        "note": "Order breaking into play — the exit toward Romanticism."
+      }
+    ],
+    "Romanticism": [
+      {
+        "position": 1,
+        "title": "Songs of Innocence and of Experience",
+        "author": "William Blake",
+        "sortYear": 1794,
+        "displayYear": "1794",
+        "note": "Start here: short lyrics — the Romantic turn in its simplest form."
+      },
+      {
+        "position": 2,
+        "title": "Lyrical Ballads",
+        "author": "William Wordsworth and Samuel Taylor Coleridge",
+        "sortYear": 1798,
+        "displayYear": "1798",
+        "note": "The manifesto in verse — ordinary life, heightened."
+      },
+      {
+        "position": 3,
+        "title": "The Rime of the Ancient Mariner",
+        "author": "Samuel Taylor Coleridge",
+        "sortYear": 1798,
+        "displayYear": "1798",
+        "note": "Narrative, uncanny, unforgettable — the easy way in."
+      },
+      {
+        "position": 4,
+        "title": "The Sorrows of Young Werther",
+        "author": "Johann Wolfgang von Goethe",
+        "sortYear": 1774,
+        "displayYear": "1774",
+        "note": "The precursor — feeling as everything."
+      },
+      {
+        "position": 5,
+        "title": "Odes",
+        "author": "John Keats",
+        "sortYear": 1819,
+        "displayYear": "1819",
+        "note": "Beauty and mortality — lyric at its peak."
+      },
+      {
+        "position": 6,
+        "title": "Ode to the West Wind",
+        "author": "Percy Bysshe Shelley",
+        "sortYear": 1820,
+        "displayYear": "1820",
+        "note": "Visionary energy, compact."
+      },
+      {
+        "position": 7,
+        "title": "Childe Harold's Pilgrimage",
+        "author": "Lord Byron",
+        "sortYear": 1812,
+        "displayYear": "1812",
+        "note": "The Romantic hero invented."
+      },
+      {
+        "position": 8,
+        "title": "Frankenstein",
+        "author": "Mary Shelley",
+        "sortYear": 1818,
+        "displayYear": "1818",
+        "note": "Romantic ideas as story — ambition and its monster."
+      },
+      {
+        "position": 9,
+        "title": "Don Juan",
+        "author": "Lord Byron",
+        "sortYear": 1819,
+        "displayYear": "1819",
+        "note": "Romanticism laughing at itself — long but buoyant."
+      },
+      {
+        "position": 10,
+        "title": "The Prelude",
+        "author": "William Wordsworth",
+        "sortYear": 1850,
+        "displayYear": "1850",
+        "note": "The growth of a poet's mind — the inward epic."
+      },
+      {
+        "position": 11,
+        "title": "Faust, Part One",
+        "author": "Johann Wolfgang von Goethe",
+        "sortYear": 1808,
+        "displayYear": "1808",
+        "note": "The age's great drama of striving."
+      },
+      {
+        "position": 12,
+        "title": "Faust, Part Two",
+        "author": "Johann Wolfgang von Goethe",
+        "sortYear": 1832,
+        "displayYear": "1832",
+        "note": "The summit — visionary, difficult, total. Attempt it last."
+      }
+    ],
+    "Realism": [
+      {
+        "position": 1,
+        "title": "The Death of Ivan Ilyich",
+        "author": "Leo Tolstoy",
+        "sortYear": 1886,
+        "displayYear": "1886",
+        "note": "Start here: short and devastating — realism's clarity in one novella."
+      },
+      {
+        "position": 2,
+        "title": "Great Expectations",
+        "author": "Charles Dickens",
+        "sortYear": 1861,
+        "displayYear": "1861",
+        "note": "Character and society, page-turning — the way in."
+      },
+      {
+        "position": 3,
+        "title": "Père Goriot",
+        "author": "Honoré de Balzac",
+        "sortYear": 1835,
+        "displayYear": "1835",
+        "note": "The realist social machine, compact."
+      },
+      {
+        "position": 4,
+        "title": "Madame Bovary",
+        "author": "Gustave Flaubert",
+        "sortYear": 1857,
+        "displayYear": "1857",
+        "note": "The form perfected — every word weighed."
+      },
+      {
+        "position": 5,
+        "title": "Fathers and Sons",
+        "author": "Ivan Turgenev",
+        "sortYear": 1862,
+        "displayYear": "1862",
+        "note": "Generations and ideas — Russian realism, accessible."
+      },
+      {
+        "position": 6,
+        "title": "Crime and Punishment",
+        "author": "Fyodor Dostoevsky",
+        "sortYear": 1866,
+        "displayYear": "1866",
+        "note": "Psychology as suspense — the interior turn."
+      },
+      {
+        "position": 7,
+        "title": "Middlemarch",
+        "author": "George Eliot",
+        "sortYear": 1871,
+        "displayYear": "1871",
+        "note": "A whole society in one town — the English summit."
+      },
+      {
+        "position": 8,
+        "title": "Anna Karenina",
+        "author": "Leo Tolstoy",
+        "sortYear": 1877,
+        "displayYear": "1877",
+        "note": "The great novel of love and society."
+      },
+      {
+        "position": 9,
+        "title": "The Brothers Karamazov",
+        "author": "Fyodor Dostoevsky",
+        "sortYear": 1880,
+        "displayYear": "1880",
+        "note": "Ideas, faith, murder — the philosophical capstone."
+      },
+      {
+        "position": 10,
+        "title": "War and Peace",
+        "author": "Leo Tolstoy",
+        "sortYear": 1869,
+        "displayYear": "1869",
+        "note": "The largest canvas — read it once the others have prepared you."
+      }
+    ],
+    "Naturalism": [
+      {
+        "position": 1,
+        "title": "Thérèse Raquin",
+        "author": "Émile Zola",
+        "sortYear": 1867,
+        "displayYear": "1867",
+        "note": "Start here: Zola's method in miniature — determinism as thriller."
+      },
+      {
+        "position": 2,
+        "title": "Maggie: A Girl of the Streets",
+        "author": "Stephen Crane",
+        "sortYear": 1893,
+        "displayYear": "1893",
+        "note": "Short American naturalism — the environment as fate."
+      },
+      {
+        "position": 3,
+        "title": "The Call of the Wild",
+        "author": "Jack London",
+        "sortYear": 1903,
+        "displayYear": "1903",
+        "note": "Naturalism you can't put down — instinct over will."
+      },
+      {
+        "position": 4,
+        "title": "L'Assommoir",
+        "author": "Émile Zola",
+        "sortYear": 1877,
+        "displayYear": "1877",
+        "note": "The slum novel — appetite and ruin."
+      },
+      {
+        "position": 5,
+        "title": "Germinal",
+        "author": "Émile Zola",
+        "sortYear": 1885,
+        "displayYear": "1885",
+        "note": "The masterpiece — the mine, the strike, the crowd."
+      },
+      {
+        "position": 6,
+        "title": "McTeague",
+        "author": "Frank Norris",
+        "sortYear": 1899,
+        "displayYear": "1899",
+        "note": "American greed and decline."
+      },
+      {
+        "position": 7,
+        "title": "Sister Carrie",
+        "author": "Theodore Dreiser",
+        "sortYear": 1900,
+        "displayYear": "1900",
+        "note": "The city as force — desire and drift."
+      },
+      {
+        "position": 8,
+        "title": "Nana",
+        "author": "Émile Zola",
+        "sortYear": 1880,
+        "displayYear": "1880",
+        "note": "Spectacle and rot at the top of society."
+      },
+      {
+        "position": 9,
+        "title": "An American Tragedy",
+        "author": "Theodore Dreiser",
+        "sortYear": 1925,
+        "displayYear": "1925",
+        "note": "Naturalism's long final statement."
+      }
+    ],
+    "Symbolism": [
+      {
+        "position": 1,
+        "title": "Les Fleurs du mal",
+        "author": "Charles Baudelaire",
+        "sortYear": 1857,
+        "displayYear": "1857",
+        "note": "Start here: the source — beauty, decay, the modern city."
+      },
+      {
+        "position": 2,
+        "title": "Poèmes saturniens",
+        "author": "Paul Verlaine",
+        "sortYear": 1866,
+        "displayYear": "1866",
+        "note": "Music over meaning — the ear leads."
+      },
+      {
+        "position": 3,
+        "title": "A Season in Hell",
+        "author": "Arthur Rimbaud",
+        "sortYear": 1873,
+        "displayYear": "1873",
+        "note": "The visionary rupture — brief and incandescent."
+      },
+      {
+        "position": 4,
+        "title": "Illuminations",
+        "author": "Arthur Rimbaud",
+        "sortYear": 1886,
+        "displayYear": "1886",
+        "note": "Prose poems that dissolve the world."
+      },
+      {
+        "position": 5,
+        "title": "Symbolist Manifesto",
+        "author": "Jean Moréas",
+        "sortYear": 1886,
+        "displayYear": "1886",
+        "note": "The program stated plainly."
+      },
+      {
+        "position": 6,
+        "title": "L'Après-midi d'un faune",
+        "author": "Stéphane Mallarmé",
+        "sortYear": 1876,
+        "displayYear": "1876",
+        "note": "Suggestion as everything."
+      },
+      {
+        "position": 7,
+        "title": "Pelléas et Mélisande",
+        "author": "Maurice Maeterlinck",
+        "sortYear": 1893,
+        "displayYear": "1893",
+        "note": "Symbolism on stage — mood over plot."
+      },
+      {
+        "position": 8,
+        "title": "Un coup de dés",
+        "author": "Stéphane Mallarmé",
+        "sortYear": 1897,
+        "displayYear": "1897",
+        "note": "The limit — the page itself becomes the poem. Attempt it last."
+      }
+    ],
+    "Modernism": [
+      {
+        "position": 1,
+        "title": "Heart of Darkness",
+        "author": "Joseph Conrad",
+        "sortYear": 1899,
+        "displayYear": "1899",
+        "note": "Start here: realism beginning to fracture — the hinge modernism swings from."
+      },
+      {
+        "position": 2,
+        "title": "The Metamorphosis",
+        "author": "Franz Kafka",
+        "sortYear": 1915,
+        "displayYear": "1915",
+        "note": "Nightmare logic told deadpan — estrangement before the long books demand it."
+      },
+      {
+        "position": 3,
+        "title": "The Great Gatsby",
+        "author": "F. Scott Fitzgerald",
+        "sortYear": 1925,
+        "displayYear": "1925",
+        "note": "The most compressed, accessible modernist novel — your way in."
+      },
+      {
+        "position": 4,
+        "title": "Mrs Dalloway",
+        "author": "Virginia Woolf",
+        "sortYear": 1925,
+        "displayYear": "1925",
+        "note": "Consciousness across a single day — the whole method, now."
+      },
+      {
+        "position": 5,
+        "title": "The Love Song of J. Alfred Prufrock",
+        "author": "T. S. Eliot",
+        "sortYear": 1915,
+        "displayYear": "1915",
+        "note": "The modernist voice in one poem — hesitation and irony."
+      },
+      {
+        "position": 6,
+        "title": "A Portrait of the Artist as a Young Man",
+        "author": "James Joyce",
+        "sortYear": 1916,
+        "displayYear": "1916",
+        "note": "Style growing up with its hero — the approach to Joyce."
+      },
+      {
+        "position": 7,
+        "title": "The Sun Also Rises",
+        "author": "Ernest Hemingway",
+        "sortYear": 1926,
+        "displayYear": "1926",
+        "note": "The opposite pole — everything left out."
+      },
+      {
+        "position": 8,
+        "title": "To the Lighthouse",
+        "author": "Virginia Woolf",
+        "sortYear": 1927,
+        "displayYear": "1927",
+        "note": "Woolf's method at full depth."
+      },
+      {
+        "position": 9,
+        "title": "The Sound and the Fury",
+        "author": "William Faulkner",
+        "sortYear": 1929,
+        "displayYear": "1929",
+        "note": "Time and mind shattered — difficulty with a reason."
+      },
+      {
+        "position": 10,
+        "title": "The Waste Land",
+        "author": "T. S. Eliot",
+        "sortYear": 1922,
+        "displayYear": "1922",
+        "note": "The movement's defining poem — read once prose has taught its allusive logic."
+      },
+      {
+        "position": 11,
+        "title": "The Magic Mountain",
+        "author": "Thomas Mann",
+        "sortYear": 1924,
+        "displayYear": "1924",
+        "note": "The novel of ideas — Europe on the eve."
+      },
+      {
+        "position": 12,
+        "title": "In Search of Lost Time",
+        "author": "Marcel Proust",
+        "sortYear": 1913,
+        "displayYear": "1913",
+        "note": "Memory as architecture — begin the long ascent."
+      },
+      {
+        "position": 13,
+        "title": "Ulysses",
+        "author": "James Joyce",
+        "sortYear": 1922,
+        "displayYear": "1922",
+        "note": "The summit — every technique at once. Attempt it last."
+      },
+      {
+        "position": 14,
+        "title": "Finnegans Wake",
+        "author": "James Joyce",
+        "sortYear": 1939,
+        "displayYear": "1939",
+        "note": "Beyond the summit — for after Ulysses, if ever."
+      }
+    ],
+    "Surrealism": [
+      {
+        "position": 1,
+        "title": "Manifesto of Surrealism",
+        "author": "André Breton",
+        "sortYear": 1924,
+        "displayYear": "1924",
+        "note": "Start with the program — dream, automatism, the marvelous."
+      },
+      {
+        "position": 2,
+        "title": "Nadja",
+        "author": "André Breton",
+        "sortYear": 1928,
+        "displayYear": "1928",
+        "note": "Surrealism as lived experience — the accessible way in."
+      },
+      {
+        "position": 3,
+        "title": "Alcools",
+        "author": "Guillaume Apollinaire",
+        "sortYear": 1913,
+        "displayYear": "1913",
+        "note": "The precursor — modern lyric without punctuation."
+      },
+      {
+        "position": 4,
+        "title": "Capitale de la douleur",
+        "author": "Paul Éluard",
+        "sortYear": 1926,
+        "displayYear": "1926",
+        "note": "Love and image — the movement's most readable poetry."
+      },
+      {
+        "position": 5,
+        "title": "Le Paysan de Paris",
+        "author": "Louis Aragon",
+        "sortYear": 1926,
+        "displayYear": "1926",
+        "note": "The city made mythical."
+      },
+      {
+        "position": 6,
+        "title": "Les Champs magnétiques",
+        "author": "André Breton and Philippe Soupault",
+        "sortYear": 1920,
+        "displayYear": "1920",
+        "note": "The first automatic writing."
+      },
+      {
+        "position": 7,
+        "title": "Mad Love",
+        "author": "André Breton",
+        "sortYear": 1937,
+        "displayYear": "1937",
+        "note": "Desire as revelation — the mature statement."
+      },
+      {
+        "position": 8,
+        "title": "Les Chants de Maldoror",
+        "author": "Comte de Lautréamont",
+        "sortYear": 1869,
+        "displayYear": "1869",
+        "note": "The dark ancestor — read once the movement makes sense."
+      }
+    ],
+    "Existentialism": [
+      {
+        "position": 1,
+        "title": "The Stranger",
+        "author": "Albert Camus",
+        "sortYear": 1942,
+        "displayYear": "1942",
+        "note": "Start here: the absurd in a short, cold novel."
+      },
+      {
+        "position": 2,
+        "title": "The Myth of Sisyphus",
+        "author": "Albert Camus",
+        "sortYear": 1942,
+        "displayYear": "1942",
+        "note": "The idea stated directly — why go on."
+      },
+      {
+        "position": 3,
+        "title": "Nausea",
+        "author": "Jean-Paul Sartre",
+        "sortYear": 1938,
+        "displayYear": "1938",
+        "note": "Existence felt as vertigo — the novel of the concept."
+      },
+      {
+        "position": 4,
+        "title": "No Exit",
+        "author": "Jean-Paul Sartre",
+        "sortYear": 1944,
+        "displayYear": "1944",
+        "note": "\"Hell is other people\" — the ideas as a one-act play."
+      },
+      {
+        "position": 5,
+        "title": "Notes from Underground",
+        "author": "Fyodor Dostoevsky",
+        "sortYear": 1864,
+        "displayYear": "1864",
+        "note": "The precursor — freedom as torment."
+      },
+      {
+        "position": 6,
+        "title": "The Plague",
+        "author": "Albert Camus",
+        "sortYear": 1947,
+        "displayYear": "1947",
+        "note": "Meaning made in the face of the absurd."
+      },
+      {
+        "position": 7,
+        "title": "Existentialism Is a Humanism",
+        "author": "Jean-Paul Sartre",
+        "sortYear": 1946,
+        "displayYear": "1946",
+        "note": "The accessible summary — freedom and responsibility."
+      },
+      {
+        "position": 8,
+        "title": "The Second Sex",
+        "author": "Simone de Beauvoir",
+        "sortYear": 1949,
+        "displayYear": "1949",
+        "note": "Existentialism applied — becoming, not being."
+      },
+      {
+        "position": 9,
+        "title": "Being and Nothingness",
+        "author": "Jean-Paul Sartre",
+        "sortYear": 1943,
+        "displayYear": "1943",
+        "note": "The full philosophy — attempt it last."
+      }
+    ],
+    "Postmodernism": [
+      {
+        "position": 1,
+        "title": "Slaughterhouse-Five",
+        "author": "Kurt Vonnegut",
+        "sortYear": 1969,
+        "displayYear": "1969",
+        "note": "Start here: time unstuck, war absurd — postmodern and painless."
+      },
+      {
+        "position": 2,
+        "title": "The Crying of Lot 49",
+        "author": "Thomas Pynchon",
+        "sortYear": 1966,
+        "displayYear": "1966",
+        "note": "Paranoia and pattern — Pynchon at short length."
+      },
+      {
+        "position": 3,
+        "title": "Ficciones",
+        "author": "Jorge Luis Borges",
+        "sortYear": 1944,
+        "displayYear": "1944",
+        "note": "The precursor — labyrinths, mirrors, infinite libraries."
+      },
+      {
+        "position": 4,
+        "title": "Catch-22",
+        "author": "Joseph Heller",
+        "sortYear": 1961,
+        "displayYear": "1961",
+        "note": "Circular logic as comedy — the system as trap."
+      },
+      {
+        "position": 5,
+        "title": "Pale Fire",
+        "author": "Vladimir Nabokov",
+        "sortYear": 1962,
+        "displayYear": "1962",
+        "note": "A poem plus its mad commentary — form as game."
+      },
+      {
+        "position": 6,
+        "title": "If on a winter's night a traveler",
+        "author": "Italo Calvino",
+        "sortYear": 1979,
+        "displayYear": "1979",
+        "note": "The reader put inside the book."
+      },
+      {
+        "position": 7,
+        "title": "White Noise",
+        "author": "Don DeLillo",
+        "sortYear": 1985,
+        "displayYear": "1985",
+        "note": "Media, death, and irony — late-century America."
+      },
+      {
+        "position": 8,
+        "title": "The Name of the Rose",
+        "author": "Umberto Eco",
+        "sortYear": 1980,
+        "displayYear": "1980",
+        "note": "Ideas smuggled inside a murder mystery."
+      },
+      {
+        "position": 9,
+        "title": "Beloved",
+        "author": "Toni Morrison",
+        "sortYear": 1987,
+        "displayYear": "1987",
+        "note": "History, haunting, and voice — postmodern and profound."
+      },
+      {
+        "position": 10,
+        "title": "Blood Meridian",
+        "author": "Cormac McCarthy",
+        "sortYear": 1985,
+        "displayYear": "1985",
+        "note": "Violence and myth — the anti-Western."
+      },
+      {
+        "position": 11,
+        "title": "Gravity's Rainbow",
+        "author": "Thomas Pynchon",
+        "sortYear": 1973,
+        "displayYear": "1973",
+        "note": "The maximal summit — attempt it last."
+      }
+    ],
+    "Postcolonial literature": [
+      {
+        "position": 1,
+        "title": "Things Fall Apart",
+        "author": "Chinua Achebe",
+        "sortYear": 1958,
+        "displayYear": "1958",
+        "note": "Start here: the encounter told from inside — the founding novel."
+      },
+      {
+        "position": 2,
+        "title": "Wide Sargasso Sea",
+        "author": "Jean Rhys",
+        "sortYear": 1966,
+        "displayYear": "1966",
+        "note": "Writing back to the canon — Jane Eyre's silenced other."
+      },
+      {
+        "position": 3,
+        "title": "Season of Migration to the North",
+        "author": "Tayeb Salih",
+        "sortYear": 1966,
+        "displayYear": "1966",
+        "note": "The journey reversed — south to north and back."
+      },
+      {
+        "position": 4,
+        "title": "Black Skin, White Masks",
+        "author": "Frantz Fanon",
+        "sortYear": 1952,
+        "displayYear": "1952",
+        "note": "The psychology of colonization — the key theory, readable."
+      },
+      {
+        "position": 5,
+        "title": "A House for Mr Biswas",
+        "author": "V. S. Naipaul",
+        "sortYear": 1961,
+        "displayYear": "1961",
+        "note": "A life, a house, an empire's aftermath."
+      },
+      {
+        "position": 6,
+        "title": "Nervous Conditions",
+        "author": "Tsitsi Dangarembga",
+        "sortYear": 1988,
+        "displayYear": "1988",
+        "note": "Gender and colonization — coming of age."
+      },
+      {
+        "position": 7,
+        "title": "The God of Small Things",
+        "author": "Arundhati Roy",
+        "sortYear": 1997,
+        "displayYear": "1997",
+        "note": "Language and caste — lush and devastating."
+      },
+      {
+        "position": 8,
+        "title": "Midnight's Children",
+        "author": "Salman Rushdie",
+        "sortYear": 1981,
+        "displayYear": "1981",
+        "note": "Nation as narrative — the exuberant landmark."
+      },
+      {
+        "position": 9,
+        "title": "Orientalism",
+        "author": "Edward Said",
+        "sortYear": 1978,
+        "displayYear": "1978",
+        "note": "The theory that named the field — read once the novels ground it."
+      },
+      {
+        "position": 10,
+        "title": "The Wretched of the Earth",
+        "author": "Frantz Fanon",
+        "sortYear": 1961,
+        "displayYear": "1961",
+        "note": "Decolonization's fiercest statement — the capstone."
+      }
+    ],
+    "Gothic": [
+      {
+        "position": 1,
+        "title": "The Castle of Otranto",
+        "author": "Horace Walpole",
+        "sortYear": 1764,
+        "displayYear": "1764",
+        "note": "Start here: the first Gothic — short and strange."
+      },
+      {
+        "position": 2,
+        "title": "The Fall of the House of Usher",
+        "author": "Edgar Allan Poe",
+        "sortYear": 1839,
+        "displayYear": "1839",
+        "note": "The mode distilled into a single tale."
+      },
+      {
+        "position": 3,
+        "title": "Frankenstein",
+        "author": "Mary Shelley",
+        "sortYear": 1818,
+        "displayYear": "1818",
+        "note": "Gothic given a mind — terror with ideas."
+      },
+      {
+        "position": 4,
+        "title": "The Monk",
+        "author": "Matthew Lewis",
+        "sortYear": 1796,
+        "displayYear": "1796",
+        "note": "Gothic at full transgressive throttle."
+      },
+      {
+        "position": 5,
+        "title": "The Mysteries of Udolpho",
+        "author": "Ann Radcliffe",
+        "sortYear": 1794,
+        "displayYear": "1794",
+        "note": "The atmospheric classic — dread by suggestion."
+      },
+      {
+        "position": 6,
+        "title": "Northanger Abbey",
+        "author": "Jane Austen",
+        "sortYear": 1817,
+        "displayYear": "1817",
+        "note": "The affectionate parody — read once you know the tropes."
+      },
+      {
+        "position": 7,
+        "title": "Melmoth the Wanderer",
+        "author": "Charles Maturin",
+        "sortYear": 1820,
+        "displayYear": "1820",
+        "note": "The dark capstone — the wandering damned."
+      }
+    ],
+    "Transcendentalism": [
+      {
+        "position": 1,
+        "title": "Nature",
+        "author": "Ralph Waldo Emerson",
+        "sortYear": 1836,
+        "displayYear": "1836",
+        "note": "Start here: the founding essay — the program itself."
+      },
+      {
+        "position": 2,
+        "title": "Self-Reliance",
+        "author": "Ralph Waldo Emerson",
+        "sortYear": 1841,
+        "displayYear": "1841",
+        "note": "The most quoted, most useful entry."
+      },
+      {
+        "position": 3,
+        "title": "Civil Disobedience",
+        "author": "Henry David Thoreau",
+        "sortYear": 1849,
+        "displayYear": "1849",
+        "note": "The idea with political teeth."
+      },
+      {
+        "position": 4,
+        "title": "Walden",
+        "author": "Henry David Thoreau",
+        "sortYear": 1854,
+        "displayYear": "1854",
+        "note": "The experiment in full — living deliberately."
+      },
+      {
+        "position": 5,
+        "title": "The Over-Soul",
+        "author": "Ralph Waldo Emerson",
+        "sortYear": 1841,
+        "displayYear": "1841",
+        "note": "The mystical core."
+      },
+      {
+        "position": 6,
+        "title": "Woman in the Nineteenth Century",
+        "author": "Margaret Fuller",
+        "sortYear": 1845,
+        "displayYear": "1845",
+        "note": "Transcendentalism applied to freedom."
+      },
+      {
+        "position": 7,
+        "title": "Leaves of Grass",
+        "author": "Walt Whitman",
+        "sortYear": 1855,
+        "displayYear": "1855",
+        "note": "The spirit become poetry — the summit."
+      }
+    ],
+    "Aestheticism / Decadence": [
+      {
+        "position": 1,
+        "title": "The Importance of Being Earnest",
+        "author": "Oscar Wilde",
+        "sortYear": 1895,
+        "displayYear": "1895",
+        "note": "Start light: wit as pure surface — the pleasure principle."
+      },
+      {
+        "position": 2,
+        "title": "The Picture of Dorian Gray",
+        "author": "Oscar Wilde",
+        "sortYear": 1890,
+        "displayYear": "1890",
+        "note": "Beauty, corruption, and a bargain."
+      },
+      {
+        "position": 3,
+        "title": "Studies in the History of the Renaissance",
+        "author": "Walter Pater",
+        "sortYear": 1873,
+        "displayYear": "1873",
+        "note": "The creed — \"art for art's sake\" argued."
+      },
+      {
+        "position": 4,
+        "title": "Poems and Ballads",
+        "author": "Algernon Charles Swinburne",
+        "sortYear": 1866,
+        "displayYear": "1866",
+        "note": "Scandalous music — the sensuous extreme."
+      },
+      {
+        "position": 5,
+        "title": "Á rebours",
+        "author": "Joris-Karl Huysmans",
+        "sortYear": 1884,
+        "displayYear": "1884",
+        "note": "The decadent bible — taste refined into disease."
+      },
+      {
+        "position": 6,
+        "title": "The Ballad of Reading Gaol",
+        "author": "Oscar Wilde",
+        "sortYear": 1898,
+        "displayYear": "1898",
+        "note": "Beauty meeting hard reality — the aftermath."
+      }
+    ],
+    "Imagism": [
+      {
+        "position": 1,
+        "title": "In a Station of the Metro",
+        "author": "Ezra Pound",
+        "sortYear": 1913,
+        "displayYear": "1913",
+        "note": "Start here: the whole movement in two lines."
+      },
+      {
+        "position": 2,
+        "title": "A Few Don'ts by an Imagiste",
+        "author": "Ezra Pound and F. S. Flint",
+        "sortYear": 1913,
+        "displayYear": "1913",
+        "note": "The rules — clarity, image, no waste."
+      },
+      {
+        "position": 3,
+        "title": "Des Imagistes",
+        "author": "Ezra Pound",
+        "sortYear": 1914,
+        "displayYear": "1914",
+        "note": "The first gathering — the movement assembling."
+      },
+      {
+        "position": 4,
+        "title": "Oread",
+        "author": "H.D.",
+        "sortYear": 1914,
+        "displayYear": "1914",
+        "note": "The image at its purest."
+      },
+      {
+        "position": 5,
+        "title": "Sea Garden",
+        "author": "H.D.",
+        "sortYear": 1916,
+        "displayYear": "1916",
+        "note": "Imagism sustained into a whole book."
+      },
+      {
+        "position": 6,
+        "title": "Some Imagist Poets",
+        "author": "Amy Lowell",
+        "sortYear": 1915,
+        "displayYear": "1915",
+        "note": "The movement widens."
+      }
+    ],
+    "Harlem Renaissance": [
+      {
+        "position": 1,
+        "title": "The Negro Speaks of Rivers",
+        "author": "Langston Hughes",
+        "sortYear": 1921,
+        "displayYear": "1921",
+        "note": "Start here: the movement's voice in one short poem."
+      },
+      {
+        "position": 2,
+        "title": "If We Must Die",
+        "author": "Claude McKay",
+        "sortYear": 1919,
+        "displayYear": "1919",
+        "note": "Defiance in fourteen lines."
+      },
+      {
+        "position": 3,
+        "title": "The New Negro",
+        "author": "Alain Locke",
+        "sortYear": 1925,
+        "displayYear": "1925",
+        "note": "The manifesto-anthology — the movement announcing itself."
+      },
+      {
+        "position": 4,
+        "title": "The Weary Blues",
+        "author": "Langston Hughes",
+        "sortYear": 1926,
+        "displayYear": "1926",
+        "note": "Jazz and blues become poetry."
+      },
+      {
+        "position": 5,
+        "title": "Cane",
+        "author": "Jean Toomer",
+        "sortYear": 1923,
+        "displayYear": "1923",
+        "note": "The experimental masterpiece — prose, verse, and vision."
+      },
+      {
+        "position": 6,
+        "title": "Passing",
+        "author": "Nella Larsen",
+        "sortYear": 1929,
+        "displayYear": "1929",
+        "note": "Identity and the color line — taut and modern."
+      },
+      {
+        "position": 7,
+        "title": "Their Eyes Were Watching God",
+        "author": "Zora Neale Hurston",
+        "sortYear": 1937,
+        "displayYear": "1937",
+        "note": "The culminating novel — voice and self."
+      }
+    ],
+    "Theatre of the Absurd": [
+      {
+        "position": 1,
+        "title": "The Bald Soprano",
+        "author": "Eugène Ionesco",
+        "sortYear": 1950,
+        "displayYear": "1950",
+        "note": "Start here: language collapsing into farce."
+      },
+      {
+        "position": 2,
+        "title": "The Zoo Story",
+        "author": "Edward Albee",
+        "sortYear": 1959,
+        "displayYear": "1959",
+        "note": "Two men, one bench — the absurd, American and short."
+      },
+      {
+        "position": 3,
+        "title": "Rhinoceros",
+        "author": "Eugène Ionesco",
+        "sortYear": 1959,
+        "displayYear": "1959",
+        "note": "Conformity as epidemic — the accessible parable."
+      },
+      {
+        "position": 4,
+        "title": "Waiting for Godot",
+        "author": "Samuel Beckett",
+        "sortYear": 1953,
+        "displayYear": "1953",
+        "note": "The center of the movement — nothing happens, twice."
+      },
+      {
+        "position": 5,
+        "title": "The Birthday Party",
+        "author": "Harold Pinter",
+        "sortYear": 1957,
+        "displayYear": "1957",
+        "note": "Menace in the everyday."
+      },
+      {
+        "position": 6,
+        "title": "Endgame",
+        "author": "Samuel Beckett",
+        "sortYear": 1957,
+        "displayYear": "1957",
+        "note": "Bleaker, tighter — the summit of the form."
+      }
+    ],
+    "Beat Generation": [
+      {
+        "position": 1,
+        "title": "Howl and Other Poems",
+        "author": "Allen Ginsberg",
+        "sortYear": 1956,
+        "displayYear": "1956",
+        "note": "Start here: the movement's detonation."
+      },
+      {
+        "position": 2,
+        "title": "On the Road",
+        "author": "Jack Kerouac",
+        "sortYear": 1957,
+        "displayYear": "1957",
+        "note": "The Beat novel — motion as meaning."
+      },
+      {
+        "position": 3,
+        "title": "A Coney Island of the Mind",
+        "author": "Lawrence Ferlinghetti",
+        "sortYear": 1958,
+        "displayYear": "1958",
+        "note": "Accessible, playful Beat verse."
+      },
+      {
+        "position": 4,
+        "title": "The Dharma Bums",
+        "author": "Jack Kerouac",
+        "sortYear": 1958,
+        "displayYear": "1958",
+        "note": "Beats and Buddhism — gentler, searching."
+      },
+      {
+        "position": 5,
+        "title": "Kaddish and Other Poems",
+        "author": "Allen Ginsberg",
+        "sortYear": 1961,
+        "displayYear": "1961",
+        "note": "Grief at full voice — the deeper Ginsberg."
+      },
+      {
+        "position": 6,
+        "title": "Naked Lunch",
+        "author": "William S. Burroughs",
+        "sortYear": 1959,
+        "displayYear": "1959",
+        "note": "The extreme edge — fragmented and difficult. Attempt it last."
+      }
+    ],
+    "Magical realism": [
+      {
+        "position": 1,
+        "title": "Pedro Páramo",
+        "author": "Juan Rulfo",
+        "sortYear": 1955,
+        "displayYear": "1955",
+        "note": "Start here: the short novel that made the mode possible."
+      },
+      {
+        "position": 2,
+        "title": "Chronicle of a Death Foretold",
+        "author": "Gabriel García Márquez",
+        "sortYear": 1981,
+        "displayYear": "1981",
+        "note": "Compact and perfect — the way in."
+      },
+      {
+        "position": 3,
+        "title": "The Kingdom of This World",
+        "author": "Alejo Carpentier",
+        "sortYear": 1949,
+        "displayYear": "1949",
+        "note": "Where the term was born — history made marvelous."
+      },
+      {
+        "position": 4,
+        "title": "Like Water for Chocolate",
+        "author": "Laura Esquivel",
+        "sortYear": 1989,
+        "displayYear": "1989",
+        "note": "Warm, popular, easy to love."
+      },
+      {
+        "position": 5,
+        "title": "The House of the Spirits",
+        "author": "Isabel Allende",
+        "sortYear": 1982,
+        "displayYear": "1982",
+        "note": "Family saga with the marvelous woven through."
+      },
+      {
+        "position": 6,
+        "title": "Beloved",
+        "author": "Toni Morrison",
+        "sortYear": 1987,
+        "displayYear": "1987",
+        "note": "The mode at its most serious."
+      },
+      {
+        "position": 7,
+        "title": "One Hundred Years of Solitude",
+        "author": "Gabriel García Márquez",
+        "sortYear": 1967,
+        "displayYear": "1967",
+        "note": "The summit — a century, a family, a village. Read it when ready."
+      }
+    ]
+  }
 }

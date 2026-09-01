@@ -76,7 +76,7 @@ export default async function BookDetailPage({
       </Link>
       {isMovement(c.primaryMovement) && (
         <Link
-          href={`/lineage/${slugify(c.primaryMovement)}`}
+          href={`/recommendations?movement=${encodeURIComponent(c.primaryMovement)}`}
           className="text-[0.7rem] font-semibold uppercase tracking-[0.1em] text-accent/80 transition-colors hover:text-accent"
         >
           Lineage ↗

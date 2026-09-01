@@ -16,11 +16,11 @@ export interface CollectionViewProps {
   title: string;
   /** Works belonging to this collection, already ordered for display. */
   works: Work[];
-  /** When set, show a "View lineage" link to /lineage/[slug] (movement pages). */
-  lineageSlug?: string;
+  /** When set, show a "View lineage" link to the movement's canon detail. */
+  lineageMovement?: string;
 }
 
-export function CollectionView({ eyebrow, title, works, lineageSlug }: CollectionViewProps) {
+export function CollectionView({ eyebrow, title, works, lineageMovement }: CollectionViewProps) {
   const readCount = works.filter((w) => w.reading).length;
 
   return (
@@ -41,9 +41,9 @@ export function CollectionView({ eyebrow, title, works, lineageSlug }: Collectio
             {works.length === 1 ? "work" : "works"}
             {readCount > 0 && ` · ${readCount} read`}
           </p>
-          {lineageSlug && (
+          {lineageMovement && (
             <Link
-              href={`/lineage/${lineageSlug}`}
+              href={`/recommendations?movement=${encodeURIComponent(lineageMovement)}`}
               className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-paper-edge bg-paper px-3.5 py-1.5 text-xs font-semibold text-ink-soft shadow-sm transition-colors hover:border-ink-faint hover:text-accent"
             >
               <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>

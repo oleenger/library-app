@@ -50,7 +50,7 @@ export default async function MovementPage({
       eyebrow="Movement"
       title={name}
       works={works}
-      lineageSlug={isMovement(name) ? slugify(name) : undefined}
+      lineageMovement={isMovement(name) ? name : undefined}
     />
   );
 }

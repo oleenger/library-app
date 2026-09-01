@@ -29,6 +29,19 @@ export interface InfluenceEdge {
   note: string;
 }
 
+/** One step in a movement's curated reading path (ordered by position). */
+export interface ReadingStep {
+  position: number;
+  title: string;
+  author: string;
+  /** Single sortable year (BCE negative). Null if unparseable. */
+  sortYear: number | null;
+  /** Faithful source string to render, e.g. "1818". */
+  displayYear: string;
+  /** Why this step, in reading-order context. */
+  note: string;
+}
+
 interface MovementEntry {
   essentials: Essential[];
   years: { min: number; max: number } | null;
@@ -40,6 +53,7 @@ interface CanonData {
   movements: Record<string, MovementEntry>;
   preMovement: Essential[];
   edges: InfluenceEdge[];
+  readingPaths: Record<string, ReadingStep[]>;
 }
 
 const DATA = raw as CanonData;
@@ -68,6 +82,17 @@ export function hasEssentials(movement: string): boolean {
 /** The pre-movement / classical foundations, ordered oldest first. */
 export function preMovementClassics(): Essential[] {
   return DATA.preMovement;
+}
+
+// ---- reading paths --------------------------------------------------------
+/** The movement's curated reading path (ordered by position), or [] if none. */
+export function readingPathFor(movement: string): ReadingStep[] {
+  return DATA.readingPaths[movement] ?? [];
+}
+
+/** True when the data carries a curated reading path for this movement. */
+export function hasReadingPath(movement: string): boolean {
+  return (DATA.readingPaths[movement]?.length ?? 0) > 0;
 }
 
 // ---- influence graph ------------------------------------------------------
@@ -136,6 +161,9 @@ function assertValid(): void {
   for (const e of DATA.edges) {
     if (!isMovement(e.source)) bad.push(`edge source "${e.source}"`);
     if (!isMovement(e.target)) bad.push(`edge target "${e.target}"`);
+  }
+  for (const name of Object.keys(DATA.readingPaths)) {
+    if (!isMovement(name)) bad.push(`reading path "${name}"`);
   }
   if (bad.length) {
     throw new Error(

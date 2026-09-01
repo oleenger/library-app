@@ -1,32 +1,31 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { formatYear, periodColor } from "@/lib/display";
-import type { CanonPathView, CanonWorkView } from "@/lib/canon/select";
-import { LineageEntryCard } from "@/components/lineage-entry-card";
-import { slugify } from "@/lib/slug";
+import Link from "next/link";
+import { periodColor } from "@/lib/display";
+import type { MovementDetailView, ReadingStepView } from "@/lib/canon/select";
+import { MovementChip } from "@/components/lineage-view";
+import { EssentialsList } from "@/components/essentials-list";
 
 /**
- * Reading Paths: one card per movement the reader favours, drawn from the static
- * curated canon (lib/canon/paths.ts) and joined to live holdings server-side.
- * Each card reads two ways — as an ordered reading path (owned books inline as
- * green waypoints, missing works as dashed numbered gaps, each step with a
- * rationale) or as the flat by-importance ranking. Nothing here is generated:
- * order and notes are hand-curated.
+ * Canon: the single per-movement detail surface. Pick a movement (the reader's
+ * most-held first) and read its description, its curated reading path, its broad
+ * essentials, and its lineage. Nothing here is generated — the reading order,
+ * essentials and notes are all curated static data joined to live holdings.
  */
 export function RecommendationsView({
-  paths,
+  details,
   workCount,
   initialMovement,
 }: {
-  paths: CanonPathView[];
+  details: MovementDetailView[];
   workCount: number;
   initialMovement?: string | null;
 }) {
   const preselect =
-    initialMovement && paths.some((p) => p.movement === initialMovement)
+    initialMovement && details.some((d) => d.movement === initialMovement)
       ? initialMovement
-      : paths[0]?.movement ?? "";
+      : details[0]?.movement ?? "";
   const [selected, setSelected] = useState<string>(preselect);
 
   if (workCount < 5) {
@@ -45,45 +44,34 @@ export function RecommendationsView({
     );
   }
 
-  const held = paths.filter((p) => p.holdings > 0);
-  const rest = paths.filter((p) => p.holdings === 0);
-  const current = paths.find((p) => p.movement === selected) ?? paths[0] ?? null;
+  const held = details.filter((d) => d.holdings > 0);
+  const rest = details.filter((d) => d.holdings === 0);
+  const current = details.find((d) => d.movement === selected) ?? details[0] ?? null;
 
   return (
     <section className="space-y-6">
       <div>
         <h2 className="font-serif text-2xl leading-tight sm:text-3xl">Canon</h2>
         <p className="mt-1 text-sm text-ink-soft">
-          The canonical works of a movement — read them as an ordered reading path
-          or ranked by importance. Books you own appear as waypoints.
+          Any movement — its story, a guided reading path, and the essential works.
+          Books you own appear as waypoints.
         </p>
       </div>
 
-      {paths.length === 0 ? (
+      {details.length === 0 ? (
         <div className="rounded-2xl border border-paper-edge bg-paper p-8 text-center shadow-card">
-          <p className="text-[0.95rem] text-ink-soft">No curated paths available.</p>
+          <p className="text-[0.95rem] text-ink-soft">No movements available.</p>
         </div>
       ) : (
         <>
-          <MovementMenu
-            held={held}
-            rest={rest}
-            value={current?.movement ?? ""}
-            onChange={setSelected}
-          />
+          <MovementMenu held={held} rest={rest} value={current?.movement ?? ""} onChange={setSelected} />
 
-          {current && (
-            <LineageEntryCard
-              movement={current.movement}
-              slug={slugify(current.movement)}
-            />
-          )}
-
-          {current && <CanonArea key={current.movement} path={current} />}
+          {current && <MovementDetail key={current.movement} detail={current} />}
 
           <p className="text-xs text-ink-faint">
-            Ordering and notes are curated, not generated. Owned books are matched
-            by title or by author and year, so translated editions still count.
+            Reading order, essentials and notes are curated, not generated. Owned
+            books are matched by title or by author and year, so translated
+            editions still count.
           </p>
         </>
       )}
@@ -91,18 +79,20 @@ export function RecommendationsView({
   );
 }
 
-/** Top menu for choosing which movement's path to read. Held movements first. */
+/** Top menu for choosing which movement to read. Held movements first. */
 function MovementMenu({
   held,
   rest,
   value,
   onChange,
 }: {
-  held: CanonPathView[];
-  rest: CanonPathView[];
+  held: MovementDetailView[];
+  rest: MovementDetailView[];
   value: string;
   onChange: (movement: string) => void;
 }) {
+  const label = (d: MovementDetailView) =>
+    d.hasEssentials ? `${d.movement} — ${d.essentialsOwned}/${d.essentialsTotal} owned` : d.movement;
   return (
     <label className="block">
       <span className="mb-1.5 block text-[0.7rem] font-medium uppercase tracking-[0.12em] text-ink-faint">
@@ -116,17 +106,17 @@ function MovementMenu({
         >
           {held.length > 0 && (
             <optgroup label="On your shelves">
-              {held.map((p) => (
-                <option key={p.movement} value={p.movement}>
-                  {p.movement} — {p.ownedCount}/{p.total} owned
+              {held.map((d) => (
+                <option key={d.movement} value={d.movement}>
+                  {label(d)}
                 </option>
               ))}
             </optgroup>
           )}
           <optgroup label={held.length > 0 ? "More movements" : "All movements"}>
-            {rest.map((p) => (
-              <option key={p.movement} value={p.movement}>
-                {p.movement}
+            {rest.map((d) => (
+              <option key={d.movement} value={d.movement}>
+                {d.movement}
               </option>
             ))}
           </optgroup>
@@ -144,88 +134,96 @@ function MovementMenu({
   );
 }
 
-type AreaView = "path" | "importance";
+type AreaView = "path" | "essentials";
 
-/** A single movement's path, switchable between path and importance views. */
-function CanonArea({ path }: { path: CanonPathView }) {
-  const [view, setView] = useState<AreaView>("path");
-
-  const pct = path.total > 0 ? Math.round((path.ownedCount / path.total) * 100) : 0;
-  const color = periodColor(path.period);
-
-  // Path view keeps the curated reading order; importance view re-ranks a copy.
-  const byImportance = useMemo(
-    () => [...path.works].sort((a, b) => b.importance - a.importance),
-    [path.works],
-  );
+/**
+ * One movement's full detail: description, then its reading path / essentials
+ * (whichever exist), then its lineage — what it grew out of, led to, stood beside.
+ */
+function MovementDetail({ detail }: { detail: MovementDetailView }) {
+  const color = periodColor(detail.period);
+  const views: AreaView[] = [
+    ...(detail.hasPath ? (["path"] as const) : []),
+    ...(detail.hasEssentials ? (["essentials"] as const) : []),
+  ];
+  const [view, setView] = useState<AreaView>(views[0] ?? "path");
+  const active = views.includes(view) ? view : views[0];
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-paper-edge bg-paper shadow-card">
-      <div className="border-b border-paper-edge px-5 py-4 sm:px-6">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="min-w-0">
-            <h3 className="flex items-center gap-2 font-serif text-lg text-ink">
-              <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: color }} aria-hidden />
-              <span className="truncate">{path.movement}</span>
-            </h3>
-            <p className="mt-0.5 text-xs text-ink-soft">{path.blurb}</p>
-          </div>
-          <ViewToggle view={view} onChange={setView} />
-        </div>
-        <div className="mt-3 flex items-center gap-3">
-          <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-paper-sunken">
-            <div
-              className="h-full rounded-full bg-emerald-500 transition-[width]"
-              style={{ width: `${pct}%` }}
-            />
-          </div>
-          <span className="shrink-0 text-[0.7rem] font-medium uppercase tracking-[0.1em] text-ink-faint">
-            {path.ownedCount} of {path.total} owned · {path.eraLabel}
-          </span>
-        </div>
+    <div className="space-y-6">
+      <div className="rounded-2xl border border-paper-edge bg-paper-raised p-5 shadow-card sm:p-6">
+        <h3 className="flex items-center gap-2 font-serif text-xl text-ink">
+          <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: color }} aria-hidden />
+          <span className="min-w-0 truncate">{detail.movement}</span>
+        </h3>
+        <p className="mt-1 text-xs font-medium uppercase tracking-[0.1em] text-ink-faint">
+          {detail.eraLabel}
+        </p>
+        {detail.note && (
+          <p className="mt-3 text-[0.95rem] leading-relaxed text-ink">{detail.note}</p>
+        )}
       </div>
 
-      {view === "path" ? (
-        <ol className="px-5 py-5 sm:px-6">
-          {path.works.map((item, i) => (
-            <PathStep
-              key={item.title + item.author}
-              item={item}
-              position={i + 1}
-              isLast={i === path.works.length - 1}
-            />
-          ))}
-        </ol>
+      {views.length > 0 ? (
+        <div className="overflow-hidden rounded-2xl border border-paper-edge bg-paper shadow-card">
+          {views.length > 1 && (
+            <div className="border-b border-paper-edge px-5 py-3 sm:px-6">
+              <ViewToggle view={active} onChange={setView} />
+            </div>
+          )}
+          <div className="px-5 py-5 sm:px-6">
+            {active === "path" ? (
+              <ReadingPath steps={detail.readingPath} owned={detail.pathOwned} total={detail.pathTotal} />
+            ) : (
+              <EssentialsList
+                works={detail.essentials}
+                owned={detail.essentialsOwned}
+                total={detail.essentialsTotal}
+              />
+            )}
+          </div>
+        </div>
       ) : (
-        <ol className="divide-y divide-paper-edge">
-          {byImportance.map((item) => (
-            <ImportanceRow key={item.title + item.author} item={item} />
-          ))}
-        </ol>
+        <div className="rounded-2xl border border-paper-edge bg-paper p-6 shadow-card">
+          {detail.holdings > 0 ? (
+            <p className="text-sm text-ink-soft">
+              <span className="font-serif text-2xl text-accent">{detail.holdings}</span>{" "}
+              {detail.holdings === 1 ? "work" : "works"} in your library. No curated
+              canon for this movement yet.
+            </p>
+          ) : (
+            <p className="text-sm italic text-ink-faint">
+              Nothing in your library under this movement yet, and no curated canon
+              for it.
+            </p>
+          )}
+        </div>
       )}
+
+      <Relations detail={detail} />
     </div>
   );
 }
 
-/** Segmented path/importance switch for one area. */
+/** Segmented reading-path / essentials switch. */
 function ViewToggle({ view, onChange }: { view: AreaView; onChange: (v: AreaView) => void }) {
   const opts: { id: AreaView; label: string }[] = [
-    { id: "path", label: "As a path" },
-    { id: "importance", label: "By importance" },
+    { id: "path", label: "Reading path" },
+    { id: "essentials", label: "Essentials" },
   ];
   return (
     <div className="inline-flex rounded-lg border border-paper-edge bg-paper-sunken p-0.5" role="tablist">
       {opts.map((o) => {
-        const active = o.id === view;
+        const isActive = o.id === view;
         return (
           <button
             key={o.id}
             type="button"
             role="tab"
-            aria-selected={active}
+            aria-selected={isActive}
             onClick={() => onChange(o.id)}
             className={`rounded-md px-3 py-1.5 text-[0.75rem] font-semibold transition ${
-              active ? "bg-white text-ink shadow-sm" : "text-ink-faint hover:text-ink-soft"
+              isActive ? "bg-white text-ink shadow-sm" : "text-ink-faint hover:text-ink-soft"
             }`}
           >
             {o.label}
@@ -236,48 +234,73 @@ function ViewToggle({ view, onChange }: { view: AreaView; onChange: (v: AreaView
   );
 }
 
+/** The curated reading path as an ordered spine of waypoints and gaps. */
+function ReadingPath({ steps, owned, total }: { steps: ReadingStepView[]; owned: number; total: number }) {
+  const pct = total > 0 ? Math.round((owned / total) * 100) : 0;
+  return (
+    <div>
+      <div className="mb-5 flex items-center gap-3">
+        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-paper-sunken">
+          <div className="h-full rounded-full bg-emerald-500 transition-[width]" style={{ width: `${pct}%` }} />
+        </div>
+        <span className="shrink-0 text-[0.7rem] font-medium uppercase tracking-[0.1em] text-ink-faint">
+          {owned} of {total} owned
+        </span>
+      </div>
+      <ol>
+        {steps.map((step, i) => (
+          <PathStep key={`${step.title}|${step.author}`} step={step} isLast={i === steps.length - 1} />
+        ))}
+      </ol>
+    </div>
+  );
+}
+
 /** One step down the reading-path spine: owned waypoint or numbered gap. */
-function PathStep({
-  item,
-  position,
-  isLast,
-}: {
-  item: CanonWorkView;
-  position: number;
-  isLast: boolean;
-}) {
+function PathStep({ step, isLast }: { step: ReadingStepView; isLast: boolean }) {
+  const body = (
+    <>
+      <div className="flex items-baseline justify-between gap-3">
+        <h4
+          className={`min-w-0 truncate font-serif text-[0.95rem] font-bold leading-tight ${
+            step.owned ? "text-ink group-hover:text-accent" : "text-ink"
+          }`}
+        >
+          {step.title}
+        </h4>
+        <span className="shrink-0 text-xs tabular-nums text-ink-faint">{step.displayYear}</span>
+      </div>
+      <p className="mt-0.5 truncate text-xs text-ink-soft">{step.author}</p>
+      <p className="mt-1.5 text-[0.7rem] font-medium">
+        {step.owned ? (
+          <span className="text-emerald-600">In your library</span>
+        ) : (
+          <span className="text-ink-faint">Gap · reading position {step.position}</span>
+        )}
+      </p>
+      {step.note && (
+        <p className="mt-2 text-[0.8rem] leading-relaxed text-ink-soft">{step.note}</p>
+      )}
+    </>
+  );
   return (
     <li className="relative flex gap-4 pb-6 last:pb-0">
       {!isLast && (
         <span className="absolute bottom-1 left-4 top-9 w-px -translate-x-1/2 bg-paper-edge" aria-hidden />
       )}
-      <StatusDisc owned={item.owned} position={position} />
-      <div className="min-w-0 flex-1">
-        <div className="flex items-baseline justify-between gap-3">
-          <h4 className="min-w-0 truncate font-serif text-[0.95rem] font-bold leading-tight text-ink">
-            {item.title}
-          </h4>
-          <span className="shrink-0 text-xs tabular-nums text-ink-faint">
-            {formatYear(item.year)}
-          </span>
-        </div>
-        <p className="mt-0.5 truncate text-xs text-ink-soft">{item.author}</p>
-        <p className="mt-1.5 text-[0.7rem] font-medium">
-          {item.owned ? (
-            <span className="text-emerald-600">In your library</span>
-          ) : (
-            <span className="text-ink-faint">Gap · reading position {position}</span>
-          )}
-        </p>
-        {item.note && (
-          <p className="mt-2 text-[0.8rem] leading-relaxed text-ink-soft">{item.note}</p>
-        )}
-      </div>
+      <StatusDisc owned={step.owned} position={step.position} />
+      {step.ownedId ? (
+        <Link href={`/book/${step.ownedId}`} className="group min-w-0 flex-1">
+          {body}
+        </Link>
+      ) : (
+        <div className="min-w-0 flex-1">{body}</div>
+      )}
     </li>
   );
 }
 
-/** The status disc anchoring a path step: green check when owned, else the gap's reading position. */
+/** The status disc anchoring a path step: green check when owned, else its position. */
 function StatusDisc({ owned, position }: { owned: boolean; position: number }) {
   if (owned) {
     return (
@@ -303,64 +326,54 @@ function StatusDisc({ owned, position }: { owned: boolean; position: number }) {
   );
 }
 
-/** A by-importance row: importance badge for gaps, green check for owned. */
-function ImportanceRow({ item }: { item: CanonWorkView }) {
-  // Fall back to the path note until an importance-specific rationale is curated.
-  const reason = item.why ?? item.note;
+/** Section eyebrow for a lineage band. */
+function BandLabel({ children }: { children: React.ReactNode }) {
   return (
-    <li className="flex items-stretch gap-3 px-4 py-3 sm:px-5">
-      {item.owned ? <OwnedBadge /> : <ScoreBadge value={item.importance} />}
-      <div className="min-w-0 flex-1">
-        <div className="flex items-baseline justify-between gap-3">
-          <h4 className="min-w-0 truncate font-serif text-[0.95rem] font-bold leading-tight text-ink">
-            {item.title}
-          </h4>
-          <span className="shrink-0 text-xs tabular-nums text-ink-faint">
-            {formatYear(item.year)}
-          </span>
-        </div>
-        <p className="mt-0.5 truncate text-xs text-ink-soft">{item.author}</p>
-        {item.owned && (
-          <p className="mt-1.5 text-[0.7rem] font-medium text-emerald-600">In your library</p>
+    <p className="text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-ink-faint">
+      {children}
+    </p>
+  );
+}
+
+/** The movement's influence lineage as chip bands. Renders nothing when empty. */
+function Relations({ detail }: { detail: MovementDetailView }) {
+  const { reactedAgainst, ledTo, alongside } = detail;
+  if (reactedAgainst.length + ledTo.length + alongside.length === 0) return null;
+  return (
+    <section className="rounded-2xl bg-paper-sunken/60 p-5 sm:p-6">
+      <h3 className="font-serif text-lg text-ink">Lineage</h3>
+      <div className="mt-4 space-y-5">
+        {reactedAgainst.length > 0 && (
+          <div>
+            <BandLabel>Grew out of / reacted against</BandLabel>
+            <div className="mt-2.5 flex flex-wrap gap-2.5">
+              {reactedAgainst.map((c) => (
+                <MovementChip key={c.slug} chip={c} />
+              ))}
+            </div>
+          </div>
         )}
-        {reason && (
-          <p className="mt-1.5 text-[0.8rem] leading-relaxed text-ink-soft">{reason}</p>
+        {ledTo.length > 0 && (
+          <div>
+            <BandLabel>Led to</BandLabel>
+            <div className="mt-2.5 flex flex-wrap gap-2.5">
+              {ledTo.map((c) => (
+                <MovementChip key={c.slug} chip={c} />
+              ))}
+            </div>
+          </div>
+        )}
+        {alongside.length > 0 && (
+          <div>
+            <BandLabel>Alongside — contemporaries</BandLabel>
+            <div className="mt-2.5 flex flex-wrap gap-2.5">
+              {alongside.map((c) => (
+                <MovementChip key={c.slug} chip={c} />
+              ))}
+            </div>
+          </div>
         )}
       </div>
-    </li>
-  );
-}
-
-/** Owned marker for the by-importance view — mirrors ScoreBadge's footprint. */
-function OwnedBadge() {
-  return (
-    <span
-      className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-emerald-500 text-white"
-      title="In your library"
-      aria-label="In your library"
-    >
-      <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden>
-        <path d="M5 10.5l3.5 3.5L15 6.5" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    </span>
-  );
-}
-
-/** Importance 1..10, shown as a weighted numeric badge (10 = cornerstone). */
-function ScoreBadge({ value }: { value: number }) {
-  const tone =
-    value >= 9
-      ? "bg-ink text-canvas"
-      : value >= 7
-        ? "bg-accent/12 text-accent ring-1 ring-inset ring-accent/25"
-        : "bg-paper-sunken text-ink-soft ring-1 ring-inset ring-paper-edge";
-  return (
-    <span
-      className={`grid h-9 w-9 shrink-0 place-items-center rounded-lg font-serif text-base tabular-nums ${tone}`}
-      title={`Importance ${value}/10`}
-      aria-label={`Importance ${value} out of 10`}
-    >
-      {value}
-    </span>
+    </section>
   );
 }
