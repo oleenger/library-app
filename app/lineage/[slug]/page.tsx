@@ -4,8 +4,9 @@ import { slugify } from "@/lib/slug";
 import { MOVEMENTS, movementPeriod, isCrossPeriod, type Movement } from "@/lib/taxonomy";
 import { lineageNode } from "@/lib/lineage";
 import { canonPath } from "@/lib/canon/paths";
-import { workKey, surnameKey, surnamesMatch } from "@/lib/recommend/match";
-import { shortPeriod } from "@/lib/display";
+import { essentialsFor, movementYears, influenceRelations } from "@/lib/canon/data";
+import { findOwnedWork } from "@/lib/recommend/match";
+import { shortPeriod, formatYear } from "@/lib/display";
 import { LineageView, type LineageChip, type LineageExample, type CanonEntry } from "@/components/lineage-view";
 import type { Work } from "@/lib/types";
 
@@ -49,27 +50,6 @@ function toChips(
   }));
 }
 
-/**
- * Find the reader's own copy of a canonical work, if held: exact title+author
- * first, then a same-year loose-surname fallback so a translated edition still
- * resolves. Returns the owning work so an owned essential can link to its page.
- */
-function findOwnedWork(
-  works: Work[],
-  title: string,
-  author: string,
-  year: number,
-): Work | undefined {
-  const key = workKey(title, author);
-  const exact = works.find((w) => workKey(w.title, w.author) === key);
-  if (exact) return exact;
-  const target = surnameKey(author);
-  return works.find(
-    (w) =>
-      w.originalYear === year && surnamesMatch(target, surnameKey(w.author)),
-  );
-}
-
 async function lineageData(slug: string) {
   const movement = resolveMovement(slug);
   if (!movement) return null;
@@ -87,35 +67,44 @@ async function lineageData(slug: string) {
     year: w.originalYear,
   }));
 
+  // Era range comes from the essentials' own year span (authoritative), with the
+  // curated LINEAGE `years` string as a fallback for movements the reference
+  // data does not yet cover.
+  const span = movementYears(movement);
+  const yearsLabel = span
+    ? span.min === span.max
+      ? formatYear(span.min)
+      : `${formatYear(span.min)}–${formatYear(span.max)}`
+    : node.years;
   const eraLabel = [
     isCrossPeriod(movement) ? "Cross-period form" : shortPeriod(period),
-    node.years,
+    yearsLabel,
   ]
     .filter(Boolean)
     .join(" · ");
 
-  // Canon: the movement's essential works, joined live against the reader's
-  // shelf so each is marked owned (a waypoint) or a gap. The essentials — not
-  // the reader's incidental holdings — are the point of this view.
-  const canon = canonPath(movement);
-  let canonWorks: CanonEntry[] = [];
-  let canonOwned = 0;
-  if (canon) {
-    canonWorks = [...canon.works]
-      .sort((a, b) => a.year - b.year)
-      .map((w) => {
-        const owned = findOwnedWork(works, w.title, w.author, w.year);
-        return {
-          title: w.title,
-          author: w.author,
-          year: w.year,
-          importance: w.importance,
-          owned: owned != null,
-          ownedId: owned?.id ?? null,
-        };
-      });
-    canonOwned = canonWorks.filter((w) => w.owned).length;
-  }
+  // Essentials: the movement's authoritative works (from the reference TSV),
+  // joined live against the reader's shelf so each is marked owned (a waypoint)
+  // or a gap. The essentials — not the reader's incidental holdings — are the
+  // point of this view.
+  const essentials = essentialsFor(movement);
+  const canonWorks: CanonEntry[] = essentials.map((e) => {
+    const owned = findOwnedWork(works, e.title, e.author, e.sortYear);
+    return {
+      title: e.title,
+      author: e.author,
+      displayYear: e.displayYear,
+      owned: owned != null,
+      ownedId: owned?.id ?? null,
+    };
+  });
+  const canonOwned = canonWorks.filter((w) => w.owned).length;
+
+  // A curated, ordered reading path (paths.ts) is a separate, transitional
+  // source that still powers /recommendations — surface its blurb and the
+  // "read in order" link only where one exists.
+  const guided = canonPath(movement);
+  const relations = influenceRelations(movement);
 
   return {
     movement,
@@ -124,14 +113,15 @@ async function lineageData(slug: string) {
     note: node.note,
     count: holdings.length,
     examples,
-    hasCanon: canon != null,
-    canonBlurb: canon?.blurb,
+    hasCanon: canonWorks.length > 0,
+    hasGuidedPath: guided != null,
+    canonBlurb: guided?.blurb,
     canonWorks,
     canonOwned,
     canonTotal: canonWorks.length,
-    reactedAgainst: toChips(node.reactedAgainst, counts),
-    ledTo: toChips(node.ledTo, counts),
-    alongside: toChips(node.alongside, counts),
+    reactedAgainst: toChips(relations.reactedAgainst, counts),
+    ledTo: toChips(relations.ledTo, counts),
+    alongside: toChips(relations.alongside, counts),
   };
 }
 

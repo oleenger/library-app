@@ -12,7 +12,8 @@
 // below. All vertical geometry is computed here (fixed row heights) so the SVG
 // lane and the flowing HTML rows line up exactly at any container width.
 
-import { LINEAGE } from "./lineage";
+import { forwardEdges, movementYears } from "./canon/data";
+import { formatYear } from "./display";
 import { slugify } from "./slug";
 import {
   MOVEMENTS,
@@ -88,12 +89,17 @@ export interface LineageGraph {
   height: number;
 }
 
-/** First / last 4-digit year in a "1798–1837" string. */
-function yearBounds(years: string | undefined): [number, number] {
-  const all = years?.match(/\d{4}/g);
-  if (!all || all.length === 0) return [Number.MAX_SAFE_INTEGER, -1];
-  const nums = all.map(Number);
-  return [nums[0], nums[nums.length - 1]];
+/** Essentials year span for a movement, or a sentinel when it has none. */
+function bounds(movement: Movement): [number, number] {
+  const y = movementYears(movement);
+  return y ? [y.min, y.max] : [Number.MAX_SAFE_INTEGER, -1];
+}
+
+/** Display year span, e.g. "1764–1890" (or a single year), or undefined. */
+function yearsLabel(movement: Movement): string | undefined {
+  const y = movementYears(movement);
+  if (!y) return undefined;
+  return y.min === y.max ? formatYear(y.min) : `${formatYear(y.min)}\u2013${formatYear(y.max)}`;
 }
 
 /**
@@ -101,12 +107,12 @@ function yearBounds(years: string | undefined): [number, number] {
  * how many works the reader holds in it (drives owned vs. faded styling).
  */
 export function buildLineageGraph(counts: Map<string, number>): LineageGraph {
-  // Edges: led-to relations where both endpoints are movements with a node.
+  // Edges: forward influence threads (evolves-into / feeds / reaction-against;
+  // overlap ties excluded) where both endpoints are placeable movements.
   const rawEdges: Array<{ from: Movement; to: Movement }> = [];
-  for (const [movement, node] of Object.entries(LINEAGE)) {
-    if (!isMovement(movement)) continue;
-    for (const to of node?.ledTo ?? []) {
-      if (LINEAGE[to]) rawEdges.push({ from: movement, to });
+  for (const e of forwardEdges()) {
+    if (isMovement(e.source) && isMovement(e.target)) {
+      rawEdges.push({ from: e.source, to: e.target });
     }
   }
 
@@ -121,7 +127,7 @@ export function buildLineageGraph(counts: Map<string, number>): LineageGraph {
   // Order chronologically; MOVEMENTS order breaks ties within a shared start year.
   const ordered = [...placed].sort(
     (a, b) =>
-      yearBounds(LINEAGE[a]?.years)[0] - yearBounds(LINEAGE[b]?.years)[0] ||
+      bounds(a)[0] - bounds(b)[0] ||
       MOVEMENTS.indexOf(a) - MOVEMENTS.indexOf(b),
   );
 
@@ -141,7 +147,7 @@ export function buildLineageGraph(counts: Map<string, number>): LineageGraph {
     if (prevPeriod === null) return;
     rail.push({ period: prevPeriod, y1: segFirstCenter, y2: segLastCenter });
     labels[labels.length - 1].yearsRange =
-      segMaxYear >= 0 ? `${segMinYear}\u2013${segMaxYear}` : "";
+      segMaxYear >= 0 ? `${formatYear(segMinYear)}\u2013${formatYear(segMaxYear)}` : "";
   };
 
   ordered.forEach((movement, row) => {
@@ -154,7 +160,7 @@ export function buildLineageGraph(counts: Map<string, number>): LineageGraph {
       segMinYear = Number.MAX_SAFE_INTEGER;
       segMaxYear = -1;
     }
-    const [lo, hi] = yearBounds(LINEAGE[movement]?.years);
+    const [lo, hi] = bounds(movement);
     segMinYear = Math.min(segMinYear, lo);
     segMaxYear = Math.max(segMaxYear, hi);
     const center = y + CARD_H / 2;
@@ -165,7 +171,7 @@ export function buildLineageGraph(counts: Map<string, number>): LineageGraph {
       movement,
       slug: slugify(movement),
       period,
-      years: LINEAGE[movement]?.years,
+      years: yearsLabel(movement),
       count: counts.get(movement) ?? 0,
       y,
       row,

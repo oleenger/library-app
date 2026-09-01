@@ -86,8 +86,11 @@ export function buildOwnedIndex(works: Work[]): OwnedIndex {
 /**
  * Is a canonical work (English title, canonical author, publication year) owned?
  * Matches on an exact title+author key first, then falls back to a same-year
- * loose-surname match so translated editions with drifting author spellings
- * still count.
+ * *drifting*-surname match so translated editions with transliterated author
+ * spellings still count. The fallback deliberately excludes a byte-identical
+ * surname: same author + same year + a title that failed the exact match means a
+ * *different work by that author* (e.g. King Lear vs an owned Macbeth, both 1606
+ * Shakespeare), not a translation — so it must not be claimed as owned.
  */
 export function isCanonWorkOwned(
   idx: OwnedIndex,
@@ -99,5 +102,32 @@ export function isCanonWorkOwned(
   const candidates = idx.surnamesByYear.get(year);
   if (!candidates) return false;
   const target = surnameKey(author);
-  return candidates.some((s) => surnamesMatch(target, s));
+  return candidates.some((s) => s !== target && surnamesMatch(target, s));
+}
+
+/**
+ * Like {@link isCanonWorkOwned}, but returns the reader's owning work (so an
+ * owned canon entry can link to its book page) rather than a boolean. Exact
+ * title+author first, then a same-year *drifting*-surname fallback for
+ * translated / transliterated editions. A byte-identical surname is excluded
+ * from the fallback (see {@link isCanonWorkOwned}): same author + same year + a
+ * differing title is a distinct work, not a translation. `year` may be null
+ * (undated / circa-only canon rows), in which case only the exact match applies.
+ */
+export function findOwnedWork(
+  works: Work[],
+  title: string,
+  author: string,
+  year: number | null,
+): Work | undefined {
+  const key = workKey(title, author);
+  const exact = works.find((w) => workKey(w.title, w.author) === key);
+  if (exact) return exact;
+  if (year == null) return undefined;
+  const target = surnameKey(author);
+  return works.find((w) => {
+    if (w.originalYear !== year) return false;
+    const s = surnameKey(w.author);
+    return s !== target && surnamesMatch(target, s);
+  });
 }

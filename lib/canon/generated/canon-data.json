@@ -1,0 +1,4888 @@
+{
+  "generatedAt": "2026-09-01T08:53:57.365Z",
+  "source": "data/all-books.tsv + data/movement-influences.tsv",
+  "movements": {
+    "Neoclassicism / Augustan": {
+      "essentials": [
+        {
+          "title": "Gulliver's Travels",
+          "author": "Jonathan Swift",
+          "sortYear": 1726,
+          "displayYear": "1726",
+          "rank": 1
+        },
+        {
+          "title": "The Rape of the Lock",
+          "author": "Alexander Pope",
+          "sortYear": 1712,
+          "displayYear": "1712",
+          "rank": 2
+        },
+        {
+          "title": "An Essay on Criticism",
+          "author": "Alexander Pope",
+          "sortYear": 1711,
+          "displayYear": "1711",
+          "rank": 3
+        },
+        {
+          "title": "A Modest Proposal",
+          "author": "Jonathan Swift",
+          "sortYear": 1729,
+          "displayYear": "1729",
+          "rank": 4
+        },
+        {
+          "title": "The Dunciad",
+          "author": "Alexander Pope",
+          "sortYear": 1728,
+          "displayYear": "1728",
+          "rank": 5
+        },
+        {
+          "title": "An Essay on Man",
+          "author": "Alexander Pope",
+          "sortYear": 1733,
+          "displayYear": "1733",
+          "rank": 6
+        },
+        {
+          "title": "Phèdre",
+          "author": "Jean Racine",
+          "sortYear": 1677,
+          "displayYear": "1677",
+          "rank": 7
+        },
+        {
+          "title": "Tartuffe",
+          "author": "Molière",
+          "sortYear": 1664,
+          "displayYear": "1664",
+          "rank": 8
+        },
+        {
+          "title": "The Misanthrope",
+          "author": "Molière",
+          "sortYear": 1666,
+          "displayYear": "1666",
+          "rank": 9
+        },
+        {
+          "title": "Absalom and Achitophel",
+          "author": "John Dryden",
+          "sortYear": 1681,
+          "displayYear": "1681",
+          "rank": 10
+        },
+        {
+          "title": "L'Art poétique",
+          "author": "Nicolas Boileau",
+          "sortYear": 1674,
+          "displayYear": "1674",
+          "rank": 11
+        },
+        {
+          "title": "A Tale of a Tub",
+          "author": "Jonathan Swift",
+          "sortYear": 1704,
+          "displayYear": "1704",
+          "rank": 12
+        },
+        {
+          "title": "An Essay of Dramatic Poesy",
+          "author": "John Dryden",
+          "sortYear": 1668,
+          "displayYear": "1668",
+          "rank": 13
+        },
+        {
+          "title": "The Way of the World",
+          "author": "William Congreve",
+          "sortYear": 1700,
+          "displayYear": "1700",
+          "rank": 14
+        },
+        {
+          "title": "Le Cid",
+          "author": "Pierre Corneille",
+          "sortYear": 1637,
+          "displayYear": "1637",
+          "rank": 15
+        },
+        {
+          "title": "Candide",
+          "author": "Voltaire",
+          "sortYear": 1759,
+          "displayYear": "1759",
+          "rank": 16
+        },
+        {
+          "title": "Robinson Crusoe",
+          "author": "Daniel Defoe",
+          "sortYear": 1719,
+          "displayYear": "1719",
+          "rank": 17
+        },
+        {
+          "title": "Tom Jones",
+          "author": "Henry Fielding",
+          "sortYear": 1749,
+          "displayYear": "1749",
+          "rank": 18
+        },
+        {
+          "title": "Clarissa",
+          "author": "Samuel Richardson",
+          "sortYear": 1748,
+          "displayYear": "1748",
+          "rank": 19
+        },
+        {
+          "title": "Pamela",
+          "author": "Samuel Richardson",
+          "sortYear": 1740,
+          "displayYear": "1740",
+          "rank": 20
+        },
+        {
+          "title": "A Dictionary of the English Language",
+          "author": "Samuel Johnson",
+          "sortYear": 1755,
+          "displayYear": "1755",
+          "rank": 21
+        },
+        {
+          "title": "Rasselas",
+          "author": "Samuel Johnson",
+          "sortYear": 1759,
+          "displayYear": "1759",
+          "rank": 22
+        },
+        {
+          "title": "The Vanity of Human Wishes",
+          "author": "Samuel Johnson",
+          "sortYear": 1749,
+          "displayYear": "1749",
+          "rank": 23
+        },
+        {
+          "title": "The Beggar's Opera",
+          "author": "John Gay",
+          "sortYear": 1728,
+          "displayYear": "1728",
+          "rank": 24
+        },
+        {
+          "title": "The Spectator",
+          "author": "Joseph Addison and Richard Steele",
+          "sortYear": 1711,
+          "displayYear": "1711",
+          "rank": 25
+        },
+        {
+          "title": "Mac Flecknoe",
+          "author": "John Dryden",
+          "sortYear": 1682,
+          "displayYear": "1682",
+          "rank": 26
+        },
+        {
+          "title": "Fables",
+          "author": "Jean de La Fontaine",
+          "sortYear": 1668,
+          "displayYear": "1668",
+          "rank": 27
+        },
+        {
+          "title": "Les Maximes",
+          "author": "François de La Rochefoucauld",
+          "sortYear": 1665,
+          "displayYear": "1665",
+          "rank": 28
+        },
+        {
+          "title": "Andromaque",
+          "author": "Jean Racine",
+          "sortYear": 1667,
+          "displayYear": "1667",
+          "rank": 29
+        },
+        {
+          "title": "Britannicus",
+          "author": "Jean Racine",
+          "sortYear": 1669,
+          "displayYear": "1669",
+          "rank": 30
+        },
+        {
+          "title": "The School for Wives",
+          "author": "Molière",
+          "sortYear": 1662,
+          "displayYear": "1662",
+          "rank": 31
+        },
+        {
+          "title": "Dom Juan",
+          "author": "Molière",
+          "sortYear": 1665,
+          "displayYear": "1665",
+          "rank": 32
+        },
+        {
+          "title": "The Imaginary Invalid",
+          "author": "Molière",
+          "sortYear": 1673,
+          "displayYear": "1673",
+          "rank": 33
+        },
+        {
+          "title": "Pensées",
+          "author": "Blaise Pascal",
+          "sortYear": 1670,
+          "displayYear": "1670",
+          "rank": 34
+        },
+        {
+          "title": "Moll Flanders",
+          "author": "Daniel Defoe",
+          "sortYear": 1722,
+          "displayYear": "1722",
+          "rank": 35
+        },
+        {
+          "title": "The Life of Samuel Johnson",
+          "author": "James Boswell",
+          "sortYear": 1791,
+          "displayYear": "1791",
+          "rank": 36
+        },
+        {
+          "title": "The Vicar of Wakefield",
+          "author": "Oliver Goldsmith",
+          "sortYear": 1766,
+          "displayYear": "1766",
+          "rank": 37
+        },
+        {
+          "title": "She Stoops to Conquer",
+          "author": "Oliver Goldsmith",
+          "sortYear": 1773,
+          "displayYear": "1773",
+          "rank": 38
+        },
+        {
+          "title": "The School for Scandal",
+          "author": "Richard Brinsley Sheridan",
+          "sortYear": 1777,
+          "displayYear": "1777",
+          "rank": 39
+        },
+        {
+          "title": "The Rivals",
+          "author": "Richard Brinsley Sheridan",
+          "sortYear": 1775,
+          "displayYear": "1775",
+          "rank": 40
+        },
+        {
+          "title": "Elegy Written in a Country Churchyard",
+          "author": "Thomas Gray",
+          "sortYear": 1751,
+          "displayYear": "1751",
+          "rank": 41
+        },
+        {
+          "title": "The Seasons",
+          "author": "James Thomson",
+          "sortYear": 1730,
+          "displayYear": "1730",
+          "rank": 42
+        },
+        {
+          "title": "Tristram Shandy",
+          "author": "Laurence Sterne",
+          "sortYear": 1759,
+          "displayYear": "1759",
+          "rank": 43
+        },
+        {
+          "title": "Les Caractères",
+          "author": "Jean de La Bruyère",
+          "sortYear": 1688,
+          "displayYear": "1688",
+          "rank": 44
+        },
+        {
+          "title": "Bérénice",
+          "author": "Jean Racine",
+          "sortYear": 1670,
+          "displayYear": "1670",
+          "rank": 45
+        },
+        {
+          "title": "Alexander's Feast",
+          "author": "John Dryden",
+          "sortYear": 1697,
+          "displayYear": "1697",
+          "rank": 46
+        },
+        {
+          "title": "The Beaux' Stratagem",
+          "author": "George Farquhar",
+          "sortYear": 1707,
+          "displayYear": "1707",
+          "rank": 47
+        },
+        {
+          "title": "Letters Concerning the English Nation",
+          "author": "Voltaire",
+          "sortYear": 1733,
+          "displayYear": "1733",
+          "rank": 48
+        },
+        {
+          "title": "The Castle of Indolence",
+          "author": "James Thomson",
+          "sortYear": 1748,
+          "displayYear": "1748",
+          "rank": 49
+        },
+        {
+          "title": "Cato, a Tragedy",
+          "author": "Joseph Addison",
+          "sortYear": 1713,
+          "displayYear": "1713",
+          "rank": 50
+        }
+      ],
+      "years": {
+        "min": 1637,
+        "max": 1791
+      }
+    },
+    "Romanticism": {
+      "essentials": [
+        {
+          "title": "Lyrical Ballads",
+          "author": "William Wordsworth and Samuel Taylor Coleridge",
+          "sortYear": 1798,
+          "displayYear": "1798",
+          "rank": 1
+        },
+        {
+          "title": "Faust, Part One",
+          "author": "Johann Wolfgang von Goethe",
+          "sortYear": 1808,
+          "displayYear": "1808",
+          "rank": 2
+        },
+        {
+          "title": "The Rime of the Ancient Mariner",
+          "author": "Samuel Taylor Coleridge",
+          "sortYear": 1798,
+          "displayYear": "1798",
+          "rank": 3
+        },
+        {
+          "title": "Odes",
+          "author": "John Keats",
+          "sortYear": 1819,
+          "displayYear": "1819",
+          "rank": 4
+        },
+        {
+          "title": "The Prelude",
+          "author": "William Wordsworth",
+          "sortYear": 1850,
+          "displayYear": "1850",
+          "rank": 5
+        },
+        {
+          "title": "Songs of Innocence and of Experience",
+          "author": "William Blake",
+          "sortYear": 1794,
+          "displayYear": "1794",
+          "rank": 6
+        },
+        {
+          "title": "Prometheus Unbound",
+          "author": "Percy Bysshe Shelley",
+          "sortYear": 1820,
+          "displayYear": "1820",
+          "rank": 7
+        },
+        {
+          "title": "Don Juan",
+          "author": "Lord Byron",
+          "sortYear": 1819,
+          "displayYear": "1819",
+          "rank": 8
+        },
+        {
+          "title": "Childe Harold's Pilgrimage",
+          "author": "Lord Byron",
+          "sortYear": 1812,
+          "displayYear": "1812",
+          "rank": 9
+        },
+        {
+          "title": "Faust, Part Two",
+          "author": "Johann Wolfgang von Goethe",
+          "sortYear": 1832,
+          "displayYear": "1832",
+          "rank": 10
+        },
+        {
+          "title": "Notre-Dame de Paris",
+          "author": "Victor Hugo",
+          "sortYear": 1831,
+          "displayYear": "1831",
+          "rank": 11
+        },
+        {
+          "title": "Hernani",
+          "author": "Victor Hugo",
+          "sortYear": 1830,
+          "displayYear": "1830",
+          "rank": 12
+        },
+        {
+          "title": "Hymns to the Night",
+          "author": "Novalis",
+          "sortYear": 1800,
+          "displayYear": "1800",
+          "rank": 14
+        },
+        {
+          "title": "Kubla Khan",
+          "author": "Samuel Taylor Coleridge",
+          "sortYear": 1816,
+          "displayYear": "1816",
+          "rank": 15
+        },
+        {
+          "title": "Méditations poétiques",
+          "author": "Alphonse de Lamartine",
+          "sortYear": 1820,
+          "displayYear": "1820",
+          "rank": 16
+        },
+        {
+          "title": "The Sorrows of Young Werther",
+          "author": "Johann Wolfgang von Goethe",
+          "sortYear": 1774,
+          "displayYear": "1774",
+          "rank": 17
+        },
+        {
+          "title": "Hyperion",
+          "author": "Friedrich Hölderlin",
+          "sortYear": 1799,
+          "displayYear": "1799",
+          "rank": 18
+        },
+        {
+          "title": "Ode: Intimations of Immortality",
+          "author": "William Wordsworth",
+          "sortYear": 1807,
+          "displayYear": "1807",
+          "rank": 19
+        },
+        {
+          "title": "The Eve of St. Agnes",
+          "author": "John Keats",
+          "sortYear": 1820,
+          "displayYear": "1820",
+          "rank": 20
+        },
+        {
+          "title": "Ode to the West Wind",
+          "author": "Percy Bysshe Shelley",
+          "sortYear": 1820,
+          "displayYear": "1820",
+          "rank": 21
+        },
+        {
+          "title": "Adonais",
+          "author": "Percy Bysshe Shelley",
+          "sortYear": 1821,
+          "displayYear": "1821",
+          "rank": 22
+        },
+        {
+          "title": "René",
+          "author": "Chateaubriand",
+          "sortYear": 1802,
+          "displayYear": "1802",
+          "rank": 23
+        },
+        {
+          "title": "Heinrich von Ofterdingen",
+          "author": "Novalis",
+          "sortYear": 1802,
+          "displayYear": "1802",
+          "rank": 24
+        },
+        {
+          "title": "The Marriage of Heaven and Hell",
+          "author": "William Blake",
+          "sortYear": 1790,
+          "displayYear": "1790",
+          "rank": 25
+        },
+        {
+          "title": "Biographia Literaria",
+          "author": "Samuel Taylor Coleridge",
+          "sortYear": 1817,
+          "displayYear": "1817",
+          "rank": 26
+        },
+        {
+          "title": "A Defence of Poetry",
+          "author": "Percy Bysshe Shelley",
+          "sortYear": 1840,
+          "displayYear": "1840",
+          "rank": 27
+        },
+        {
+          "title": "Eugene Onegin",
+          "author": "Alexander Pushkin",
+          "sortYear": 1833,
+          "displayYear": "1833",
+          "rank": 28
+        },
+        {
+          "title": "The Corsair",
+          "author": "Lord Byron",
+          "sortYear": 1814,
+          "displayYear": "1814",
+          "rank": 29
+        },
+        {
+          "title": "Les Nuits",
+          "author": "Alfred de Musset",
+          "sortYear": 1835,
+          "displayYear": "1835",
+          "rank": 30
+        },
+        {
+          "title": "Atala",
+          "author": "Chateaubriand",
+          "sortYear": 1801,
+          "displayYear": "1801",
+          "rank": 31
+        },
+        {
+          "title": "Ivanhoe",
+          "author": "Walter Scott",
+          "sortYear": 1819,
+          "displayYear": "1819",
+          "rank": 32
+        },
+        {
+          "title": "Waverley",
+          "author": "Walter Scott",
+          "sortYear": 1814,
+          "displayYear": "1814",
+          "rank": 33
+        },
+        {
+          "title": "Endymion",
+          "author": "John Keats",
+          "sortYear": 1818,
+          "displayYear": "1818",
+          "rank": 34
+        },
+        {
+          "title": "Athenaeum Fragments",
+          "author": "Friedrich Schlegel",
+          "sortYear": 1798,
+          "displayYear": "1798",
+          "rank": 35
+        },
+        {
+          "title": "Ozymandias",
+          "author": "Percy Bysshe Shelley",
+          "sortYear": 1818,
+          "displayYear": "1818",
+          "rank": 36
+        },
+        {
+          "title": "Confessions of an English Opium-Eater",
+          "author": "Thomas De Quincey",
+          "sortYear": 1821,
+          "displayYear": "1821",
+          "rank": 37
+        },
+        {
+          "title": "Odes et Ballades",
+          "author": "Victor Hugo",
+          "sortYear": 1826,
+          "displayYear": "1826",
+          "rank": 38
+        },
+        {
+          "title": "Undine",
+          "author": "Friedrich de la Motte Fouqué",
+          "sortYear": 1811,
+          "displayYear": "1811",
+          "rank": 39
+        },
+        {
+          "title": "Michael Kohlhaas",
+          "author": "Heinrich von Kleist",
+          "sortYear": 1810,
+          "displayYear": "1810",
+          "rank": 40
+        },
+        {
+          "title": "The Marquise of O",
+          "author": "Heinrich von Kleist",
+          "sortYear": 1808,
+          "displayYear": "1808",
+          "rank": 41
+        },
+        {
+          "title": "Hebrew Melodies",
+          "author": "Lord Byron",
+          "sortYear": 1815,
+          "displayYear": "1815",
+          "rank": 42
+        },
+        {
+          "title": "Manfred",
+          "author": "Lord Byron",
+          "sortYear": 1817,
+          "displayYear": "1817",
+          "rank": 43
+        },
+        {
+          "title": "Lamia, Isabella, and Other Poems",
+          "author": "John Keats",
+          "sortYear": 1820,
+          "displayYear": "1820",
+          "rank": 44
+        },
+        {
+          "title": "The Cenci",
+          "author": "Percy Bysshe Shelley",
+          "sortYear": 1819,
+          "displayYear": "1819",
+          "rank": 45
+        },
+        {
+          "title": "Sartor Resartus",
+          "author": "Thomas Carlyle",
+          "sortYear": 1836,
+          "displayYear": "1836",
+          "rank": 46
+        },
+        {
+          "title": "The Book of Songs",
+          "author": "Heinrich Heine",
+          "sortYear": 1827,
+          "displayYear": "1827",
+          "rank": 47
+        },
+        {
+          "title": "Genius of Christianity",
+          "author": "Chateaubriand",
+          "sortYear": 1802,
+          "displayYear": "1802",
+          "rank": 48
+        },
+        {
+          "title": "Aids to Reflection",
+          "author": "Samuel Taylor Coleridge",
+          "sortYear": 1825,
+          "displayYear": "1825",
+          "rank": 49
+        },
+        {
+          "title": "Queen Mab",
+          "author": "Percy Bysshe Shelley",
+          "sortYear": 1813,
+          "displayYear": "1813",
+          "rank": 50
+        },
+        {
+          "title": "Christabel",
+          "author": "Samuel Taylor Coleridge",
+          "sortYear": 1816,
+          "displayYear": "1816",
+          "rank": null
+        },
+        {
+          "title": "Frankenstein",
+          "author": "Mary Shelley",
+          "sortYear": 1818,
+          "displayYear": "1818",
+          "rank": null
+        },
+        {
+          "title": "A Hero of Our Time",
+          "author": "Mikhail Lermontov",
+          "sortYear": 1840,
+          "displayYear": "1840",
+          "rank": null
+        },
+        {
+          "title": "Leaves of Grass",
+          "author": "Walt Whitman",
+          "sortYear": 1855,
+          "displayYear": "1855",
+          "rank": null
+        }
+      ],
+      "years": {
+        "min": 1774,
+        "max": 1855
+      }
+    },
+    "Realism": {
+      "essentials": [
+        {
+          "title": "Madame Bovary",
+          "author": "Gustave Flaubert",
+          "sortYear": 1857,
+          "displayYear": "1857",
+          "rank": 1
+        },
+        {
+          "title": "War and Peace",
+          "author": "Leo Tolstoy",
+          "sortYear": 1869,
+          "displayYear": "1869",
+          "rank": 2
+        },
+        {
+          "title": "Anna Karenina",
+          "author": "Leo Tolstoy",
+          "sortYear": 1877,
+          "displayYear": "1877",
+          "rank": 3
+        },
+        {
+          "title": "Crime and Punishment",
+          "author": "Fyodor Dostoevsky",
+          "sortYear": 1866,
+          "displayYear": "1866",
+          "rank": 4
+        },
+        {
+          "title": "The Brothers Karamazov",
+          "author": "Fyodor Dostoevsky",
+          "sortYear": 1880,
+          "displayYear": "1880",
+          "rank": 5
+        },
+        {
+          "title": "Middlemarch",
+          "author": "George Eliot",
+          "sortYear": 1871,
+          "displayYear": "1871",
+          "rank": 6
+        },
+        {
+          "title": "Père Goriot",
+          "author": "Honoré de Balzac",
+          "sortYear": 1835,
+          "displayYear": "1835",
+          "rank": 7
+        },
+        {
+          "title": "The Red and the Black",
+          "author": "Stendhal",
+          "sortYear": 1830,
+          "displayYear": "1830",
+          "rank": 8
+        },
+        {
+          "title": "Great Expectations",
+          "author": "Charles Dickens",
+          "sortYear": 1861,
+          "displayYear": "1861",
+          "rank": 9
+        },
+        {
+          "title": "Fathers and Sons",
+          "author": "Ivan Turgenev",
+          "sortYear": 1862,
+          "displayYear": "1862",
+          "rank": 10
+        },
+        {
+          "title": "The Idiot",
+          "author": "Fyodor Dostoevsky",
+          "sortYear": 1869,
+          "displayYear": "1869",
+          "rank": 11
+        },
+        {
+          "title": "Dead Souls",
+          "author": "Nikolai Gogol",
+          "sortYear": 1842,
+          "displayYear": "1842",
+          "rank": 12
+        },
+        {
+          "title": "The Adventures of Huckleberry Finn",
+          "author": "Mark Twain",
+          "sortYear": 1884,
+          "displayYear": "1884",
+          "rank": 13
+        },
+        {
+          "title": "The Portrait of a Lady",
+          "author": "Henry James",
+          "sortYear": 1881,
+          "displayYear": "1881",
+          "rank": 14
+        },
+        {
+          "title": "Bleak House",
+          "author": "Charles Dickens",
+          "sortYear": 1853,
+          "displayYear": "1853",
+          "rank": 15
+        },
+        {
+          "title": "Eugénie Grandet",
+          "author": "Honoré de Balzac",
+          "sortYear": 1833,
+          "displayYear": "1833",
+          "rank": 16
+        },
+        {
+          "title": "Tess of the d'Urbervilles",
+          "author": "Thomas Hardy",
+          "sortYear": 1891,
+          "displayYear": "1891",
+          "rank": 17
+        },
+        {
+          "title": "Demons",
+          "author": "Fyodor Dostoevsky",
+          "sortYear": 1872,
+          "displayYear": "1872",
+          "rank": 18
+        },
+        {
+          "title": "The Charterhouse of Parma",
+          "author": "Stendhal",
+          "sortYear": 1839,
+          "displayYear": "1839",
+          "rank": 19
+        },
+        {
+          "title": "Sentimental Education",
+          "author": "Gustave Flaubert",
+          "sortYear": 1869,
+          "displayYear": "1869",
+          "rank": 20
+        },
+        {
+          "title": "The Death of Ivan Ilyich",
+          "author": "Leo Tolstoy",
+          "sortYear": 1886,
+          "displayYear": "1886",
+          "rank": 21
+        },
+        {
+          "title": "The Cherry Orchard",
+          "author": "Anton Chekhov",
+          "sortYear": 1904,
+          "displayYear": "1904",
+          "rank": 22
+        },
+        {
+          "title": "Three Sisters",
+          "author": "Anton Chekhov",
+          "sortYear": 1901,
+          "displayYear": "1901",
+          "rank": 23
+        },
+        {
+          "title": "The Seagull",
+          "author": "Anton Chekhov",
+          "sortYear": 1896,
+          "displayYear": "1896",
+          "rank": 24
+        },
+        {
+          "title": "The Mayor of Casterbridge",
+          "author": "Thomas Hardy",
+          "sortYear": 1886,
+          "displayYear": "1886",
+          "rank": 26
+        },
+        {
+          "title": "Barchester Towers",
+          "author": "Anthony Trollope",
+          "sortYear": 1857,
+          "displayYear": "1857",
+          "rank": 27
+        },
+        {
+          "title": "David Copperfield",
+          "author": "Charles Dickens",
+          "sortYear": 1850,
+          "displayYear": "1850",
+          "rank": 28
+        },
+        {
+          "title": "Jane Eyre",
+          "author": "Charlotte Brontë",
+          "sortYear": 1847,
+          "displayYear": "1847",
+          "rank": 30
+        },
+        {
+          "title": "The Rise of Silas Lapham",
+          "author": "William Dean Howells",
+          "sortYear": 1885,
+          "displayYear": "1885",
+          "rank": 31
+        },
+        {
+          "title": "The Overcoat",
+          "author": "Nikolai Gogol",
+          "sortYear": 1842,
+          "displayYear": "1842",
+          "rank": 32
+        },
+        {
+          "title": "Oblomov",
+          "author": "Ivan Goncharov",
+          "sortYear": 1859,
+          "displayYear": "1859",
+          "rank": 33
+        },
+        {
+          "title": "A Sportsman's Sketches",
+          "author": "Ivan Turgenev",
+          "sortYear": 1852,
+          "displayYear": "1852",
+          "rank": 34
+        },
+        {
+          "title": "Lost Illusions",
+          "author": "Honoré de Balzac",
+          "sortYear": 1843,
+          "displayYear": "1843",
+          "rank": 35
+        },
+        {
+          "title": "Cousin Bette",
+          "author": "Honoré de Balzac",
+          "sortYear": 1846,
+          "displayYear": "1846",
+          "rank": 36
+        },
+        {
+          "title": "The Ambassadors",
+          "author": "Henry James",
+          "sortYear": 1903,
+          "displayYear": "1903",
+          "rank": 37
+        },
+        {
+          "title": "The Warden",
+          "author": "Anthony Trollope",
+          "sortYear": 1855,
+          "displayYear": "1855",
+          "rank": 38
+        },
+        {
+          "title": "Silas Marner",
+          "author": "George Eliot",
+          "sortYear": 1861,
+          "displayYear": "1861",
+          "rank": 39
+        },
+        {
+          "title": "The Mill on the Floss",
+          "author": "George Eliot",
+          "sortYear": 1860,
+          "displayYear": "1860",
+          "rank": 40
+        },
+        {
+          "title": "Vanity Fair",
+          "author": "William Makepeace Thackeray",
+          "sortYear": 1848,
+          "displayYear": "1848",
+          "rank": 41
+        },
+        {
+          "title": "Our Mutual Friend",
+          "author": "Charles Dickens",
+          "sortYear": 1865,
+          "displayYear": "1865",
+          "rank": 42
+        },
+        {
+          "title": "Effi Briest",
+          "author": "Theodor Fontane",
+          "sortYear": 1895,
+          "displayYear": "1895",
+          "rank": 43
+        },
+        {
+          "title": "Jude the Obscure",
+          "author": "Thomas Hardy",
+          "sortYear": 1895,
+          "displayYear": "1895",
+          "rank": 44
+        },
+        {
+          "title": "A Hero of Our Time",
+          "author": "Mikhail Lermontov",
+          "sortYear": 1840,
+          "displayYear": "1840",
+          "rank": 45
+        },
+        {
+          "title": "Fortunata and Jacinta",
+          "author": "Benito Pérez Galdós",
+          "sortYear": 1887,
+          "displayYear": "1887",
+          "rank": 48
+        },
+        {
+          "title": "The House of the Dead",
+          "author": "Fyodor Dostoevsky",
+          "sortYear": 1862,
+          "displayYear": "1862",
+          "rank": 49
+        },
+        {
+          "title": "Hedda Gabler",
+          "author": "Henrik Ibsen",
+          "sortYear": 1890,
+          "displayYear": "1890",
+          "rank": 50
+        },
+        {
+          "title": "Sense and Sensibility",
+          "author": "Jane Austen",
+          "sortYear": 1811,
+          "displayYear": "1811",
+          "rank": null
+        },
+        {
+          "title": "Pride and Prejudice",
+          "author": "Jane Austen",
+          "sortYear": 1813,
+          "displayYear": "1813",
+          "rank": null
+        },
+        {
+          "title": "Mansfield Park",
+          "author": "Jane Austen",
+          "sortYear": 1814,
+          "displayYear": "1814",
+          "rank": null
+        },
+        {
+          "title": "Emma",
+          "author": "Jane Austen",
+          "sortYear": 1815,
+          "displayYear": "1815",
+          "rank": null
+        },
+        {
+          "title": "Persuasion",
+          "author": "Jane Austen",
+          "sortYear": 1817,
+          "displayYear": "1817",
+          "rank": null
+        },
+        {
+          "title": "Eugene Onegin",
+          "author": "Alexander Pushkin",
+          "sortYear": 1833,
+          "displayYear": "1833",
+          "rank": null
+        },
+        {
+          "title": "Notes from Underground",
+          "author": "Fyodor Dostoevsky",
+          "sortYear": 1864,
+          "displayYear": "1864",
+          "rank": null
+        },
+        {
+          "title": "Nana",
+          "author": "Émile Zola",
+          "sortYear": 1880,
+          "displayYear": "1880",
+          "rank": null
+        },
+        {
+          "title": "Bel-Ami",
+          "author": "Guy de Maupassant",
+          "sortYear": 1885,
+          "displayYear": "1885",
+          "rank": null
+        },
+        {
+          "title": "The Red Badge of Courage",
+          "author": "Stephen Crane",
+          "sortYear": 1895,
+          "displayYear": "1895",
+          "rank": null
+        }
+      ],
+      "years": {
+        "min": 1811,
+        "max": 1904
+      }
+    },
+    "Gothic": {
+      "essentials": [
+        {
+          "title": "The Castle of Otranto",
+          "author": "Horace Walpole",
+          "sortYear": 1764,
+          "displayYear": "1764",
+          "rank": 1
+        },
+        {
+          "title": "Frankenstein",
+          "author": "Mary Shelley",
+          "sortYear": 1818,
+          "displayYear": "1818",
+          "rank": 2
+        },
+        {
+          "title": "The Mysteries of Udolpho",
+          "author": "Ann Radcliffe",
+          "sortYear": 1794,
+          "displayYear": "1794",
+          "rank": 3
+        },
+        {
+          "title": "The Monk",
+          "author": "Matthew Lewis",
+          "sortYear": 1796,
+          "displayYear": "1796",
+          "rank": 4
+        },
+        {
+          "title": "Melmoth the Wanderer",
+          "author": "Charles Maturin",
+          "sortYear": 1820,
+          "displayYear": "1820",
+          "rank": 5
+        },
+        {
+          "title": "Vathek",
+          "author": "William Beckford",
+          "sortYear": 1786,
+          "displayYear": "1786",
+          "rank": 6
+        },
+        {
+          "title": "The Italian",
+          "author": "Ann Radcliffe",
+          "sortYear": 1797,
+          "displayYear": "1797",
+          "rank": 7
+        },
+        {
+          "title": "Northanger Abbey",
+          "author": "Jane Austen",
+          "sortYear": 1817,
+          "displayYear": "1817",
+          "rank": 8
+        },
+        {
+          "title": "Caleb Williams",
+          "author": "William Godwin",
+          "sortYear": 1794,
+          "displayYear": "1794",
+          "rank": 9
+        },
+        {
+          "title": "The Fall of the House of Usher",
+          "author": "Edgar Allan Poe",
+          "sortYear": 1839,
+          "displayYear": "1839",
+          "rank": 10
+        },
+        {
+          "title": "A Sicilian Romance",
+          "author": "Ann Radcliffe",
+          "sortYear": 1790,
+          "displayYear": "1790",
+          "rank": 11
+        },
+        {
+          "title": "The Old English Baron",
+          "author": "Clara Reeve",
+          "sortYear": 1778,
+          "displayYear": "1778",
+          "rank": 12
+        },
+        {
+          "title": "The Private Memoirs and Confessions of a Justified Sinner",
+          "author": "James Hogg",
+          "sortYear": 1824,
+          "displayYear": "1824",
+          "rank": 13
+        },
+        {
+          "title": "Zofloya",
+          "author": "Charlotte Dacre",
+          "sortYear": 1806,
+          "displayYear": "1806",
+          "rank": 14
+        },
+        {
+          "title": "The Romance of the Forest",
+          "author": "Ann Radcliffe",
+          "sortYear": 1791,
+          "displayYear": "1791",
+          "rank": 15
+        },
+        {
+          "title": "Christabel",
+          "author": "Samuel Taylor Coleridge",
+          "sortYear": 1816,
+          "displayYear": "1816",
+          "rank": 16
+        },
+        {
+          "title": "St. Leon",
+          "author": "William Godwin",
+          "sortYear": 1799,
+          "displayYear": "1799",
+          "rank": 17
+        },
+        {
+          "title": "The Tell-Tale Heart",
+          "author": "Edgar Allan Poe",
+          "sortYear": 1843,
+          "displayYear": "1843",
+          "rank": 19
+        },
+        {
+          "title": "The Castle Spectre",
+          "author": "Matthew Lewis",
+          "sortYear": 1797,
+          "displayYear": "1797",
+          "rank": 20
+        },
+        {
+          "title": "Manfred",
+          "author": "Lord Byron",
+          "sortYear": 1817,
+          "displayYear": "1817",
+          "rank": null
+        },
+        {
+          "title": "Jane Eyre",
+          "author": "Charlotte Brontë",
+          "sortYear": 1847,
+          "displayYear": "1847",
+          "rank": null
+        },
+        {
+          "title": "The Picture of Dorian Gray",
+          "author": "Oscar Wilde",
+          "sortYear": 1890,
+          "displayYear": "1890",
+          "rank": null
+        }
+      ],
+      "years": {
+        "min": 1764,
+        "max": 1890
+      }
+    },
+    "Existentialism": {
+      "essentials": [
+        {
+          "title": "Nausea",
+          "author": "Jean-Paul Sartre",
+          "sortYear": 1938,
+          "displayYear": "1938",
+          "rank": 1
+        },
+        {
+          "title": "The Stranger",
+          "author": "Albert Camus",
+          "sortYear": 1942,
+          "displayYear": "1942",
+          "rank": 2
+        },
+        {
+          "title": "The Myth of Sisyphus",
+          "author": "Albert Camus",
+          "sortYear": 1942,
+          "displayYear": "1942",
+          "rank": 3
+        },
+        {
+          "title": "Being and Nothingness",
+          "author": "Jean-Paul Sartre",
+          "sortYear": 1943,
+          "displayYear": "1943",
+          "rank": 4
+        },
+        {
+          "title": "No Exit",
+          "author": "Jean-Paul Sartre",
+          "sortYear": 1944,
+          "displayYear": "1944",
+          "rank": 5
+        },
+        {
+          "title": "The Plague",
+          "author": "Albert Camus",
+          "sortYear": 1947,
+          "displayYear": "1947",
+          "rank": 6
+        },
+        {
+          "title": "Notes from Underground",
+          "author": "Fyodor Dostoevsky",
+          "sortYear": 1864,
+          "displayYear": "1864",
+          "rank": 7
+        },
+        {
+          "title": "The Second Sex",
+          "author": "Simone de Beauvoir",
+          "sortYear": 1949,
+          "displayYear": "1949",
+          "rank": 8
+        },
+        {
+          "title": "Existentialism Is a Humanism",
+          "author": "Jean-Paul Sartre",
+          "sortYear": 1946,
+          "displayYear": "1946",
+          "rank": 9
+        },
+        {
+          "title": "The Ethics of Ambiguity",
+          "author": "Simone de Beauvoir",
+          "sortYear": 1947,
+          "displayYear": "1947",
+          "rank": 10
+        },
+        {
+          "title": "The Rebel",
+          "author": "Albert Camus",
+          "sortYear": 1951,
+          "displayYear": "1951",
+          "rank": 11
+        },
+        {
+          "title": "The Fall",
+          "author": "Albert Camus",
+          "sortYear": 1956,
+          "displayYear": "1956",
+          "rank": 12
+        },
+        {
+          "title": "The Flies",
+          "author": "Jean-Paul Sartre",
+          "sortYear": 1943,
+          "displayYear": "1943",
+          "rank": 13
+        },
+        {
+          "title": "The Wall",
+          "author": "Jean-Paul Sartre",
+          "sortYear": 1939,
+          "displayYear": "1939",
+          "rank": 14
+        },
+        {
+          "title": "The Mandarins",
+          "author": "Simone de Beauvoir",
+          "sortYear": 1954,
+          "displayYear": "1954",
+          "rank": 15
+        },
+        {
+          "title": "The Roads to Freedom",
+          "author": "Jean-Paul Sartre",
+          "sortYear": 1945,
+          "displayYear": "1945",
+          "rank": 17
+        },
+        {
+          "title": "She Came to Stay",
+          "author": "Simone de Beauvoir",
+          "sortYear": 1943,
+          "displayYear": "1943",
+          "rank": 18
+        },
+        {
+          "title": "Dirty Hands",
+          "author": "Jean-Paul Sartre",
+          "sortYear": 1948,
+          "displayYear": "1948",
+          "rank": 19
+        },
+        {
+          "title": "Fear and Trembling",
+          "author": "Søren Kierkegaard",
+          "sortYear": 1843,
+          "displayYear": "1843",
+          "rank": 20
+        },
+        {
+          "title": "Thus Spoke Zarathustra",
+          "author": "Friedrich Nietzsche",
+          "sortYear": 1883,
+          "displayYear": "1883",
+          "rank": 21
+        },
+        {
+          "title": "Steppenwolf",
+          "author": "Hermann Hesse",
+          "sortYear": 1927,
+          "displayYear": "1927",
+          "rank": 22
+        },
+        {
+          "title": "The Blood of Others",
+          "author": "Simone de Beauvoir",
+          "sortYear": 1945,
+          "displayYear": "1945",
+          "rank": 23
+        },
+        {
+          "title": "Man's Search for Meaning",
+          "author": "Viktor Frankl",
+          "sortYear": 1946,
+          "displayYear": "1946",
+          "rank": 24
+        },
+        {
+          "title": "The Brothers Karamazov",
+          "author": "Fyodor Dostoevsky",
+          "sortYear": 1880,
+          "displayYear": "1880",
+          "rank": null
+        },
+        {
+          "title": "Waiting for Godot",
+          "author": "Samuel Beckett",
+          "sortYear": 1953,
+          "displayYear": "1953",
+          "rank": null
+        }
+      ],
+      "years": {
+        "min": 1843,
+        "max": 1956
+      }
+    },
+    "Modernism": {
+      "essentials": [
+        {
+          "title": "Ulysses",
+          "author": "James Joyce",
+          "sortYear": 1922,
+          "displayYear": "1922",
+          "rank": 1
+        },
+        {
+          "title": "The Waste Land",
+          "author": "T. S. Eliot",
+          "sortYear": 1922,
+          "displayYear": "1922",
+          "rank": 2
+        },
+        {
+          "title": "In Search of Lost Time",
+          "author": "Marcel Proust",
+          "sortYear": 1913,
+          "displayYear": "1913",
+          "rank": 3
+        },
+        {
+          "title": "Mrs Dalloway",
+          "author": "Virginia Woolf",
+          "sortYear": 1925,
+          "displayYear": "1925",
+          "rank": 4
+        },
+        {
+          "title": "To the Lighthouse",
+          "author": "Virginia Woolf",
+          "sortYear": 1927,
+          "displayYear": "1927",
+          "rank": 5
+        },
+        {
+          "title": "The Sound and the Fury",
+          "author": "William Faulkner",
+          "sortYear": 1929,
+          "displayYear": "1929",
+          "rank": 6
+        },
+        {
+          "title": "The Trial",
+          "author": "Franz Kafka",
+          "sortYear": 1925,
+          "displayYear": "1925",
+          "rank": 7
+        },
+        {
+          "title": "The Metamorphosis",
+          "author": "Franz Kafka",
+          "sortYear": 1915,
+          "displayYear": "1915",
+          "rank": 8
+        },
+        {
+          "title": "The Love Song of J. Alfred Prufrock",
+          "author": "T. S. Eliot",
+          "sortYear": 1915,
+          "displayYear": "1915",
+          "rank": 9
+        },
+        {
+          "title": "Heart of Darkness",
+          "author": "Joseph Conrad",
+          "sortYear": 1899,
+          "displayYear": "1899",
+          "rank": 10
+        },
+        {
+          "title": "A Portrait of the Artist as a Young Man",
+          "author": "James Joyce",
+          "sortYear": 1916,
+          "displayYear": "1916",
+          "rank": 11
+        },
+        {
+          "title": "The Great Gatsby",
+          "author": "F. Scott Fitzgerald",
+          "sortYear": 1925,
+          "displayYear": "1925",
+          "rank": 12
+        },
+        {
+          "title": "The Sun Also Rises",
+          "author": "Ernest Hemingway",
+          "sortYear": 1926,
+          "displayYear": "1926",
+          "rank": 13
+        },
+        {
+          "title": "The Magic Mountain",
+          "author": "Thomas Mann",
+          "sortYear": 1924,
+          "displayYear": "1924",
+          "rank": 14
+        },
+        {
+          "title": "Absalom, Absalom!",
+          "author": "William Faulkner",
+          "sortYear": 1936,
+          "displayYear": "1936",
+          "rank": 15
+        },
+        {
+          "title": "The Castle",
+          "author": "Franz Kafka",
+          "sortYear": 1926,
+          "displayYear": "1926",
+          "rank": 16
+        },
+        {
+          "title": "Finnegans Wake",
+          "author": "James Joyce",
+          "sortYear": 1939,
+          "displayYear": "1939",
+          "rank": 17
+        },
+        {
+          "title": "Death in Venice",
+          "author": "Thomas Mann",
+          "sortYear": 1912,
+          "displayYear": "1912",
+          "rank": 18
+        },
+        {
+          "title": "The Waves",
+          "author": "Virginia Woolf",
+          "sortYear": 1931,
+          "displayYear": "1931",
+          "rank": 19
+        },
+        {
+          "title": "Duino Elegies",
+          "author": "Rainer Maria Rilke",
+          "sortYear": 1923,
+          "displayYear": "1923",
+          "rank": 20
+        },
+        {
+          "title": "As I Lay Dying",
+          "author": "William Faulkner",
+          "sortYear": 1930,
+          "displayYear": "1930",
+          "rank": 21
+        },
+        {
+          "title": "The Cantos",
+          "author": "Ezra Pound",
+          "sortYear": 1925,
+          "displayYear": "1925",
+          "rank": 22
+        },
+        {
+          "title": "Nightwood",
+          "author": "Djuna Barnes",
+          "sortYear": 1936,
+          "displayYear": "1936",
+          "rank": 23
+        },
+        {
+          "title": "Light in August",
+          "author": "William Faulkner",
+          "sortYear": 1932,
+          "displayYear": "1932",
+          "rank": 24
+        },
+        {
+          "title": "U.S.A. Trilogy",
+          "author": "John Dos Passos",
+          "sortYear": 1936,
+          "displayYear": "1936",
+          "rank": 25
+        },
+        {
+          "title": "A Farewell to Arms",
+          "author": "Ernest Hemingway",
+          "sortYear": 1929,
+          "displayYear": "1929",
+          "rank": 26
+        },
+        {
+          "title": "The Good Soldier",
+          "author": "Ford Madox Ford",
+          "sortYear": 1915,
+          "displayYear": "1915",
+          "rank": 27
+        },
+        {
+          "title": "Sons and Lovers",
+          "author": "D. H. Lawrence",
+          "sortYear": 1913,
+          "displayYear": "1913",
+          "rank": 28
+        },
+        {
+          "title": "Women in Love",
+          "author": "D. H. Lawrence",
+          "sortYear": 1920,
+          "displayYear": "1920",
+          "rank": 29
+        },
+        {
+          "title": "Four Quartets",
+          "author": "T. S. Eliot",
+          "sortYear": 1943,
+          "displayYear": "1943",
+          "rank": 30
+        },
+        {
+          "title": "The Tower",
+          "author": "W. B. Yeats",
+          "sortYear": 1928,
+          "displayYear": "1928",
+          "rank": 31
+        },
+        {
+          "title": "Harmonium",
+          "author": "Wallace Stevens",
+          "sortYear": 1923,
+          "displayYear": "1923",
+          "rank": 32
+        },
+        {
+          "title": "Spring and All",
+          "author": "William Carlos Williams",
+          "sortYear": 1923,
+          "displayYear": "1923",
+          "rank": 33
+        },
+        {
+          "title": "Jacob's Room",
+          "author": "Virginia Woolf",
+          "sortYear": 1922,
+          "displayYear": "1922",
+          "rank": 34
+        },
+        {
+          "title": "Orlando",
+          "author": "Virginia Woolf",
+          "sortYear": 1928,
+          "displayYear": "1928",
+          "rank": 35
+        },
+        {
+          "title": "Berlin Alexanderplatz",
+          "author": "Alfred Döblin",
+          "sortYear": 1929,
+          "displayYear": "1929",
+          "rank": 36
+        },
+        {
+          "title": "The Man Without Qualities",
+          "author": "Robert Musil",
+          "sortYear": 1930,
+          "displayYear": "1930",
+          "rank": 37
+        },
+        {
+          "title": "Manhattan Transfer",
+          "author": "John Dos Passos",
+          "sortYear": 1925,
+          "displayYear": "1925",
+          "rank": 38
+        },
+        {
+          "title": "Tender Is the Night",
+          "author": "F. Scott Fitzgerald",
+          "sortYear": 1934,
+          "displayYear": "1934",
+          "rank": 39
+        },
+        {
+          "title": "Lord Jim",
+          "author": "Joseph Conrad",
+          "sortYear": 1900,
+          "displayYear": "1900",
+          "rank": 40
+        },
+        {
+          "title": "The Notebooks of Malte Laurids Brigge",
+          "author": "Rainer Maria Rilke",
+          "sortYear": 1910,
+          "displayYear": "1910",
+          "rank": 43
+        },
+        {
+          "title": "The Age of Innocence",
+          "author": "Edith Wharton",
+          "sortYear": 1920,
+          "displayYear": "1920",
+          "rank": 44
+        },
+        {
+          "title": "A Room of One's Own",
+          "author": "Virginia Woolf",
+          "sortYear": 1929,
+          "displayYear": "1929",
+          "rank": 45
+        },
+        {
+          "title": "Pilgrimage",
+          "author": "Dorothy Richardson",
+          "sortYear": 1915,
+          "displayYear": "1915",
+          "rank": 46
+        },
+        {
+          "title": "The Judgment",
+          "author": "Franz Kafka",
+          "sortYear": 1913,
+          "displayYear": "1913",
+          "rank": 47
+        },
+        {
+          "title": "The Bridge",
+          "author": "Hart Crane",
+          "sortYear": 1930,
+          "displayYear": "1930",
+          "rank": 48
+        },
+        {
+          "title": "In the Penal Colony",
+          "author": "Franz Kafka",
+          "sortYear": 1919,
+          "displayYear": "1919",
+          "rank": 49
+        },
+        {
+          "title": "Journey to the End of the Night",
+          "author": "Louis-Ferdinand Céline",
+          "sortYear": 1932,
+          "displayYear": "1932",
+          "rank": 50
+        },
+        {
+          "title": "The Wind Among the Reeds",
+          "author": "W. B. Yeats",
+          "sortYear": 1899,
+          "displayYear": "1899",
+          "rank": null
+        },
+        {
+          "title": "The Cherry Orchard",
+          "author": "Anton Chekhov",
+          "sortYear": 1904,
+          "displayYear": "1904",
+          "rank": null
+        },
+        {
+          "title": "Sea Garden",
+          "author": "H.D.",
+          "sortYear": 1916,
+          "displayYear": "1916",
+          "rank": null
+        },
+        {
+          "title": "Cane",
+          "author": "Jean Toomer",
+          "sortYear": 1923,
+          "displayYear": "1923",
+          "rank": null
+        },
+        {
+          "title": "Ficciones",
+          "author": "Jorge Luis Borges",
+          "sortYear": 1944,
+          "displayYear": "1944",
+          "rank": null
+        },
+        {
+          "title": "Waiting for Godot",
+          "author": "Samuel Beckett",
+          "sortYear": 1953,
+          "displayYear": "1953",
+          "rank": null
+        }
+      ],
+      "years": {
+        "min": 1899,
+        "max": 1953
+      }
+    },
+    "Naturalism": {
+      "essentials": [
+        {
+          "title": "Germinal",
+          "author": "Émile Zola",
+          "sortYear": 1885,
+          "displayYear": "1885",
+          "rank": 1
+        },
+        {
+          "title": "L'Assommoir",
+          "author": "Émile Zola",
+          "sortYear": 1877,
+          "displayYear": "1877",
+          "rank": 2
+        },
+        {
+          "title": "Nana",
+          "author": "Émile Zola",
+          "sortYear": 1880,
+          "displayYear": "1880",
+          "rank": 3
+        },
+        {
+          "title": "Thérèse Raquin",
+          "author": "Émile Zola",
+          "sortYear": 1867,
+          "displayYear": "1867",
+          "rank": 4
+        },
+        {
+          "title": "The Experimental Novel",
+          "author": "Émile Zola",
+          "sortYear": 1880,
+          "displayYear": "1880",
+          "rank": 5
+        },
+        {
+          "title": "McTeague",
+          "author": "Frank Norris",
+          "sortYear": 1899,
+          "displayYear": "1899",
+          "rank": 6
+        },
+        {
+          "title": "Sister Carrie",
+          "author": "Theodore Dreiser",
+          "sortYear": 1900,
+          "displayYear": "1900",
+          "rank": 7
+        },
+        {
+          "title": "The Red Badge of Courage",
+          "author": "Stephen Crane",
+          "sortYear": 1895,
+          "displayYear": "1895",
+          "rank": 8
+        },
+        {
+          "title": "Maggie: A Girl of the Streets",
+          "author": "Stephen Crane",
+          "sortYear": 1893,
+          "displayYear": "1893",
+          "rank": 9
+        },
+        {
+          "title": "La Bête humaine",
+          "author": "Émile Zola",
+          "sortYear": 1890,
+          "displayYear": "1890",
+          "rank": 10
+        },
+        {
+          "title": "The Earth",
+          "author": "Émile Zola",
+          "sortYear": 1887,
+          "displayYear": "1887",
+          "rank": 11
+        },
+        {
+          "title": "Bel-Ami",
+          "author": "Guy de Maupassant",
+          "sortYear": 1885,
+          "displayYear": "1885",
+          "rank": 12
+        },
+        {
+          "title": "Boule de Suif",
+          "author": "Guy de Maupassant",
+          "sortYear": 1880,
+          "displayYear": "1880",
+          "rank": 13
+        },
+        {
+          "title": "Pierre and Jean",
+          "author": "Guy de Maupassant",
+          "sortYear": 1888,
+          "displayYear": "1888",
+          "rank": 14
+        },
+        {
+          "title": "The Kill",
+          "author": "Émile Zola",
+          "sortYear": 1872,
+          "displayYear": "1872",
+          "rank": 15
+        },
+        {
+          "title": "The Octopus",
+          "author": "Frank Norris",
+          "sortYear": 1901,
+          "displayYear": "1901",
+          "rank": 16
+        },
+        {
+          "title": "The Open Boat",
+          "author": "Stephen Crane",
+          "sortYear": 1897,
+          "displayYear": "1897",
+          "rank": 17
+        },
+        {
+          "title": "The Call of the Wild",
+          "author": "Jack London",
+          "sortYear": 1903,
+          "displayYear": "1903",
+          "rank": 18
+        },
+        {
+          "title": "The Sea-Wolf",
+          "author": "Jack London",
+          "sortYear": 1904,
+          "displayYear": "1904",
+          "rank": 19
+        },
+        {
+          "title": "An American Tragedy",
+          "author": "Theodore Dreiser",
+          "sortYear": 1925,
+          "displayYear": "1925",
+          "rank": 20
+        },
+        {
+          "title": "Une Vie",
+          "author": "Guy de Maupassant",
+          "sortYear": 1883,
+          "displayYear": "1883",
+          "rank": 21
+        },
+        {
+          "title": "The Awakening",
+          "author": "Kate Chopin",
+          "sortYear": 1899,
+          "displayYear": "1899",
+          "rank": 22
+        },
+        {
+          "title": "The House of Mirth",
+          "author": "Edith Wharton",
+          "sortYear": 1905,
+          "displayYear": "1905",
+          "rank": 23
+        },
+        {
+          "title": "The Damnation of Theron Ware",
+          "author": "Harold Frederic",
+          "sortYear": 1896,
+          "displayYear": "1896",
+          "rank": 24
+        },
+        {
+          "title": "The Pit",
+          "author": "Frank Norris",
+          "sortYear": 1903,
+          "displayYear": "1903",
+          "rank": 25
+        }
+      ],
+      "years": {
+        "min": 1867,
+        "max": 1925
+      }
+    },
+    "Symbolism": {
+      "essentials": [
+        {
+          "title": "Les Fleurs du mal",
+          "author": "Charles Baudelaire",
+          "sortYear": 1857,
+          "displayYear": "1857",
+          "rank": 1
+        },
+        {
+          "title": "A Season in Hell",
+          "author": "Arthur Rimbaud",
+          "sortYear": 1873,
+          "displayYear": "1873",
+          "rank": 2
+        },
+        {
+          "title": "Illuminations",
+          "author": "Arthur Rimbaud",
+          "sortYear": 1886,
+          "displayYear": "1886",
+          "rank": 3
+        },
+        {
+          "title": "L'Après-midi d'un faune",
+          "author": "Stéphane Mallarmé",
+          "sortYear": 1876,
+          "displayYear": "1876",
+          "rank": 4
+        },
+        {
+          "title": "Romances sans paroles",
+          "author": "Paul Verlaine",
+          "sortYear": 1874,
+          "displayYear": "1874",
+          "rank": 5
+        },
+        {
+          "title": "Un coup de dés",
+          "author": "Stéphane Mallarmé",
+          "sortYear": 1897,
+          "displayYear": "1897",
+          "rank": 6
+        },
+        {
+          "title": "Petits poèmes en prose",
+          "author": "Charles Baudelaire",
+          "sortYear": 1869,
+          "displayYear": "1869",
+          "rank": 7
+        },
+        {
+          "title": "Poèmes saturniens",
+          "author": "Paul Verlaine",
+          "sortYear": 1866,
+          "displayYear": "1866",
+          "rank": 8
+        },
+        {
+          "title": "Jadis et naguère",
+          "author": "Paul Verlaine",
+          "sortYear": 1884,
+          "displayYear": "1884",
+          "rank": 9
+        },
+        {
+          "title": "Symbolist Manifesto",
+          "author": "Jean Moréas",
+          "sortYear": 1886,
+          "displayYear": "1886",
+          "rank": 10
+        },
+        {
+          "title": "Axël",
+          "author": "Villiers de l'Isle-Adam",
+          "sortYear": 1890,
+          "displayYear": "1890",
+          "rank": 11
+        },
+        {
+          "title": "The Symbolist Movement in Literature",
+          "author": "Arthur Symons",
+          "sortYear": 1899,
+          "displayYear": "1899",
+          "rank": 12
+        },
+        {
+          "title": "Les Complaintes",
+          "author": "Jules Laforgue",
+          "sortYear": 1885,
+          "displayYear": "1885",
+          "rank": 13
+        },
+        {
+          "title": "The Blue Bird",
+          "author": "Maurice Maeterlinck",
+          "sortYear": 1908,
+          "displayYear": "1908",
+          "rank": 14
+        },
+        {
+          "title": "Pelléas et Mélisande",
+          "author": "Maurice Maeterlinck",
+          "sortYear": 1893,
+          "displayYear": "1893",
+          "rank": 15
+        },
+        {
+          "title": "Les Amours jaunes",
+          "author": "Tristan Corbière",
+          "sortYear": 1873,
+          "displayYear": "1873",
+          "rank": 16
+        },
+        {
+          "title": "Sagesse",
+          "author": "Paul Verlaine",
+          "sortYear": 1880,
+          "displayYear": "1880",
+          "rank": 17
+        },
+        {
+          "title": "Hérodiade",
+          "author": "Stéphane Mallarmé",
+          "sortYear": 1871,
+          "displayYear": "1871",
+          "rank": 18
+        },
+        {
+          "title": "Cruel Tales",
+          "author": "Villiers de l'Isle-Adam",
+          "sortYear": 1883,
+          "displayYear": "1883",
+          "rank": 19
+        },
+        {
+          "title": "Les Chants de Maldoror",
+          "author": "Comte de Lautréamont",
+          "sortYear": 1869,
+          "displayYear": "1869",
+          "rank": 20
+        },
+        {
+          "title": "The Wind Among the Reeds",
+          "author": "W. B. Yeats",
+          "sortYear": 1899,
+          "displayYear": "1899",
+          "rank": 21
+        },
+        {
+          "title": "Serres chaudes",
+          "author": "Maurice Maeterlinck",
+          "sortYear": 1889,
+          "displayYear": "1889",
+          "rank": 23
+        },
+        {
+          "title": "The Book of Monelle",
+          "author": "Marcel Schwob",
+          "sortYear": 1894,
+          "displayYear": "1894",
+          "rank": 24
+        },
+        {
+          "title": "Les Villes tentaculaires",
+          "author": "Émile Verhaeren",
+          "sortYear": 1895,
+          "displayYear": "1895",
+          "rank": 25
+        },
+        {
+          "title": "Á rebours",
+          "author": "Joris-Karl Huysmans",
+          "sortYear": 1884,
+          "displayYear": "1884",
+          "rank": null
+        },
+        {
+          "title": "Salomé",
+          "author": "Oscar Wilde",
+          "sortYear": 1891,
+          "displayYear": "1891",
+          "rank": null
+        },
+        {
+          "title": "The Tower",
+          "author": "W. B. Yeats",
+          "sortYear": 1928,
+          "displayYear": "1928",
+          "rank": null
+        }
+      ],
+      "years": {
+        "min": 1857,
+        "max": 1928
+      }
+    },
+    "Aestheticism / Decadence": {
+      "essentials": [
+        {
+          "title": "The Picture of Dorian Gray",
+          "author": "Oscar Wilde",
+          "sortYear": 1890,
+          "displayYear": "1890",
+          "rank": 1
+        },
+        {
+          "title": "Á rebours",
+          "author": "Joris-Karl Huysmans",
+          "sortYear": 1884,
+          "displayYear": "1884",
+          "rank": 2
+        },
+        {
+          "title": "Studies in the History of the Renaissance",
+          "author": "Walter Pater",
+          "sortYear": 1873,
+          "displayYear": "1873",
+          "rank": 3
+        },
+        {
+          "title": "Salomé",
+          "author": "Oscar Wilde",
+          "sortYear": 1891,
+          "displayYear": "1891",
+          "rank": 4
+        },
+        {
+          "title": "Poems and Ballads",
+          "author": "Algernon Charles Swinburne",
+          "sortYear": 1866,
+          "displayYear": "1866",
+          "rank": 5
+        },
+        {
+          "title": "The Importance of Being Earnest",
+          "author": "Oscar Wilde",
+          "sortYear": 1895,
+          "displayYear": "1895",
+          "rank": 6
+        },
+        {
+          "title": "Marius the Epicurean",
+          "author": "Walter Pater",
+          "sortYear": 1885,
+          "displayYear": "1885",
+          "rank": 7
+        },
+        {
+          "title": "The Decadent Movement in Literature",
+          "author": "Arthur Symons",
+          "sortYear": 1893,
+          "displayYear": "1893",
+          "rank": 8
+        },
+        {
+          "title": "The Yellow Book",
+          "author": "Henry Harland and Aubrey Beardsley",
+          "sortYear": 1894,
+          "displayYear": "1894",
+          "rank": 9
+        },
+        {
+          "title": "Intentions",
+          "author": "Oscar Wilde",
+          "sortYear": 1891,
+          "displayYear": "1891",
+          "rank": 10
+        },
+        {
+          "title": "Verses",
+          "author": "Ernest Dowson",
+          "sortYear": 1896,
+          "displayYear": "1896",
+          "rank": 11
+        },
+        {
+          "title": "The Savoy",
+          "author": "Arthur Symons",
+          "sortYear": 1896,
+          "displayYear": "1896",
+          "rank": 12
+        },
+        {
+          "title": "Là-bas",
+          "author": "Joris-Karl Huysmans",
+          "sortYear": 1891,
+          "displayYear": "1891",
+          "rank": 13
+        },
+        {
+          "title": "The Sphinx",
+          "author": "Oscar Wilde",
+          "sortYear": 1894,
+          "displayYear": "1894",
+          "rank": 14
+        },
+        {
+          "title": "The Ballad of Reading Gaol",
+          "author": "Oscar Wilde",
+          "sortYear": 1898,
+          "displayYear": "1898",
+          "rank": 15
+        },
+        {
+          "title": "Les Fleurs du mal",
+          "author": "Charles Baudelaire",
+          "sortYear": 1857,
+          "displayYear": "1857",
+          "rank": null
+        }
+      ],
+      "years": {
+        "min": 1857,
+        "max": 1898
+      }
+    },
+    "Surrealism": {
+      "essentials": [
+        {
+          "title": "Manifesto of Surrealism",
+          "author": "André Breton",
+          "sortYear": 1924,
+          "displayYear": "1924",
+          "rank": 1
+        },
+        {
+          "title": "Nadja",
+          "author": "André Breton",
+          "sortYear": 1928,
+          "displayYear": "1928",
+          "rank": 2
+        },
+        {
+          "title": "Les Champs magnétiques",
+          "author": "André Breton and Philippe Soupault",
+          "sortYear": 1920,
+          "displayYear": "1920",
+          "rank": 3
+        },
+        {
+          "title": "Capitale de la douleur",
+          "author": "Paul Éluard",
+          "sortYear": 1926,
+          "displayYear": "1926",
+          "rank": 4
+        },
+        {
+          "title": "Le Paysan de Paris",
+          "author": "Louis Aragon",
+          "sortYear": 1926,
+          "displayYear": "1926",
+          "rank": 5
+        },
+        {
+          "title": "Second Manifesto of Surrealism",
+          "author": "André Breton",
+          "sortYear": 1930,
+          "displayYear": "1930",
+          "rank": 6
+        },
+        {
+          "title": "Mad Love",
+          "author": "André Breton",
+          "sortYear": 1937,
+          "displayYear": "1937",
+          "rank": 8
+        },
+        {
+          "title": "Corps et biens",
+          "author": "Robert Desnos",
+          "sortYear": 1930,
+          "displayYear": "1930",
+          "rank": 9
+        },
+        {
+          "title": "Le Grand Jeu",
+          "author": "Benjamin Péret",
+          "sortYear": 1928,
+          "displayYear": "1928",
+          "rank": 10
+        },
+        {
+          "title": "La Liberté ou l'amour!",
+          "author": "Robert Desnos",
+          "sortYear": 1927,
+          "displayYear": "1927",
+          "rank": 11
+        },
+        {
+          "title": "Une Semaine de bonté",
+          "author": "Max Ernst",
+          "sortYear": 1934,
+          "displayYear": "1934",
+          "rank": 12
+        },
+        {
+          "title": "The Immaculate Conception",
+          "author": "André Breton and Paul Éluard",
+          "sortYear": 1930,
+          "displayYear": "1930",
+          "rank": 13
+        },
+        {
+          "title": "Arcane 17",
+          "author": "André Breton",
+          "sortYear": 1944,
+          "displayYear": "1944",
+          "rank": 14
+        },
+        {
+          "title": "Alcools",
+          "author": "Guillaume Apollinaire",
+          "sortYear": 1913,
+          "displayYear": "1913",
+          "rank": 15
+        },
+        {
+          "title": "Calligrammes",
+          "author": "Guillaume Apollinaire",
+          "sortYear": 1918,
+          "displayYear": "1918",
+          "rank": 16
+        },
+        {
+          "title": "The Breasts of Tiresias",
+          "author": "Guillaume Apollinaire",
+          "sortYear": 1917,
+          "displayYear": "1917",
+          "rank": 17
+        },
+        {
+          "title": "A Wave of Dreams",
+          "author": "Louis Aragon",
+          "sortYear": 1924,
+          "displayYear": "1924",
+          "rank": 18
+        },
+        {
+          "title": "Anthology of Black Humour",
+          "author": "André Breton",
+          "sortYear": 1940,
+          "displayYear": "1940",
+          "rank": 19
+        },
+        {
+          "title": "L'Union libre",
+          "author": "André Breton",
+          "sortYear": 1931,
+          "displayYear": "1931",
+          "rank": 20
+        },
+        {
+          "title": "Les Chants de Maldoror",
+          "author": "Comte de Lautréamont",
+          "sortYear": 1869,
+          "displayYear": "1869",
+          "rank": null
+        }
+      ],
+      "years": {
+        "min": 1869,
+        "max": 1944
+      }
+    },
+    "Postmodernism": {
+      "essentials": [
+        {
+          "title": "Gravity's Rainbow",
+          "author": "Thomas Pynchon",
+          "sortYear": 1973,
+          "displayYear": "1973",
+          "rank": 1
+        },
+        {
+          "title": "Pale Fire",
+          "author": "Vladimir Nabokov",
+          "sortYear": 1962,
+          "displayYear": "1962",
+          "rank": 3
+        },
+        {
+          "title": "Ficciones",
+          "author": "Jorge Luis Borges",
+          "sortYear": 1944,
+          "displayYear": "1944",
+          "rank": 4
+        },
+        {
+          "title": "Catch-22",
+          "author": "Joseph Heller",
+          "sortYear": 1961,
+          "displayYear": "1961",
+          "rank": 5
+        },
+        {
+          "title": "The Crying of Lot 49",
+          "author": "Thomas Pynchon",
+          "sortYear": 1966,
+          "displayYear": "1966",
+          "rank": 6
+        },
+        {
+          "title": "Slaughterhouse-Five",
+          "author": "Kurt Vonnegut",
+          "sortYear": 1969,
+          "displayYear": "1969",
+          "rank": 7
+        },
+        {
+          "title": "If on a winter's night a traveler",
+          "author": "Italo Calvino",
+          "sortYear": 1979,
+          "displayYear": "1979",
+          "rank": 10
+        },
+        {
+          "title": "White Noise",
+          "author": "Don DeLillo",
+          "sortYear": 1985,
+          "displayYear": "1985",
+          "rank": 11
+        },
+        {
+          "title": "Lolita",
+          "author": "Vladimir Nabokov",
+          "sortYear": 1955,
+          "displayYear": "1955",
+          "rank": 13
+        },
+        {
+          "title": "The Name of the Rose",
+          "author": "Umberto Eco",
+          "sortYear": 1980,
+          "displayYear": "1980",
+          "rank": 14
+        },
+        {
+          "title": "V.",
+          "author": "Thomas Pynchon",
+          "sortYear": 1963,
+          "displayYear": "1963",
+          "rank": 16
+        },
+        {
+          "title": "The New York Trilogy",
+          "author": "Paul Auster",
+          "sortYear": 1986,
+          "displayYear": "1986",
+          "rank": 17
+        },
+        {
+          "title": "Cat's Cradle",
+          "author": "Kurt Vonnegut",
+          "sortYear": 1963,
+          "displayYear": "1963",
+          "rank": 18
+        },
+        {
+          "title": "Blood Meridian",
+          "author": "Cormac McCarthy",
+          "sortYear": 1985,
+          "displayYear": "1985",
+          "rank": 19
+        },
+        {
+          "title": "The Recognitions",
+          "author": "William Gaddis",
+          "sortYear": 1955,
+          "displayYear": "1955",
+          "rank": 20
+        },
+        {
+          "title": "Lost in the Funhouse",
+          "author": "John Barth",
+          "sortYear": 1968,
+          "displayYear": "1968",
+          "rank": 21
+        },
+        {
+          "title": "The French Lieutenant's Woman",
+          "author": "John Fowles",
+          "sortYear": 1969,
+          "displayYear": "1969",
+          "rank": 22
+        },
+        {
+          "title": "Foucault's Pendulum",
+          "author": "Umberto Eco",
+          "sortYear": 1988,
+          "displayYear": "1988",
+          "rank": 23
+        },
+        {
+          "title": "House of Leaves",
+          "author": "Mark Z. Danielewski",
+          "sortYear": 2000,
+          "displayYear": "2000",
+          "rank": 24
+        },
+        {
+          "title": "American Psycho",
+          "author": "Bret Easton Ellis",
+          "sortYear": 1991,
+          "displayYear": "1991",
+          "rank": 25
+        },
+        {
+          "title": "Labyrinths",
+          "author": "Jorge Luis Borges",
+          "sortYear": 1962,
+          "displayYear": "1962",
+          "rank": 26
+        },
+        {
+          "title": "The Sot-Weed Factor",
+          "author": "John Barth",
+          "sortYear": 1960,
+          "displayYear": "1960",
+          "rank": 27
+        },
+        {
+          "title": "Underworld",
+          "author": "Don DeLillo",
+          "sortYear": 1997,
+          "displayYear": "1997",
+          "rank": 28
+        },
+        {
+          "title": "The Public Burning",
+          "author": "Robert Coover",
+          "sortYear": 1977,
+          "displayYear": "1977",
+          "rank": 29
+        },
+        {
+          "title": "Mason & Dixon",
+          "author": "Thomas Pynchon",
+          "sortYear": 1997,
+          "displayYear": "1997",
+          "rank": 30
+        },
+        {
+          "title": "Possession",
+          "author": "A. S. Byatt",
+          "sortYear": 1990,
+          "displayYear": "1990",
+          "rank": 31
+        },
+        {
+          "title": "The Handmaid's Tale",
+          "author": "Margaret Atwood",
+          "sortYear": 1985,
+          "displayYear": "1985",
+          "rank": 32
+        },
+        {
+          "title": "Snow White",
+          "author": "Donald Barthelme",
+          "sortYear": 1967,
+          "displayYear": "1967",
+          "rank": 33
+        },
+        {
+          "title": "JR",
+          "author": "William Gaddis",
+          "sortYear": 1975,
+          "displayYear": "1975",
+          "rank": 34
+        },
+        {
+          "title": "Libra",
+          "author": "Don DeLillo",
+          "sortYear": 1988,
+          "displayYear": "1988",
+          "rank": 35
+        },
+        {
+          "title": "The Book of Laughter and Forgetting",
+          "author": "Milan Kundera",
+          "sortYear": 1979,
+          "displayYear": "1979",
+          "rank": 37
+        },
+        {
+          "title": "The Unbearable Lightness of Being",
+          "author": "Milan Kundera",
+          "sortYear": 1984,
+          "displayYear": "1984",
+          "rank": 38
+        },
+        {
+          "title": "Money",
+          "author": "Martin Amis",
+          "sortYear": 1984,
+          "displayYear": "1984",
+          "rank": 39
+        },
+        {
+          "title": "Breakfast of Champions",
+          "author": "Kurt Vonnegut",
+          "sortYear": 1973,
+          "displayYear": "1973",
+          "rank": 40
+        },
+        {
+          "title": "A Clockwork Orange",
+          "author": "Anthony Burgess",
+          "sortYear": 1962,
+          "displayYear": "1962",
+          "rank": 41
+        },
+        {
+          "title": "The Atrocity Exhibition",
+          "author": "J. G. Ballard",
+          "sortYear": 1970,
+          "displayYear": "1970",
+          "rank": 42
+        },
+        {
+          "title": "Giles Goat-Boy",
+          "author": "John Barth",
+          "sortYear": 1966,
+          "displayYear": "1966",
+          "rank": 43
+        },
+        {
+          "title": "The Literature of Exhaustion",
+          "author": "John Barth",
+          "sortYear": 1967,
+          "displayYear": "1967",
+          "rank": 44
+        },
+        {
+          "title": "Cosmicomics",
+          "author": "Italo Calvino",
+          "sortYear": 1965,
+          "displayYear": "1965",
+          "rank": 45
+        },
+        {
+          "title": "Invisible Cities",
+          "author": "Italo Calvino",
+          "sortYear": 1972,
+          "displayYear": "1972",
+          "rank": 46
+        },
+        {
+          "title": "In Cold Blood",
+          "author": "Truman Capote",
+          "sortYear": 1966,
+          "displayYear": "1966",
+          "rank": 47
+        },
+        {
+          "title": "The Tunnel",
+          "author": "William Gass",
+          "sortYear": 1995,
+          "displayYear": "1995",
+          "rank": 49
+        },
+        {
+          "title": "Trout Fishing in America",
+          "author": "Richard Brautigan",
+          "sortYear": 1967,
+          "displayYear": "1967",
+          "rank": 50
+        },
+        {
+          "title": "Naked Lunch",
+          "author": "William S. Burroughs",
+          "sortYear": 1959,
+          "displayYear": "1959",
+          "rank": null
+        },
+        {
+          "title": "Wide Sargasso Sea",
+          "author": "Jean Rhys",
+          "sortYear": 1966,
+          "displayYear": "1966",
+          "rank": null
+        },
+        {
+          "title": "One Hundred Years of Solitude",
+          "author": "Gabriel García Márquez",
+          "sortYear": 1967,
+          "displayYear": "1967",
+          "rank": null
+        },
+        {
+          "title": "Midnight's Children",
+          "author": "Salman Rushdie",
+          "sortYear": 1981,
+          "displayYear": "1981",
+          "rank": null
+        },
+        {
+          "title": "Beloved",
+          "author": "Toni Morrison",
+          "sortYear": 1987,
+          "displayYear": "1987",
+          "rank": null
+        },
+        {
+          "title": "Infinite Jest",
+          "author": "David Foster Wallace",
+          "sortYear": 1996,
+          "displayYear": "1996",
+          "rank": null
+        }
+      ],
+      "years": {
+        "min": 1944,
+        "max": 2000
+      }
+    },
+    "Magical realism": {
+      "essentials": [
+        {
+          "title": "One Hundred Years of Solitude",
+          "author": "Gabriel García Márquez",
+          "sortYear": 1967,
+          "displayYear": "1967",
+          "rank": 1
+        },
+        {
+          "title": "The Kingdom of This World",
+          "author": "Alejo Carpentier",
+          "sortYear": 1949,
+          "displayYear": "1949",
+          "rank": 2
+        },
+        {
+          "title": "The House of the Spirits",
+          "author": "Isabel Allende",
+          "sortYear": 1982,
+          "displayYear": "1982",
+          "rank": 4
+        },
+        {
+          "title": "Beloved",
+          "author": "Toni Morrison",
+          "sortYear": 1987,
+          "displayYear": "1987",
+          "rank": 5
+        },
+        {
+          "title": "Pedro Páramo",
+          "author": "Juan Rulfo",
+          "sortYear": 1955,
+          "displayYear": "1955",
+          "rank": 7
+        },
+        {
+          "title": "Love in the Time of Cholera",
+          "author": "Gabriel García Márquez",
+          "sortYear": 1985,
+          "displayYear": "1985",
+          "rank": 8
+        },
+        {
+          "title": "The Master and Margarita",
+          "author": "Mikhail Bulgakov",
+          "sortYear": 1967,
+          "displayYear": "1967",
+          "rank": 9
+        },
+        {
+          "title": "Like Water for Chocolate",
+          "author": "Laura Esquivel",
+          "sortYear": 1989,
+          "displayYear": "1989",
+          "rank": 10
+        },
+        {
+          "title": "The Famished Road",
+          "author": "Ben Okri",
+          "sortYear": 1991,
+          "displayYear": "1991",
+          "rank": 11
+        },
+        {
+          "title": "Chronicle of a Death Foretold",
+          "author": "Gabriel García Márquez",
+          "sortYear": 1981,
+          "displayYear": "1981",
+          "rank": 12
+        },
+        {
+          "title": "The Lost Steps",
+          "author": "Alejo Carpentier",
+          "sortYear": 1953,
+          "displayYear": "1953",
+          "rank": 13
+        },
+        {
+          "title": "Aura",
+          "author": "Carlos Fuentes",
+          "sortYear": 1962,
+          "displayYear": "1962",
+          "rank": 14
+        },
+        {
+          "title": "The Tin Drum",
+          "author": "Günter Grass",
+          "sortYear": 1959,
+          "displayYear": "1959",
+          "rank": 15
+        },
+        {
+          "title": "Red Sorghum",
+          "author": "Mo Yan",
+          "sortYear": 1986,
+          "displayYear": "1986",
+          "rank": 16
+        },
+        {
+          "title": "The Wind-Up Bird Chronicle",
+          "author": "Haruki Murakami",
+          "sortYear": 1994,
+          "displayYear": "1994",
+          "rank": 17
+        },
+        {
+          "title": "The Aleph",
+          "author": "Jorge Luis Borges",
+          "sortYear": 1949,
+          "displayYear": "1949",
+          "rank": 18
+        },
+        {
+          "title": "Nights at the Circus",
+          "author": "Angela Carter",
+          "sortYear": 1984,
+          "displayYear": "1984",
+          "rank": 19
+        },
+        {
+          "title": "Song of Solomon",
+          "author": "Toni Morrison",
+          "sortYear": 1977,
+          "displayYear": "1977",
+          "rank": 20
+        },
+        {
+          "title": "The Autumn of the Patriarch",
+          "author": "Gabriel García Márquez",
+          "sortYear": 1975,
+          "displayYear": "1975",
+          "rank": 21
+        },
+        {
+          "title": "Distant Star",
+          "author": "Roberto Bolaño",
+          "sortYear": 1996,
+          "displayYear": "1996",
+          "rank": 22
+        },
+        {
+          "title": "Ficciones",
+          "author": "Jorge Luis Borges",
+          "sortYear": 1944,
+          "displayYear": "1944",
+          "rank": null
+        },
+        {
+          "title": "Labyrinths",
+          "author": "Jorge Luis Borges",
+          "sortYear": 1962,
+          "displayYear": "1962",
+          "rank": null
+        },
+        {
+          "title": "Midnight's Children",
+          "author": "Salman Rushdie",
+          "sortYear": 1981,
+          "displayYear": "1981",
+          "rank": null
+        }
+      ],
+      "years": {
+        "min": 1944,
+        "max": 1996
+      }
+    },
+    "Postcolonial literature": {
+      "essentials": [
+        {
+          "title": "Things Fall Apart",
+          "author": "Chinua Achebe",
+          "sortYear": 1958,
+          "displayYear": "1958",
+          "rank": 1
+        },
+        {
+          "title": "Midnight's Children",
+          "author": "Salman Rushdie",
+          "sortYear": 1981,
+          "displayYear": "1981",
+          "rank": 2
+        },
+        {
+          "title": "Wide Sargasso Sea",
+          "author": "Jean Rhys",
+          "sortYear": 1966,
+          "displayYear": "1966",
+          "rank": 3
+        },
+        {
+          "title": "Season of Migration to the North",
+          "author": "Tayeb Salih",
+          "sortYear": 1966,
+          "displayYear": "1966",
+          "rank": 4
+        },
+        {
+          "title": "The God of Small Things",
+          "author": "Arundhati Roy",
+          "sortYear": 1997,
+          "displayYear": "1997",
+          "rank": 5
+        },
+        {
+          "title": "Orientalism",
+          "author": "Edward Said",
+          "sortYear": 1978,
+          "displayYear": "1978",
+          "rank": 6
+        },
+        {
+          "title": "Notebook of a Return to the Native Land",
+          "author": "Aimé Césaire",
+          "sortYear": 1939,
+          "displayYear": "1939",
+          "rank": 7
+        },
+        {
+          "title": "Discourse on Colonialism",
+          "author": "Aimé Césaire",
+          "sortYear": 1950,
+          "displayYear": "1950",
+          "rank": 8
+        },
+        {
+          "title": "The Wretched of the Earth",
+          "author": "Frantz Fanon",
+          "sortYear": 1961,
+          "displayYear": "1961",
+          "rank": 9
+        },
+        {
+          "title": "Black Skin, White Masks",
+          "author": "Frantz Fanon",
+          "sortYear": 1952,
+          "displayYear": "1952",
+          "rank": 10
+        },
+        {
+          "title": "A House for Mr Biswas",
+          "author": "V. S. Naipaul",
+          "sortYear": 1961,
+          "displayYear": "1961",
+          "rank": 11
+        },
+        {
+          "title": "Petals of Blood",
+          "author": "Ngũgĩ wa Thiong'o",
+          "sortYear": 1977,
+          "displayYear": "1977",
+          "rank": 13
+        },
+        {
+          "title": "Weep Not, Child",
+          "author": "Ngũgĩ wa Thiong'o",
+          "sortYear": 1964,
+          "displayYear": "1964",
+          "rank": 14
+        },
+        {
+          "title": "The Satanic Verses",
+          "author": "Salman Rushdie",
+          "sortYear": 1988,
+          "displayYear": "1988",
+          "rank": 15
+        },
+        {
+          "title": "Nervous Conditions",
+          "author": "Tsitsi Dangarembga",
+          "sortYear": 1988,
+          "displayYear": "1988",
+          "rank": 16
+        },
+        {
+          "title": "White Teeth",
+          "author": "Zadie Smith",
+          "sortYear": 2000,
+          "displayYear": "2000",
+          "rank": 17
+        },
+        {
+          "title": "Waiting for the Barbarians",
+          "author": "J. M. Coetzee",
+          "sortYear": 1980,
+          "displayYear": "1980",
+          "rank": 18
+        },
+        {
+          "title": "Disgrace",
+          "author": "J. M. Coetzee",
+          "sortYear": 1999,
+          "displayYear": "1999",
+          "rank": 19
+        },
+        {
+          "title": "Omeros",
+          "author": "Derek Walcott",
+          "sortYear": 1990,
+          "displayYear": "1990",
+          "rank": 20
+        },
+        {
+          "title": "The Buddha of Suburbia",
+          "author": "Hanif Kureishi",
+          "sortYear": 1990,
+          "displayYear": "1990",
+          "rank": 21
+        },
+        {
+          "title": "A Bend in the River",
+          "author": "V. S. Naipaul",
+          "sortYear": 1979,
+          "displayYear": "1979",
+          "rank": 22
+        },
+        {
+          "title": "Decolonising the Mind",
+          "author": "Ngũgĩ wa Thiong'o",
+          "sortYear": 1986,
+          "displayYear": "1986",
+          "rank": 23
+        },
+        {
+          "title": "The English Patient",
+          "author": "Michael Ondaatje",
+          "sortYear": 1992,
+          "displayYear": "1992",
+          "rank": 24
+        },
+        {
+          "title": "In the Castle of My Skin",
+          "author": "George Lamming",
+          "sortYear": 1953,
+          "displayYear": "1953",
+          "rank": 25
+        },
+        {
+          "title": "July's People",
+          "author": "Nadine Gordimer",
+          "sortYear": 1981,
+          "displayYear": "1981",
+          "rank": 26
+        },
+        {
+          "title": "So Long a Letter",
+          "author": "Mariama Bâ",
+          "sortYear": 1979,
+          "displayYear": "1979",
+          "rank": 28
+        },
+        {
+          "title": "Burger's Daughter",
+          "author": "Nadine Gordimer",
+          "sortYear": 1979,
+          "displayYear": "1979",
+          "rank": 29
+        },
+        {
+          "title": "Can the Subaltern Speak?",
+          "author": "Gayatri Chakravorty Spivak",
+          "sortYear": 1988,
+          "displayYear": "1988",
+          "rank": 30
+        },
+        {
+          "title": "The Location of Culture",
+          "author": "Homi K. Bhabha",
+          "sortYear": 1994,
+          "displayYear": "1994",
+          "rank": 31
+        },
+        {
+          "title": "Kim",
+          "author": "Rudyard Kipling",
+          "sortYear": 1901,
+          "displayYear": "1901",
+          "rank": 32
+        },
+        {
+          "title": "A Passage to India",
+          "author": "E. M. Forster",
+          "sortYear": 1924,
+          "displayYear": "1924",
+          "rank": 33
+        },
+        {
+          "title": "Palace of the Peacock",
+          "author": "Wilson Harris",
+          "sortYear": 1960,
+          "displayYear": "1960",
+          "rank": 34
+        },
+        {
+          "title": "The Mimic Men",
+          "author": "V. S. Naipaul",
+          "sortYear": 1967,
+          "displayYear": "1967",
+          "rank": 35
+        },
+        {
+          "title": "Untouchable",
+          "author": "Mulk Raj Anand",
+          "sortYear": 1935,
+          "displayYear": "1935",
+          "rank": 36
+        },
+        {
+          "title": "The Grass Is Singing",
+          "author": "Doris Lessing",
+          "sortYear": 1950,
+          "displayYear": "1950",
+          "rank": 37
+        },
+        {
+          "title": "Half of a Yellow Sun",
+          "author": "Chimamanda Ngozi Adichie",
+          "sortYear": 2006,
+          "displayYear": "2006",
+          "rank": 38
+        },
+        {
+          "title": "Purple Hibiscus",
+          "author": "Chimamanda Ngozi Adichie",
+          "sortYear": 2003,
+          "displayYear": "2003",
+          "rank": 39
+        },
+        {
+          "title": "Small Island",
+          "author": "Andrea Levy",
+          "sortYear": 2004,
+          "displayYear": "2004",
+          "rank": 40
+        },
+        {
+          "title": "Brick Lane",
+          "author": "Monica Ali",
+          "sortYear": 2003,
+          "displayYear": "2003",
+          "rank": 41
+        },
+        {
+          "title": "The Lonely Londoners",
+          "author": "Sam Selvon",
+          "sortYear": 1956,
+          "displayYear": "1956",
+          "rank": 42
+        },
+        {
+          "title": "The Interpreters",
+          "author": "Wole Soyinka",
+          "sortYear": 1965,
+          "displayYear": "1965",
+          "rank": 43
+        },
+        {
+          "title": "Death and the King's Horseman",
+          "author": "Wole Soyinka",
+          "sortYear": 1975,
+          "displayYear": "1975",
+          "rank": 44
+        },
+        {
+          "title": "Texaco",
+          "author": "Patrick Chamoiseau",
+          "sortYear": 1992,
+          "displayYear": "1992",
+          "rank": 45
+        },
+        {
+          "title": "The Shadow Lines",
+          "author": "Amitav Ghosh",
+          "sortYear": 1988,
+          "displayYear": "1988",
+          "rank": 46
+        },
+        {
+          "title": "Efuru",
+          "author": "Flora Nwapa",
+          "sortYear": 1966,
+          "displayYear": "1966",
+          "rank": 47
+        },
+        {
+          "title": "Anthills of the Savannah",
+          "author": "Chinua Achebe",
+          "sortYear": 1987,
+          "displayYear": "1987",
+          "rank": 48
+        },
+        {
+          "title": "The Reluctant Fundamentalist",
+          "author": "Mohsin Hamid",
+          "sortYear": 2007,
+          "displayYear": "2007",
+          "rank": 49
+        },
+        {
+          "title": "Cracking India",
+          "author": "Bapsi Sidhwa",
+          "sortYear": 1988,
+          "displayYear": "1988",
+          "rank": 50
+        },
+        {
+          "title": "One Hundred Years of Solitude",
+          "author": "Gabriel García Márquez",
+          "sortYear": 1967,
+          "displayYear": "1967",
+          "rank": null
+        },
+        {
+          "title": "Beloved",
+          "author": "Toni Morrison",
+          "sortYear": 1987,
+          "displayYear": "1987",
+          "rank": null
+        },
+        {
+          "title": "The Famished Road",
+          "author": "Ben Okri",
+          "sortYear": 1991,
+          "displayYear": "1991",
+          "rank": null
+        }
+      ],
+      "years": {
+        "min": 1901,
+        "max": 2007
+      }
+    },
+    "Dark Romanticism": {
+      "essentials": [
+        {
+          "title": "The Fall of the House of Usher",
+          "author": "Edgar Allan Poe",
+          "sortYear": 1839,
+          "displayYear": "1839",
+          "rank": null
+        },
+        {
+          "title": "The Tell-Tale Heart",
+          "author": "Edgar Allan Poe",
+          "sortYear": 1843,
+          "displayYear": "1843",
+          "rank": null
+        }
+      ],
+      "years": {
+        "min": 1839,
+        "max": 1843
+      }
+    },
+    "Transcendentalism": {
+      "essentials": [
+        {
+          "title": "Nature",
+          "author": "Ralph Waldo Emerson",
+          "sortYear": 1836,
+          "displayYear": "1836",
+          "rank": 1
+        },
+        {
+          "title": "Walden",
+          "author": "Henry David Thoreau",
+          "sortYear": 1854,
+          "displayYear": "1854",
+          "rank": 2
+        },
+        {
+          "title": "Self-Reliance",
+          "author": "Ralph Waldo Emerson",
+          "sortYear": 1841,
+          "displayYear": "1841",
+          "rank": 3
+        },
+        {
+          "title": "Civil Disobedience",
+          "author": "Henry David Thoreau",
+          "sortYear": 1849,
+          "displayYear": "1849",
+          "rank": 4
+        },
+        {
+          "title": "The American Scholar",
+          "author": "Ralph Waldo Emerson",
+          "sortYear": 1837,
+          "displayYear": "1837",
+          "rank": 5
+        },
+        {
+          "title": "Essays: First Series",
+          "author": "Ralph Waldo Emerson",
+          "sortYear": 1841,
+          "displayYear": "1841",
+          "rank": 6
+        },
+        {
+          "title": "Woman in the Nineteenth Century",
+          "author": "Margaret Fuller",
+          "sortYear": 1845,
+          "displayYear": "1845",
+          "rank": 7
+        },
+        {
+          "title": "The Divinity School Address",
+          "author": "Ralph Waldo Emerson",
+          "sortYear": 1838,
+          "displayYear": "1838",
+          "rank": 8
+        },
+        {
+          "title": "Essays: Second Series",
+          "author": "Ralph Waldo Emerson",
+          "sortYear": 1844,
+          "displayYear": "1844",
+          "rank": 9
+        },
+        {
+          "title": "A Week on the Concord and Merrimack Rivers",
+          "author": "Henry David Thoreau",
+          "sortYear": 1849,
+          "displayYear": "1849",
+          "rank": 10
+        },
+        {
+          "title": "The Over-Soul",
+          "author": "Ralph Waldo Emerson",
+          "sortYear": 1841,
+          "displayYear": "1841",
+          "rank": 11
+        },
+        {
+          "title": "The Poet",
+          "author": "Ralph Waldo Emerson",
+          "sortYear": 1844,
+          "displayYear": "1844",
+          "rank": 12
+        },
+        {
+          "title": "Representative Men",
+          "author": "Ralph Waldo Emerson",
+          "sortYear": 1850,
+          "displayYear": "1850",
+          "rank": 13
+        },
+        {
+          "title": "The Dial",
+          "author": "Margaret Fuller and Ralph Waldo Emerson",
+          "sortYear": 1840,
+          "displayYear": "1840",
+          "rank": 14
+        },
+        {
+          "title": "Leaves of Grass",
+          "author": "Walt Whitman",
+          "sortYear": 1855,
+          "displayYear": "1855",
+          "rank": 15
+        }
+      ],
+      "years": {
+        "min": 1836,
+        "max": 1855
+      }
+    },
+    "Imagism": {
+      "essentials": [
+        {
+          "title": "Des Imagistes",
+          "author": "Ezra Pound",
+          "sortYear": 1914,
+          "displayYear": "1914",
+          "rank": 1
+        },
+        {
+          "title": "In a Station of the Metro",
+          "author": "Ezra Pound",
+          "sortYear": 1913,
+          "displayYear": "1913",
+          "rank": 2
+        },
+        {
+          "title": "Some Imagist Poets",
+          "author": "Amy Lowell",
+          "sortYear": 1915,
+          "displayYear": "1915",
+          "rank": 3
+        },
+        {
+          "title": "Sea Garden",
+          "author": "H.D.",
+          "sortYear": 1916,
+          "displayYear": "1916",
+          "rank": 4
+        },
+        {
+          "title": "A Few Don'ts by an Imagiste",
+          "author": "Ezra Pound and F. S. Flint",
+          "sortYear": 1913,
+          "displayYear": "1913",
+          "rank": 5
+        },
+        {
+          "title": "Ripostes",
+          "author": "Ezra Pound",
+          "sortYear": 1912,
+          "displayYear": "1912",
+          "rank": 6
+        },
+        {
+          "title": "Oread",
+          "author": "H.D.",
+          "sortYear": 1914,
+          "displayYear": "1914",
+          "rank": 7
+        },
+        {
+          "title": "Images",
+          "author": "Richard Aldington",
+          "sortYear": 1915,
+          "displayYear": "1915",
+          "rank": 8
+        },
+        {
+          "title": "Lustra",
+          "author": "Ezra Pound",
+          "sortYear": 1916,
+          "displayYear": "1916",
+          "rank": 9
+        },
+        {
+          "title": "Tendencies in Modern American Poetry",
+          "author": "Amy Lowell",
+          "sortYear": 1917,
+          "displayYear": "1917",
+          "rank": 10
+        },
+        {
+          "title": "Men, Women and Ghosts",
+          "author": "Amy Lowell",
+          "sortYear": 1916,
+          "displayYear": "1916",
+          "rank": 11
+        },
+        {
+          "title": "The Complete Poetical Works of T. E. Hulme",
+          "author": "T. E. Hulme",
+          "sortYear": 1912,
+          "displayYear": "1912",
+          "rank": 12
+        }
+      ],
+      "years": {
+        "min": 1912,
+        "max": 1917
+      }
+    },
+    "Harlem Renaissance": {
+      "essentials": [
+        {
+          "title": "The New Negro",
+          "author": "Alain Locke",
+          "sortYear": 1925,
+          "displayYear": "1925",
+          "rank": 1
+        },
+        {
+          "title": "Cane",
+          "author": "Jean Toomer",
+          "sortYear": 1923,
+          "displayYear": "1923",
+          "rank": 2
+        },
+        {
+          "title": "Their Eyes Were Watching God",
+          "author": "Zora Neale Hurston",
+          "sortYear": 1937,
+          "displayYear": "1937",
+          "rank": 3
+        },
+        {
+          "title": "The Weary Blues",
+          "author": "Langston Hughes",
+          "sortYear": 1926,
+          "displayYear": "1926",
+          "rank": 4
+        },
+        {
+          "title": "Home to Harlem",
+          "author": "Claude McKay",
+          "sortYear": 1928,
+          "displayYear": "1928",
+          "rank": 5
+        },
+        {
+          "title": "Quicksand",
+          "author": "Nella Larsen",
+          "sortYear": 1928,
+          "displayYear": "1928",
+          "rank": 6
+        },
+        {
+          "title": "Passing",
+          "author": "Nella Larsen",
+          "sortYear": 1929,
+          "displayYear": "1929",
+          "rank": 7
+        },
+        {
+          "title": "Harlem Shadows",
+          "author": "Claude McKay",
+          "sortYear": 1922,
+          "displayYear": "1922",
+          "rank": 8
+        },
+        {
+          "title": "The Souls of Black Folk",
+          "author": "W. E. B. Du Bois",
+          "sortYear": 1903,
+          "displayYear": "1903",
+          "rank": 9
+        },
+        {
+          "title": "Color",
+          "author": "Countee Cullen",
+          "sortYear": 1925,
+          "displayYear": "1925",
+          "rank": 10
+        },
+        {
+          "title": "If We Must Die",
+          "author": "Claude McKay",
+          "sortYear": 1919,
+          "displayYear": "1919",
+          "rank": 11
+        },
+        {
+          "title": "The Negro Speaks of Rivers",
+          "author": "Langston Hughes",
+          "sortYear": 1921,
+          "displayYear": "1921",
+          "rank": 12
+        },
+        {
+          "title": "Not Without Laughter",
+          "author": "Langston Hughes",
+          "sortYear": 1930,
+          "displayYear": "1930",
+          "rank": 13
+        },
+        {
+          "title": "The Blacker the Berry",
+          "author": "Wallace Thurman",
+          "sortYear": 1929,
+          "displayYear": "1929",
+          "rank": 14
+        },
+        {
+          "title": "Infants of the Spring",
+          "author": "Wallace Thurman",
+          "sortYear": 1932,
+          "displayYear": "1932",
+          "rank": 15
+        },
+        {
+          "title": "Banjo",
+          "author": "Claude McKay",
+          "sortYear": 1929,
+          "displayYear": "1929",
+          "rank": 16
+        },
+        {
+          "title": "Plum Bun",
+          "author": "Jessie Redmon Fauset",
+          "sortYear": 1928,
+          "displayYear": "1928",
+          "rank": 17
+        },
+        {
+          "title": "There Is Confusion",
+          "author": "Jessie Redmon Fauset",
+          "sortYear": 1924,
+          "displayYear": "1924",
+          "rank": 18
+        },
+        {
+          "title": "Fine Clothes to the Jew",
+          "author": "Langston Hughes",
+          "sortYear": 1927,
+          "displayYear": "1927",
+          "rank": 19
+        },
+        {
+          "title": "The Book of American Negro Poetry",
+          "author": "James Weldon Johnson",
+          "sortYear": 1922,
+          "displayYear": "1922",
+          "rank": 20
+        },
+        {
+          "title": "The Autobiography of an Ex-Colored Man",
+          "author": "James Weldon Johnson",
+          "sortYear": 1912,
+          "displayYear": "1912",
+          "rank": 21
+        },
+        {
+          "title": "God's Trombones",
+          "author": "James Weldon Johnson",
+          "sortYear": 1927,
+          "displayYear": "1927",
+          "rank": 22
+        },
+        {
+          "title": "Fire!!",
+          "author": "Wallace Thurman",
+          "sortYear": 1926,
+          "displayYear": "1926",
+          "rank": 23
+        },
+        {
+          "title": "Mules and Men",
+          "author": "Zora Neale Hurston",
+          "sortYear": 1935,
+          "displayYear": "1935",
+          "rank": 24
+        },
+        {
+          "title": "The Ways of White Folks",
+          "author": "Langston Hughes",
+          "sortYear": 1934,
+          "displayYear": "1934",
+          "rank": 25
+        }
+      ],
+      "years": {
+        "min": 1903,
+        "max": 1937
+      }
+    },
+    "Theatre of the Absurd": {
+      "essentials": [
+        {
+          "title": "Waiting for Godot",
+          "author": "Samuel Beckett",
+          "sortYear": 1953,
+          "displayYear": "1953",
+          "rank": 1
+        },
+        {
+          "title": "The Bald Soprano",
+          "author": "Eugène Ionesco",
+          "sortYear": 1950,
+          "displayYear": "1950",
+          "rank": 2
+        },
+        {
+          "title": "Endgame",
+          "author": "Samuel Beckett",
+          "sortYear": 1957,
+          "displayYear": "1957",
+          "rank": 3
+        },
+        {
+          "title": "Rhinoceros",
+          "author": "Eugène Ionesco",
+          "sortYear": 1959,
+          "displayYear": "1959",
+          "rank": 4
+        },
+        {
+          "title": "The Chairs",
+          "author": "Eugène Ionesco",
+          "sortYear": 1952,
+          "displayYear": "1952",
+          "rank": 5
+        },
+        {
+          "title": "The Birthday Party",
+          "author": "Harold Pinter",
+          "sortYear": 1957,
+          "displayYear": "1957",
+          "rank": 6
+        },
+        {
+          "title": "The Balcony",
+          "author": "Jean Genet",
+          "sortYear": 1957,
+          "displayYear": "1957",
+          "rank": 7
+        },
+        {
+          "title": "The Maids",
+          "author": "Jean Genet",
+          "sortYear": 1947,
+          "displayYear": "1947",
+          "rank": 8
+        },
+        {
+          "title": "Krapp's Last Tape",
+          "author": "Samuel Beckett",
+          "sortYear": 1958,
+          "displayYear": "1958",
+          "rank": 9
+        },
+        {
+          "title": "The Caretaker",
+          "author": "Harold Pinter",
+          "sortYear": 1960,
+          "displayYear": "1960",
+          "rank": 10
+        },
+        {
+          "title": "The Blacks",
+          "author": "Jean Genet",
+          "sortYear": 1959,
+          "displayYear": "1959",
+          "rank": 11
+        },
+        {
+          "title": "The Zoo Story",
+          "author": "Edward Albee",
+          "sortYear": 1959,
+          "displayYear": "1959",
+          "rank": 12
+        },
+        {
+          "title": "Who's Afraid of Virginia Woolf?",
+          "author": "Edward Albee",
+          "sortYear": 1962,
+          "displayYear": "1962",
+          "rank": 13
+        },
+        {
+          "title": "The Killer",
+          "author": "Eugène Ionesco",
+          "sortYear": 1959,
+          "displayYear": "1959",
+          "rank": 14
+        },
+        {
+          "title": "The Homecoming",
+          "author": "Harold Pinter",
+          "sortYear": 1964,
+          "displayYear": "1964",
+          "rank": 15
+        },
+        {
+          "title": "Rosencrantz and Guildenstern Are Dead",
+          "author": "Tom Stoppard",
+          "sortYear": 1966,
+          "displayYear": "1966",
+          "rank": 16
+        },
+        {
+          "title": "The Dumb Waiter",
+          "author": "Harold Pinter",
+          "sortYear": 1957,
+          "displayYear": "1957",
+          "rank": 17
+        },
+        {
+          "title": "Amédée",
+          "author": "Eugène Ionesco",
+          "sortYear": 1954,
+          "displayYear": "1954",
+          "rank": 18
+        },
+        {
+          "title": "The American Dream",
+          "author": "Edward Albee",
+          "sortYear": 1961,
+          "displayYear": "1961",
+          "rank": 19
+        },
+        {
+          "title": "Ping-Pong",
+          "author": "Arthur Adamov",
+          "sortYear": 1955,
+          "displayYear": "1955",
+          "rank": 20
+        },
+        {
+          "title": "The Theatre of the Absurd",
+          "author": "Martin Esslin",
+          "sortYear": 1961,
+          "displayYear": "1961",
+          "rank": 21
+        },
+        {
+          "title": "Exit the King",
+          "author": "Eugène Ionesco",
+          "sortYear": 1962,
+          "displayYear": "1962",
+          "rank": 22
+        },
+        {
+          "title": "Happy Days",
+          "author": "Samuel Beckett",
+          "sortYear": 1961,
+          "displayYear": "1961",
+          "rank": 23
+        }
+      ],
+      "years": {
+        "min": 1947,
+        "max": 1966
+      }
+    },
+    "Beat Generation": {
+      "essentials": [
+        {
+          "title": "On the Road",
+          "author": "Jack Kerouac",
+          "sortYear": 1957,
+          "displayYear": "1957",
+          "rank": 1
+        },
+        {
+          "title": "Howl and Other Poems",
+          "author": "Allen Ginsberg",
+          "sortYear": 1956,
+          "displayYear": "1956",
+          "rank": 2
+        },
+        {
+          "title": "Naked Lunch",
+          "author": "William S. Burroughs",
+          "sortYear": 1959,
+          "displayYear": "1959",
+          "rank": 3
+        },
+        {
+          "title": "The Dharma Bums",
+          "author": "Jack Kerouac",
+          "sortYear": 1958,
+          "displayYear": "1958",
+          "rank": 4
+        },
+        {
+          "title": "Junky",
+          "author": "William S. Burroughs",
+          "sortYear": 1953,
+          "displayYear": "1953",
+          "rank": 5
+        },
+        {
+          "title": "A Coney Island of the Mind",
+          "author": "Lawrence Ferlinghetti",
+          "sortYear": 1958,
+          "displayYear": "1958",
+          "rank": 6
+        },
+        {
+          "title": "Kaddish and Other Poems",
+          "author": "Allen Ginsberg",
+          "sortYear": 1961,
+          "displayYear": "1961",
+          "rank": 7
+        },
+        {
+          "title": "Gasoline",
+          "author": "Gregory Corso",
+          "sortYear": 1958,
+          "displayYear": "1958",
+          "rank": 8
+        },
+        {
+          "title": "Visions of Cody",
+          "author": "Jack Kerouac",
+          "sortYear": 1972,
+          "displayYear": "1972",
+          "rank": 9
+        },
+        {
+          "title": "Big Sur",
+          "author": "Jack Kerouac",
+          "sortYear": 1962,
+          "displayYear": "1962",
+          "rank": 10
+        },
+        {
+          "title": "The Subterraneans",
+          "author": "Jack Kerouac",
+          "sortYear": 1958,
+          "displayYear": "1958",
+          "rank": 11
+        },
+        {
+          "title": "Mexico City Blues",
+          "author": "Jack Kerouac",
+          "sortYear": 1959,
+          "displayYear": "1959",
+          "rank": 12
+        },
+        {
+          "title": "The Yage Letters",
+          "author": "William S. Burroughs and Allen Ginsberg",
+          "sortYear": 1963,
+          "displayYear": "1963",
+          "rank": 13
+        },
+        {
+          "title": "Pictures of the Gone World",
+          "author": "Lawrence Ferlinghetti",
+          "sortYear": 1955,
+          "displayYear": "1955",
+          "rank": 14
+        },
+        {
+          "title": "Desolation Angels",
+          "author": "Jack Kerouac",
+          "sortYear": 1965,
+          "displayYear": "1965",
+          "rank": 15
+        },
+        {
+          "title": "Bomb",
+          "author": "Gregory Corso",
+          "sortYear": 1958,
+          "displayYear": "1958",
+          "rank": 16
+        },
+        {
+          "title": "Reality Sandwiches",
+          "author": "Allen Ginsberg",
+          "sortYear": 1963,
+          "displayYear": "1963",
+          "rank": 17
+        },
+        {
+          "title": "The Town and the City",
+          "author": "Jack Kerouac",
+          "sortYear": 1950,
+          "displayYear": "1950",
+          "rank": 18
+        },
+        {
+          "title": "Memoirs of a Beatnik",
+          "author": "Diane di Prima",
+          "sortYear": 1969,
+          "displayYear": "1969",
+          "rank": 19
+        },
+        {
+          "title": "Riprap",
+          "author": "Gary Snyder",
+          "sortYear": 1959,
+          "displayYear": "1959",
+          "rank": 20
+        }
+      ],
+      "years": {
+        "min": 1950,
+        "max": 1972
+      }
+    },
+    "Humanism": {
+      "essentials": [
+        {
+          "title": "The Praise of Folly",
+          "author": "Erasmus",
+          "sortYear": 1511,
+          "displayYear": "1511",
+          "rank": null
+        },
+        {
+          "title": "Utopia",
+          "author": "Thomas More",
+          "sortYear": 1516,
+          "displayYear": "1516",
+          "rank": null
+        },
+        {
+          "title": "Gargantua and Pantagruel",
+          "author": "François Rabelais",
+          "sortYear": 1532,
+          "displayYear": "1532",
+          "rank": null
+        },
+        {
+          "title": "Essays",
+          "author": "Michel de Montaigne",
+          "sortYear": 1580,
+          "displayYear": "1580",
+          "rank": null
+        }
+      ],
+      "years": {
+        "min": 1511,
+        "max": 1580
+      }
+    }
+  },
+  "preMovement": [
+    {
+      "title": "Epic of Gilgamesh",
+      "author": "Anonymous (Sîn-lēqi-unninni, attrib.)",
+      "sortYear": -1200,
+      "displayYear": "c. 1200 BCE",
+      "rank": null
+    },
+    {
+      "title": "Iliad",
+      "author": "Homer",
+      "sortYear": -750,
+      "displayYear": "c. 750 BCE",
+      "rank": null
+    },
+    {
+      "title": "Odyssey",
+      "author": "Homer",
+      "sortYear": -725,
+      "displayYear": "c. 725 BCE",
+      "rank": null
+    },
+    {
+      "title": "Theogony",
+      "author": "Hesiod",
+      "sortYear": -700,
+      "displayYear": "c. 700 BCE",
+      "rank": null
+    },
+    {
+      "title": "Poems (fragments)",
+      "author": "Sappho",
+      "sortYear": -600,
+      "displayYear": "c. 600 BCE",
+      "rank": null
+    },
+    {
+      "title": "Oresteia",
+      "author": "Aeschylus",
+      "sortYear": -458,
+      "displayYear": "458 BCE",
+      "rank": null
+    },
+    {
+      "title": "The Analects",
+      "author": "Confucius (disciples)",
+      "sortYear": -450,
+      "displayYear": "c. 450 BCE",
+      "rank": null
+    },
+    {
+      "title": "Antigone",
+      "author": "Sophocles",
+      "sortYear": -441,
+      "displayYear": "c. 441 BCE",
+      "rank": null
+    },
+    {
+      "title": "Medea",
+      "author": "Euripides",
+      "sortYear": -431,
+      "displayYear": "431 BCE",
+      "rank": null
+    },
+    {
+      "title": "The Histories",
+      "author": "Herodotus",
+      "sortYear": -430,
+      "displayYear": "c. 430 BCE",
+      "rank": null
+    },
+    {
+      "title": "Oedipus Rex",
+      "author": "Sophocles",
+      "sortYear": -429,
+      "displayYear": "c. 429 BCE",
+      "rank": null
+    },
+    {
+      "title": "Lysistrata",
+      "author": "Aristophanes",
+      "sortYear": -411,
+      "displayYear": "411 BCE",
+      "rank": null
+    },
+    {
+      "title": "The Bacchae",
+      "author": "Euripides",
+      "sortYear": -405,
+      "displayYear": "c. 405 BCE",
+      "rank": null
+    },
+    {
+      "title": "Mahabharata",
+      "author": "Vyasa (attrib.)",
+      "sortYear": -400,
+      "displayYear": "c. 400 BCE–400 CE",
+      "rank": null
+    },
+    {
+      "title": "Tao Te Ching",
+      "author": "Laozi (attrib.)",
+      "sortYear": -400,
+      "displayYear": "c. 400 BCE",
+      "rank": null
+    },
+    {
+      "title": "Poetics",
+      "author": "Aristotle",
+      "sortYear": -335,
+      "displayYear": "c. 335 BCE",
+      "rank": null
+    },
+    {
+      "title": "Ramayana",
+      "author": "Valmiki (attrib.)",
+      "sortYear": -300,
+      "displayYear": "c. 300 BCE",
+      "rank": null
+    },
+    {
+      "title": "Idylls",
+      "author": "Theocritus",
+      "sortYear": -270,
+      "displayYear": "c. 270 BCE",
+      "rank": null
+    },
+    {
+      "title": "Argonautica",
+      "author": "Apollonius of Rhodes",
+      "sortYear": -250,
+      "displayYear": "c. 250 BCE",
+      "rank": null
+    },
+    {
+      "title": "Carmina",
+      "author": "Catullus",
+      "sortYear": -54,
+      "displayYear": "c. 54 BCE",
+      "rank": null
+    },
+    {
+      "title": "Eclogues",
+      "author": "Virgil",
+      "sortYear": -37,
+      "displayYear": "c. 37 BCE",
+      "rank": null
+    },
+    {
+      "title": "Georgics",
+      "author": "Virgil",
+      "sortYear": -29,
+      "displayYear": "29 BCE",
+      "rank": null
+    },
+    {
+      "title": "Odes",
+      "author": "Horace",
+      "sortYear": -23,
+      "displayYear": "23 BCE",
+      "rank": null
+    },
+    {
+      "title": "Aeneid",
+      "author": "Virgil",
+      "sortYear": -19,
+      "displayYear": "19 BCE",
+      "rank": null
+    },
+    {
+      "title": "Ars Poetica",
+      "author": "Horace",
+      "sortYear": -18,
+      "displayYear": "c. 18 BCE",
+      "rank": null
+    },
+    {
+      "title": "Metamorphoses",
+      "author": "Ovid",
+      "sortYear": 8,
+      "displayYear": "8 CE",
+      "rank": null
+    },
+    {
+      "title": "The Golden Ass",
+      "author": "Apuleius",
+      "sortYear": 170,
+      "displayYear": "c. 170 CE",
+      "rank": null
+    },
+    {
+      "title": "Meditations",
+      "author": "Marcus Aurelius",
+      "sortYear": 175,
+      "displayYear": "c. 175 CE",
+      "rank": null
+    },
+    {
+      "title": "Confessions",
+      "author": "Augustine of Hippo",
+      "sortYear": 400,
+      "displayYear": "c. 400 CE",
+      "rank": null
+    },
+    {
+      "title": "The Consolation of Philosophy",
+      "author": "Boethius",
+      "sortYear": 524,
+      "displayYear": "c. 524 CE",
+      "rank": null
+    },
+    {
+      "title": "Beowulf",
+      "author": "Anonymous",
+      "sortYear": 900,
+      "displayYear": "c. 900",
+      "rank": null
+    },
+    {
+      "title": "One Thousand and One Nights",
+      "author": "Anonymous",
+      "sortYear": 900,
+      "displayYear": "c. 900–1400",
+      "rank": null
+    },
+    {
+      "title": "The Pillow Book",
+      "author": "Sei Shōnagon",
+      "sortYear": 1002,
+      "displayYear": "c. 1002",
+      "rank": null
+    },
+    {
+      "title": "The Tale of Genji",
+      "author": "Murasaki Shikibu",
+      "sortYear": 1010,
+      "displayYear": "c. 1010",
+      "rank": null
+    },
+    {
+      "title": "The Song of Roland",
+      "author": "Anonymous",
+      "sortYear": 1100,
+      "displayYear": "c. 1100",
+      "rank": null
+    },
+    {
+      "title": "The Nibelungenlied",
+      "author": "Anonymous",
+      "sortYear": 1200,
+      "displayYear": "c. 1200",
+      "rank": null
+    },
+    {
+      "title": "Njáls saga",
+      "author": "Anonymous",
+      "sortYear": 1280,
+      "displayYear": "c. 1280",
+      "rank": null
+    },
+    {
+      "title": "The Divine Comedy",
+      "author": "Dante Alighieri",
+      "sortYear": 1320,
+      "displayYear": "1320",
+      "rank": null
+    },
+    {
+      "title": "The Decameron",
+      "author": "Giovanni Boccaccio",
+      "sortYear": 1353,
+      "displayYear": "c. 1353",
+      "rank": null
+    },
+    {
+      "title": "Sir Gawain and the Green Knight",
+      "author": "Gawain Poet",
+      "sortYear": 1375,
+      "displayYear": "c. 1375",
+      "rank": null
+    },
+    {
+      "title": "Piers Plowman",
+      "author": "William Langland",
+      "sortYear": 1380,
+      "displayYear": "c. 1380",
+      "rank": null
+    },
+    {
+      "title": "Troilus and Criseyde",
+      "author": "Geoffrey Chaucer",
+      "sortYear": 1385,
+      "displayYear": "c. 1385",
+      "rank": null
+    },
+    {
+      "title": "The Canterbury Tales",
+      "author": "Geoffrey Chaucer",
+      "sortYear": 1400,
+      "displayYear": "c. 1400",
+      "rank": null
+    },
+    {
+      "title": "The Book of the City of Ladies",
+      "author": "Christine de Pizan",
+      "sortYear": 1405,
+      "displayYear": "1405",
+      "rank": null
+    },
+    {
+      "title": "Le Morte d'Arthur",
+      "author": "Thomas Malory",
+      "sortYear": 1485,
+      "displayYear": "1485",
+      "rank": null
+    },
+    {
+      "title": "The Praise of Folly",
+      "author": "Erasmus",
+      "sortYear": 1511,
+      "displayYear": "1511",
+      "rank": null
+    },
+    {
+      "title": "Utopia",
+      "author": "Thomas More",
+      "sortYear": 1516,
+      "displayYear": "1516",
+      "rank": null
+    },
+    {
+      "title": "Gargantua and Pantagruel",
+      "author": "François Rabelais",
+      "sortYear": 1532,
+      "displayYear": "1532",
+      "rank": null
+    },
+    {
+      "title": "The Life of Lazarillo de Tormes",
+      "author": "Anonymous",
+      "sortYear": 1554,
+      "displayYear": "1554",
+      "rank": null
+    },
+    {
+      "title": "Essays",
+      "author": "Michel de Montaigne",
+      "sortYear": 1580,
+      "displayYear": "1580",
+      "rank": null
+    },
+    {
+      "title": "The Faerie Queene",
+      "author": "Edmund Spenser",
+      "sortYear": 1590,
+      "displayYear": "1590",
+      "rank": null
+    },
+    {
+      "title": "Doctor Faustus",
+      "author": "Christopher Marlowe",
+      "sortYear": 1592,
+      "displayYear": "1592",
+      "rank": null
+    },
+    {
+      "title": "Journey to the West",
+      "author": "Wu Cheng'en (attrib.)",
+      "sortYear": 1592,
+      "displayYear": "1592",
+      "rank": null
+    },
+    {
+      "title": "Hamlet",
+      "author": "William Shakespeare",
+      "sortYear": 1600,
+      "displayYear": "1600",
+      "rank": null
+    },
+    {
+      "title": "Othello",
+      "author": "William Shakespeare",
+      "sortYear": 1603,
+      "displayYear": "1603",
+      "rank": null
+    },
+    {
+      "title": "Don Quixote",
+      "author": "Miguel de Cervantes",
+      "sortYear": 1605,
+      "displayYear": "1605",
+      "rank": null
+    },
+    {
+      "title": "King Lear",
+      "author": "William Shakespeare",
+      "sortYear": 1606,
+      "displayYear": "1606",
+      "rank": null
+    },
+    {
+      "title": "Macbeth",
+      "author": "William Shakespeare",
+      "sortYear": 1606,
+      "displayYear": "1606",
+      "rank": null
+    },
+    {
+      "title": "Sonnets",
+      "author": "William Shakespeare",
+      "sortYear": 1609,
+      "displayYear": "1609",
+      "rank": null
+    },
+    {
+      "title": "Paradise Lost",
+      "author": "John Milton",
+      "sortYear": 1667,
+      "displayYear": "1667",
+      "rank": null
+    },
+    {
+      "title": "Sense and Sensibility",
+      "author": "Jane Austen",
+      "sortYear": 1811,
+      "displayYear": "1811",
+      "rank": null
+    },
+    {
+      "title": "Pride and Prejudice",
+      "author": "Jane Austen",
+      "sortYear": 1813,
+      "displayYear": "1813",
+      "rank": null
+    },
+    {
+      "title": "Mansfield Park",
+      "author": "Jane Austen",
+      "sortYear": 1814,
+      "displayYear": "1814",
+      "rank": null
+    },
+    {
+      "title": "Emma",
+      "author": "Jane Austen",
+      "sortYear": 1815,
+      "displayYear": "1815",
+      "rank": null
+    },
+    {
+      "title": "Persuasion",
+      "author": "Jane Austen",
+      "sortYear": 1817,
+      "displayYear": "1817",
+      "rank": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "Neoclassicism / Augustan",
+      "target": "Romanticism",
+      "relationship": "reaction against",
+      "strength": "primary",
+      "note": "Romanticism defines itself against neoclassical reason, order, and restraint"
+    },
+    {
+      "source": "Neoclassicism / Augustan",
+      "target": "Gothic",
+      "relationship": "reaction against",
+      "strength": "secondary",
+      "note": "Gothic revives the irrational and medieval against Enlightenment rationalism"
+    },
+    {
+      "source": "Gothic",
+      "target": "Romanticism",
+      "relationship": "feeds / precursor",
+      "strength": "secondary",
+      "note": "Gothic terror and the sublime feed the \"dark Romantic\" imagination"
+    },
+    {
+      "source": "Gothic",
+      "target": "Aestheticism / Decadence",
+      "relationship": "feeds / precursor",
+      "strength": "secondary",
+      "note": "Transmitted largely via Poe; morbidity and beauty-in-decay"
+    },
+    {
+      "source": "Gothic",
+      "target": "Symbolism",
+      "relationship": "feeds / precursor",
+      "strength": "secondary",
+      "note": "Poe, in Baudelaire's translations, shapes the Symbolist imagination"
+    },
+    {
+      "source": "Romanticism",
+      "target": "Realism",
+      "relationship": "reaction against",
+      "strength": "primary",
+      "note": "Realism rejects Romantic idealization for ordinary social life"
+    },
+    {
+      "source": "Romanticism",
+      "target": "Transcendentalism",
+      "relationship": "evolves into",
+      "strength": "primary",
+      "note": "The American branch of Romanticism (Emerson via German and English Romantics)"
+    },
+    {
+      "source": "Romanticism",
+      "target": "Symbolism",
+      "relationship": "feeds / precursor",
+      "strength": "secondary",
+      "note": "Romantic subjectivity carried forward through Baudelaire"
+    },
+    {
+      "source": "Romanticism",
+      "target": "Aestheticism / Decadence",
+      "relationship": "feeds / precursor",
+      "strength": "secondary",
+      "note": "Keatsian autonomy of beauty seeds \"art for art's sake\""
+    },
+    {
+      "source": "Realism",
+      "target": "Naturalism",
+      "relationship": "evolves into",
+      "strength": "primary",
+      "note": "Zola radicalizes Realism with determinism and heredity"
+    },
+    {
+      "source": "Realism",
+      "target": "Modernism",
+      "relationship": "reaction against",
+      "strength": "primary",
+      "note": "Modernism breaks with realist convention while inheriting its craft"
+    },
+    {
+      "source": "Naturalism",
+      "target": "Modernism",
+      "relationship": "feeds / precursor",
+      "strength": "secondary",
+      "note": "Determinism and documentary detail feed early Modernist fiction"
+    },
+    {
+      "source": "Aestheticism / Decadence",
+      "target": "Symbolism",
+      "relationship": "feeds / precursor",
+      "strength": "primary",
+      "note": "Closely allied; shared figures (Baudelaire, Huysmans, Mallarmé)"
+    },
+    {
+      "source": "Aestheticism / Decadence",
+      "target": "Modernism",
+      "relationship": "feeds / precursor",
+      "strength": "secondary",
+      "note": "Autonomy of art (Wilde, Pater) feeds Modernist aesthetics"
+    },
+    {
+      "source": "Symbolism",
+      "target": "Modernism",
+      "relationship": "evolves into",
+      "strength": "primary",
+      "note": "The crucial bridge to Modernist poetry (Yeats, Eliot, Pound)"
+    },
+    {
+      "source": "Symbolism",
+      "target": "Imagism",
+      "relationship": "reaction against",
+      "strength": "secondary",
+      "note": "Imagism rejects Symbolist vagueness while descending from it"
+    },
+    {
+      "source": "Symbolism",
+      "target": "Surrealism",
+      "relationship": "feeds / precursor",
+      "strength": "secondary",
+      "note": "Rimbaud and Lautreamont revered as Surrealist ancestors"
+    },
+    {
+      "source": "Imagism",
+      "target": "Modernism",
+      "relationship": "evolves into",
+      "strength": "primary",
+      "note": "The first phase of Anglo-American poetic Modernism"
+    },
+    {
+      "source": "Modernism",
+      "target": "Postmodernism",
+      "relationship": "evolves into",
+      "strength": "primary",
+      "note": "Postmodernism continues and reacts against Modernist form"
+    },
+    {
+      "source": "Modernism",
+      "target": "Existentialism",
+      "relationship": "feeds / precursor",
+      "strength": "secondary",
+      "note": "Modernist alienation (Kafka, Dostoevsky) shapes Existentialist fiction"
+    },
+    {
+      "source": "Modernism",
+      "target": "Harlem Renaissance",
+      "relationship": "cross-influence / overlap",
+      "strength": "secondary",
+      "note": "Shared moment; Modernist form in Toomer's Cane"
+    },
+    {
+      "source": "Modernism",
+      "target": "Theatre of the Absurd",
+      "relationship": "feeds / precursor",
+      "strength": "secondary",
+      "note": "Beckett is the hinge between Modernism and the Absurd"
+    },
+    {
+      "source": "Modernism",
+      "target": "Magical realism",
+      "relationship": "feeds / precursor",
+      "strength": "secondary",
+      "note": "Kafka and Borges supply much of the technique"
+    },
+    {
+      "source": "Modernism",
+      "target": "Postcolonial literature",
+      "relationship": "feeds / precursor",
+      "strength": "secondary",
+      "note": "Modernist technique adapted by postcolonial writers"
+    },
+    {
+      "source": "Surrealism",
+      "target": "Magical realism",
+      "relationship": "feeds / precursor",
+      "strength": "secondary",
+      "note": "Carpentier among the Paris Surrealists; \"lo real maravilloso\""
+    },
+    {
+      "source": "Surrealism",
+      "target": "Postmodernism",
+      "relationship": "feeds / precursor",
+      "strength": "secondary",
+      "note": "Irrationality and play feed postmodern experiment"
+    },
+    {
+      "source": "Surrealism",
+      "target": "Beat Generation",
+      "relationship": "feeds / precursor",
+      "strength": "secondary",
+      "note": "Automatism and spontaneity influence Beat method"
+    },
+    {
+      "source": "Surrealism",
+      "target": "Theatre of the Absurd",
+      "relationship": "feeds / precursor",
+      "strength": "secondary",
+      "note": "Dream logic and absurdity feed Absurdist theatre"
+    },
+    {
+      "source": "Transcendentalism",
+      "target": "Beat Generation",
+      "relationship": "feeds / precursor",
+      "strength": "secondary",
+      "note": "Whitman and self-reliance channelled by Ginsberg and the Beats"
+    },
+    {
+      "source": "Existentialism",
+      "target": "Theatre of the Absurd",
+      "relationship": "evolves into",
+      "strength": "primary",
+      "note": "Absurdist drama stages the existential and absurd condition (Camus)"
+    },
+    {
+      "source": "Existentialism",
+      "target": "Beat Generation",
+      "relationship": "feeds / precursor",
+      "strength": "secondary",
+      "note": "Postwar alienation and radical freedom"
+    },
+    {
+      "source": "Harlem Renaissance",
+      "target": "Postcolonial literature",
+      "relationship": "feeds / precursor",
+      "strength": "secondary",
+      "note": "Directly inspires Negritude (Cesaire, Senghor), a root of Postcolonial literature"
+    },
+    {
+      "source": "Theatre of the Absurd",
+      "target": "Postmodernism",
+      "relationship": "feeds / precursor",
+      "strength": "secondary",
+      "note": "Metatheatre and meaninglessness feed postmodern drama (Stoppard)"
+    },
+    {
+      "source": "Beat Generation",
+      "target": "Postmodernism",
+      "relationship": "feeds / precursor",
+      "strength": "secondary",
+      "note": "Burroughs's cut-up method claimed by both"
+    },
+    {
+      "source": "Magical realism",
+      "target": "Postmodernism",
+      "relationship": "cross-influence / overlap",
+      "strength": "secondary",
+      "note": "Garcia Marquez and Rushdie shared by both"
+    },
+    {
+      "source": "Magical realism",
+      "target": "Postcolonial literature",
+      "relationship": "cross-influence / overlap",
+      "strength": "secondary",
+      "note": "Rushdie, Okri, and Morrison work across both"
+    },
+    {
+      "source": "Postmodernism",
+      "target": "Postcolonial literature",
+      "relationship": "cross-influence / overlap",
+      "strength": "secondary",
+      "note": "Much postcolonial fiction adopts postmodern strategies"
+    }
+  ]
+}

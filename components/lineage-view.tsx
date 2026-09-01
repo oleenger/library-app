@@ -7,10 +7,13 @@
 
 import Link from "next/link";
 import type { Period } from "@/lib/taxonomy";
-import { periodColor, formatYear } from "@/lib/display";
+import { periodColor } from "@/lib/display";
 import { AppHeader } from "@/components/app-header";
 import { PullToRefresh } from "@/components/pull-to-refresh";
 import { MovementBooks } from "@/components/movement-books";
+import { EssentialsList, type CanonEntry } from "@/components/essentials-list";
+
+export type { CanonEntry };
 
 /** A related movement rendered as a tappable chip. */
 export interface LineageChip {
@@ -28,18 +31,6 @@ export interface LineageExample {
   year: number | null;
 }
 
-/** One essential (canon) work, joined against the reader's shelf. */
-export interface CanonEntry {
-  title: string;
-  author: string;
-  year: number;
-  importance: number;
-  /** True when the reader holds this work (exact or translation-tolerant match). */
-  owned: boolean;
-  /** The owning work's id, when resolvable, so an owned essential can link out. */
-  ownedId: string | null;
-}
-
 export interface LineageViewProps {
   movement: string;
   period: Period | null;
@@ -47,8 +38,10 @@ export interface LineageViewProps {
   note?: string;
   count: number;
   examples: LineageExample[];
-  /** Whether a curated canon path exists for this movement. */
+  /** Whether this movement has essential works in the reference data. */
   hasCanon?: boolean;
+  /** Whether a curated, ordered reading path exists (drives the guided-path link). */
+  hasGuidedPath?: boolean;
   /** Short subtitle for the canon, shown above the essentials list. */
   canonBlurb?: string;
   /** The movement's essential works, each marked owned or a gap. */
@@ -122,101 +115,6 @@ function ChipBand({ label, chips }: { label: string; chips: LineageChip[] }) {
   );
 }
 
-/** Owned = filled accent tick; a gap = a hollow dashed ring. */
-function EssentialMarker({ owned }: { owned: boolean }) {
-  if (owned) {
-    return (
-      <span className="grid h-[1.05rem] w-[1.05rem] shrink-0 place-items-center rounded-full bg-accent text-paper-raised">
-        <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-          <path d="m5 12 5 5 9-11" />
-        </svg>
-      </span>
-    );
-  }
-  return (
-    <span
-      className="h-[0.9rem] w-[0.9rem] shrink-0 rounded-full border border-dashed border-ink-faint/60"
-      aria-hidden
-    />
-  );
-}
-
-/** One essential work: a book-page link when owned, plain text when a gap. */
-function EssentialRow({ work }: { work: CanonEntry }) {
-  const body = (
-    <>
-      <span className="mt-[3px]">
-        <EssentialMarker owned={work.owned} />
-      </span>
-      <span className="min-w-0 flex-1">
-        <span
-          className={`font-serif text-[0.95rem] transition-colors ${
-            work.owned
-              ? "font-bold text-ink group-hover:text-accent"
-              : "text-ink-soft"
-          }`}
-        >
-          {work.title}
-        </span>{" "}
-        <span className="text-sm text-ink-faint">{work.author}</span>
-      </span>
-      <span className="shrink-0 text-sm tabular-nums text-ink-faint">
-        {formatYear(work.year)}
-      </span>
-    </>
-  );
-
-  const className = "flex items-start gap-3 py-3";
-  return work.ownedId ? (
-    <Link href={`/book/${work.ownedId}`} className={`group ${className}`}>
-      {body}
-    </Link>
-  ) : (
-    <div className={className}>{body}</div>
-  );
-}
-
-/** The movement's essential works with a coverage stat — the heart of the view. */
-function Essentials({
-  works,
-  owned,
-  total,
-  blurb,
-}: {
-  works: CanonEntry[];
-  owned: number;
-  total: number;
-  blurb?: string;
-}) {
-  const pct = total > 0 ? Math.round((owned / total) * 100) : 0;
-  return (
-    <div>
-      <div className="flex items-baseline gap-3">
-        <span className="font-serif text-4xl leading-none tabular-nums text-accent">
-          {pct}%
-        </span>
-        <p className="text-sm text-ink-soft">
-          of the essentials —{" "}
-          <span className="font-medium text-ink tabular-nums">
-            {owned} of {total}
-          </span>{" "}
-          in your library
-        </p>
-      </div>
-
-      {blurb && <p className="mt-3 text-[0.9rem] leading-relaxed text-ink-soft">{blurb}</p>}
-
-      <ol className="mt-4 divide-y divide-paper-edge">
-        {works.map((w) => (
-          <li key={`${w.title}|${w.author}`}>
-            <EssentialRow work={w} />
-          </li>
-        ))}
-      </ol>
-    </div>
-  );
-}
-
 export function LineageView({
   movement,
   period,
@@ -225,6 +123,7 @@ export function LineageView({
   count,
   examples,
   hasCanon,
+  hasGuidedPath,
   canonBlurb,
   canonWorks,
   canonOwned,
@@ -289,22 +188,24 @@ export function LineageView({
                   The essential works
                 </p>
                 <div className="mt-3">
-                  <Essentials
+                  <EssentialsList
                     works={canonWorks}
                     owned={canonOwned ?? 0}
                     total={canonTotal ?? 0}
                     blurb={canonBlurb}
                   />
                 </div>
-                <Link
-                  href={`/recommendations?movement=${encodeURIComponent(movement)}`}
-                  className="group mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-accent transition-colors hover:text-ink"
-                >
-                  Read them in order — the guided path
-                  <svg viewBox="0 0 24 24" className="h-4 w-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                    <path d="m9 6 6 6-6 6" />
-                  </svg>
-                </Link>
+                {hasGuidedPath && (
+                  <Link
+                    href={`/recommendations?movement=${encodeURIComponent(movement)}`}
+                    className="group mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-accent transition-colors hover:text-ink"
+                  >
+                    Read them in order — the guided path
+                    <svg viewBox="0 0 24 24" className="h-4 w-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                      <path d="m9 6 6 6-6 6" />
+                    </svg>
+                  </Link>
+                )}
               </>
             ) : (
               <>
