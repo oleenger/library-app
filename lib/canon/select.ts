@@ -23,8 +23,12 @@ import {
   readingPathFor,
   movementYears,
   influenceRelations,
+  preMovementClassics,
 } from "./data";
 import { findOwnedWork } from "../recommend/match";
+
+/** Menu label + selection key for the pre-movement (foundations) bucket. */
+export const PRE_MOVEMENT_LABEL = "Pre-movement classics";
 
 /** A related movement rendered as a tappable chip on the canon detail. */
 export interface MovementChipView {
@@ -40,6 +44,8 @@ export interface CanonWorkView {
   author: string;
   displayYear: string;
   owned: boolean;
+  /** True when the reader has actually read their copy (Work.reading present). */
+  read: boolean;
   ownedId: string | null;
 }
 
@@ -51,19 +57,24 @@ export interface ReadingStepView extends CanonWorkView {
 
 /** The complete detail for one movement. */
 export interface MovementDetailView {
-  movement: Movement;
+  /** Movement name, or PRE_MOVEMENT_LABEL for the foundations bucket. */
+  movement: string;
   period: Period | null;
   eraLabel: string;
   /** Prose description of the movement. */
   note: string;
-  /** The broad ranked essentials, each marked owned or a gap. */
+  /** True for the synthetic pre-movement (foundations) entry. */
+  isPreMovement: boolean;
+  /** The broad ranked essentials, each marked owned/read or a gap. */
   essentials: CanonWorkView[];
   essentialsOwned: number;
+  essentialsRead: number;
   essentialsTotal: number;
   hasEssentials: boolean;
   /** The curated reading path, in order. */
   readingPath: ReadingStepView[];
   pathOwned: number;
+  pathRead: number;
   pathTotal: number;
   hasPath: boolean;
   /** How many shelved works sit in this movement (drives sort + menu grouping). */
@@ -123,6 +134,7 @@ function toDetail(movement: Movement, works: Work[], counts: Map<Movement, numbe
       author: e.author,
       displayYear: e.displayYear,
       owned: owned != null,
+      read: owned?.reading != null,
       ownedId: owned?.id ?? null,
     };
   });
@@ -136,6 +148,7 @@ function toDetail(movement: Movement, works: Work[], counts: Map<Movement, numbe
       displayYear: s.displayYear,
       note: s.note,
       owned: owned != null,
+      read: owned?.reading != null,
       ownedId: owned?.id ?? null,
     };
   });
@@ -147,12 +160,15 @@ function toDetail(movement: Movement, works: Work[], counts: Map<Movement, numbe
     period,
     eraLabel: eraLabelFor(movement, period),
     note: lineageNode(movement).note ?? "",
+    isPreMovement: false,
     essentials,
     essentialsOwned: essentials.filter((w) => w.owned).length,
+    essentialsRead: essentials.filter((w) => w.read).length,
     essentialsTotal: essentials.length,
     hasEssentials: essentials.length > 0,
     readingPath,
     pathOwned: readingPath.filter((w) => w.owned).length,
+    pathRead: readingPath.filter((w) => w.read).length,
     pathTotal: readingPath.length,
     hasPath: readingPath.length > 0,
     holdings: counts.get(movement) ?? 0,
@@ -163,16 +179,62 @@ function toDetail(movement: Movement, works: Work[], counts: Map<Movement, numbe
 }
 
 /**
- * Resolve a detail view for EVERY movement in the taxonomy against a library,
- * sorted with the reader's most-held movements first (taxonomy order kept among
- * unheld movements). This is the single per-movement detail surface.
+ * The pre-movement (foundations) bucket as a synthetic detail so it can share the
+ * Canon menu + detail surface. It has essentials only — no reading path, no
+ * lineage relations — and its "holdings" is simply how many of the classics the
+ * reader owns (used to sort it to the front of the menu).
+ */
+function toPreMovementDetail(works: Work[]): MovementDetailView {
+  const essentials: CanonWorkView[] = preMovementClassics().map((e) => {
+    const owned = findOwnedWork(works, e.title, e.author, e.sortYear);
+    return {
+      title: e.title,
+      author: e.author,
+      displayYear: e.displayYear,
+      owned: owned != null,
+      read: owned?.reading != null,
+      ownedId: owned?.id ?? null,
+    };
+  });
+  const owned = essentials.filter((w) => w.owned).length;
+  return {
+    movement: PRE_MOVEMENT_LABEL,
+    period: null,
+    eraLabel: "Foundations · before the movements",
+    note:
+      "The classical and foundational works that predate the movement lineage — " +
+      "the common inheritance every later school built on, argued with, and returned to.",
+    isPreMovement: true,
+    essentials,
+    essentialsOwned: owned,
+    essentialsRead: essentials.filter((w) => w.read).length,
+    essentialsTotal: essentials.length,
+    hasEssentials: essentials.length > 0,
+    readingPath: [],
+    pathOwned: 0,
+    pathRead: 0,
+    pathTotal: 0,
+    hasPath: false,
+    holdings: owned,
+    reactedAgainst: [],
+    ledTo: [],
+    alongside: [],
+  };
+}
+
+/**
+ * Resolve a detail view for the pre-movement bucket plus EVERY movement in the
+ * taxonomy against a library. Pre-movement leads (the Canon page's default),
+ * then the reader's most-held movements (taxonomy order kept among unheld). This
+ * is the single per-movement detail surface.
  */
 export function movementDetails(works: Work[]): MovementDetailView[] {
   const counts = movementHoldings(works);
-  return MOVEMENTS.map((m) => toDetail(m, works, counts)).sort((a, b) => {
+  const movements = MOVEMENTS.map((m) => toDetail(m, works, counts)).sort((a, b) => {
     if (a.holdings > 0 && b.holdings > 0) return b.holdings - a.holdings;
     if (a.holdings > 0) return -1;
     if (b.holdings > 0) return 1;
     return 0; // stable → taxonomy order among unheld
   });
+  return [toPreMovementDetail(works), ...movements];
 }

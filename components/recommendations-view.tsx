@@ -44,8 +44,9 @@ export function RecommendationsView({
     );
   }
 
-  const held = details.filter((d) => d.holdings > 0);
-  const rest = details.filter((d) => d.holdings === 0);
+  const held = details.filter((d) => !d.isPreMovement && d.holdings > 0);
+  const rest = details.filter((d) => !d.isPreMovement && d.holdings === 0);
+  const pre = details.find((d) => d.isPreMovement) ?? null;
   const current = details.find((d) => d.movement === selected) ?? details[0] ?? null;
 
   return (
@@ -54,7 +55,7 @@ export function RecommendationsView({
         <h2 className="font-serif text-2xl leading-tight sm:text-3xl">Canon</h2>
         <p className="mt-1 text-sm text-ink-soft">
           Any movement — its story, a guided reading path, and the essential works.
-          Books you own appear as waypoints.
+          Books you own appear as waypoints, filled in once you&apos;ve read them.
         </p>
       </div>
 
@@ -64,7 +65,7 @@ export function RecommendationsView({
         </div>
       ) : (
         <>
-          <MovementMenu held={held} rest={rest} value={current?.movement ?? ""} onChange={setSelected} />
+          <MovementMenu pre={pre} held={held} rest={rest} value={current?.movement ?? ""} onChange={setSelected} />
 
           {current && <MovementDetail key={current.movement} detail={current} />}
 
@@ -79,13 +80,15 @@ export function RecommendationsView({
   );
 }
 
-/** Top menu for choosing which movement to read. Held movements first. */
+/** Top menu for choosing which movement to read. Foundations, then held, then rest. */
 function MovementMenu({
+  pre,
   held,
   rest,
   value,
   onChange,
 }: {
+  pre: MovementDetailView | null;
   held: MovementDetailView[];
   rest: MovementDetailView[];
   value: string;
@@ -104,6 +107,11 @@ function MovementMenu({
           onChange={(e) => onChange(e.target.value)}
           className="w-full appearance-none rounded-xl border border-paper-edge bg-paper py-3 pl-4 pr-10 font-serif text-base text-ink shadow-sm transition hover:border-ink-faint focus:border-accent focus:outline-none"
         >
+          {pre && (
+            <optgroup label="Foundations">
+              <option value={pre.movement}>{label(pre)}</option>
+            </optgroup>
+          )}
           {held.length > 0 && (
             <optgroup label="On your shelves">
               {held.map((d) => (
@@ -142,11 +150,12 @@ type AreaView = "path" | "essentials";
  */
 function MovementDetail({ detail }: { detail: MovementDetailView }) {
   const color = periodColor(detail.period);
+  // Essentials first — it's the default view (and the only one for pre-movement).
   const views: AreaView[] = [
-    ...(detail.hasPath ? (["path"] as const) : []),
     ...(detail.hasEssentials ? (["essentials"] as const) : []),
+    ...(detail.hasPath ? (["path"] as const) : []),
   ];
-  const [view, setView] = useState<AreaView>(views[0] ?? "path");
+  const [view, setView] = useState<AreaView>(views[0] ?? "essentials");
   const active = views.includes(view) ? view : views[0];
 
   return (
@@ -173,11 +182,12 @@ function MovementDetail({ detail }: { detail: MovementDetailView }) {
           )}
           <div className="px-5 py-5 sm:px-6">
             {active === "path" ? (
-              <ReadingPath steps={detail.readingPath} owned={detail.pathOwned} total={detail.pathTotal} />
+              <ReadingPath steps={detail.readingPath} owned={detail.pathOwned} read={detail.pathRead} total={detail.pathTotal} />
             ) : (
               <EssentialsList
                 works={detail.essentials}
                 owned={detail.essentialsOwned}
+                read={detail.essentialsRead}
                 total={detail.essentialsTotal}
               />
             )}
@@ -208,8 +218,8 @@ function MovementDetail({ detail }: { detail: MovementDetailView }) {
 /** Segmented reading-path / essentials switch. */
 function ViewToggle({ view, onChange }: { view: AreaView; onChange: (v: AreaView) => void }) {
   const opts: { id: AreaView; label: string }[] = [
-    { id: "path", label: "Reading path" },
     { id: "essentials", label: "Essentials" },
+    { id: "path", label: "Reading path" },
   ];
   return (
     <div className="inline-flex rounded-lg border border-paper-edge bg-paper-sunken p-0.5" role="tablist">
@@ -235,7 +245,7 @@ function ViewToggle({ view, onChange }: { view: AreaView; onChange: (v: AreaView
 }
 
 /** The curated reading path as an ordered spine of waypoints and gaps. */
-function ReadingPath({ steps, owned, total }: { steps: ReadingStepView[]; owned: number; total: number }) {
+function ReadingPath({ steps, owned, read, total }: { steps: ReadingStepView[]; owned: number; read: number; total: number }) {
   const pct = total > 0 ? Math.round((owned / total) * 100) : 0;
   return (
     <div>
@@ -244,7 +254,7 @@ function ReadingPath({ steps, owned, total }: { steps: ReadingStepView[]; owned:
           <div className="h-full rounded-full bg-emerald-500 transition-[width]" style={{ width: `${pct}%` }} />
         </div>
         <span className="shrink-0 text-[0.7rem] font-medium uppercase tracking-[0.1em] text-ink-faint">
-          {owned} of {total} owned
+          {owned} of {total} owned · {read} read
         </span>
       </div>
       <ol>
@@ -272,8 +282,10 @@ function PathStep({ step, isLast }: { step: ReadingStepView; isLast: boolean }) 
       </div>
       <p className="mt-0.5 truncate text-xs text-ink-soft">{step.author}</p>
       <p className="mt-1.5 text-[0.7rem] font-medium">
-        {step.owned ? (
-          <span className="text-emerald-600">In your library</span>
+        {step.read ? (
+          <span className="text-emerald-600">Read</span>
+        ) : step.owned ? (
+          <span className="text-emerald-600/80">In your library · unread</span>
         ) : (
           <span className="text-ink-faint">Gap · reading position {step.position}</span>
         )}
@@ -288,7 +300,7 @@ function PathStep({ step, isLast }: { step: ReadingStepView; isLast: boolean }) 
       {!isLast && (
         <span className="absolute bottom-1 left-4 top-9 w-px -translate-x-1/2 bg-paper-edge" aria-hidden />
       )}
-      <StatusDisc owned={step.owned} position={step.position} />
+      <StatusDisc owned={step.owned} read={step.read} position={step.position} />
       {step.ownedId ? (
         <Link href={`/book/${step.ownedId}`} className="group min-w-0 flex-1">
           {body}
@@ -300,14 +312,30 @@ function PathStep({ step, isLast }: { step: ReadingStepView; isLast: boolean }) 
   );
 }
 
-/** The status disc anchoring a path step: green check when owned, else its position. */
-function StatusDisc({ owned, position }: { owned: boolean; position: number }) {
-  if (owned) {
+/**
+ * The status disc anchoring a path step: a solid green check when read, a green
+ * ring when owned-but-unread, else a dashed disc showing its reading position.
+ */
+function StatusDisc({ owned, read, position }: { owned: boolean; read: boolean; position: number }) {
+  if (read) {
     return (
       <span
         className="relative z-10 grid h-8 w-8 shrink-0 place-items-center rounded-full bg-emerald-500 text-white shadow-sm"
-        title="In your library"
-        aria-label="In your library"
+        title="Read"
+        aria-label="Read"
+      >
+        <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden>
+          <path d="M5 10.5l3.5 3.5L15 6.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </span>
+    );
+  }
+  if (owned) {
+    return (
+      <span
+        className="relative z-10 grid h-8 w-8 shrink-0 place-items-center rounded-full border-2 border-emerald-500 bg-paper text-emerald-600 shadow-sm"
+        title="In your library, unread"
+        aria-label="In your library, unread"
       >
         <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden>
           <path d="M5 10.5l3.5 3.5L15 6.5" strokeLinecap="round" strokeLinejoin="round" />

@@ -36,6 +36,7 @@ interface EraGroup {
   period: Period;
   works: CanonEntry[];
   owned: number;
+  read: number;
 }
 
 export default async function FoundationsPage() {
@@ -52,11 +53,13 @@ export default async function FoundationsPage() {
       author: c.author,
       displayYear: c.displayYear,
       owned: owning != null,
+      read: owning?.reading != null,
       ownedId: owning?.id ?? null,
     };
-    const group = byEra.get(period) ?? { period, works: [], owned: 0 };
+    const group = byEra.get(period) ?? { period, works: [], owned: 0, read: 0 };
     group.works.push(entry);
     if (entry.owned) group.owned += 1;
+    if (entry.read) group.read += 1;
     byEra.set(period, group);
   }
 
@@ -65,6 +68,7 @@ export default async function FoundationsPage() {
 
   const total = classics.length;
   const ownedTotal = groups.reduce((n, g) => n + g.owned, 0);
+  const readTotal = groups.reduce((n, g) => n + g.read, 0);
   const pct = total > 0 ? Math.round((ownedTotal / total) * 100) : 0;
 
   return (
@@ -93,7 +97,8 @@ export default async function FoundationsPage() {
                 <span className="font-medium text-ink tabular-nums">
                   {ownedTotal} of {total}
                 </span>{" "}
-                in your library
+                in your library,{" "}
+                <span className="font-medium text-ink tabular-nums">{readTotal}</span> read
               </p>
             </div>
           </header>
@@ -121,8 +126,8 @@ export default async function FoundationsPage() {
                   <EssentialsList
                     works={g.works}
                     owned={g.owned}
+                    read={g.read}
                     total={g.works.length}
-                    initial={6}
                   />
                 </div>
               </section>
