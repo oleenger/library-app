@@ -107,6 +107,72 @@ export async function updateWork(
 }
 
 /**
+ * Attach every edition of `sourceId` onto the existing canonical work `targetId`,
+ * then delete the now-empty source work. This is the first-class "this foreign
+ * copy is really an edition of that book" action — e.g. folding a separately
+ * imported "Rødt og svart" onto "The Red and the Black" — without the rename
+ * trick `updateWork` relies on.
+ *
+ * Reuses the same edition re-pointing as a rename-merge, but additionally
+ * carries the source's read status onto the survivor when the survivor has none,
+ * so marking the translation read is never silently lost. Returns the surviving
+ * (target) work id.
+ */
+export async function linkWorkAsEdition(
+  sourceId: string,
+  targetId: string,
+): Promise<{ id: string }> {
+  if (!sourceId || !targetId) throw new Error("source and target are required");
+  if (sourceId === targetId) throw new Error("a work cannot be an edition of itself");
+
+  const db = admin();
+
+  const { data: works, error: lookErr } = await db
+    .from("works")
+    .select("id, title, author")
+    .in("id", [sourceId, targetId]);
+  if (lookErr) throw new Error(`link lookup failed: ${lookErr.message}`);
+  const target = (works ?? []).find((w) => w.id === targetId);
+  const source = (works ?? []).find((w) => w.id === sourceId);
+  if (!target) throw new Error("target work not found");
+  if (!source) throw new Error("source work not found");
+
+  // Capture the source read status before the merge cascade sweeps it away, and
+  // the survivor's, so we only carry the source's over when the survivor lacks one.
+  const { data: srcRead, error: srErr } = await db
+    .from("read_status")
+    .select("date_read, rating, source")
+    .eq("work_id", sourceId)
+    .maybeSingle();
+  if (srErr) throw new Error(`link read lookup failed: ${srErr.message}`);
+  const { data: tgtRead, error: trErr } = await db
+    .from("read_status")
+    .select("work_id")
+    .eq("work_id", targetId)
+    .maybeSingle();
+  if (trErr) throw new Error(`link read lookup failed: ${trErr.message}`);
+
+  await mergeWorkInto(sourceId, targetId);
+
+  if (srcRead && !tgtRead) {
+    const { error: upErr } = await db.from("read_status").upsert(
+      {
+        work_id: targetId,
+        title: target.title,
+        author: target.author,
+        date_read: srcRead.date_read,
+        rating: srcRead.rating,
+        source: srcRead.source ?? "manual",
+      },
+      { onConflict: "work_id" },
+    );
+    if (upErr) throw new Error(`link read carry-over failed: ${upErr.message}`);
+  }
+
+  return { id: targetId };
+}
+
+/**
  * Fold `fromId` into `toId`: re-point every edition link onto the survivor
  * (dropping links it already holds so the (work_id, edition_id) primary key is
  * never violated), then delete the emptied work. No edition is orphaned because
