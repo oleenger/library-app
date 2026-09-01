@@ -4,9 +4,10 @@ import { slugify } from "@/lib/slug";
 import { MOVEMENTS, movementPeriod, isCrossPeriod, type Movement } from "@/lib/taxonomy";
 import { lineageNode } from "@/lib/lineage";
 import { canonPath } from "@/lib/canon/paths";
-import { buildOwnedIndex, isCanonWorkOwned } from "@/lib/recommend/match";
-import { shortPeriod } from "@/lib/display";
-import { LineageView, type LineageChip, type LineageExample } from "@/components/lineage-view";
+import { essentialsFor, movementYears, influenceRelations } from "@/lib/canon/data";
+import { findOwnedWork } from "@/lib/recommend/match";
+import { shortPeriod, formatYear } from "@/lib/display";
+import { LineageView, type LineageChip, type LineageExample, type CanonEntry } from "@/components/lineage-view";
 import type { Work } from "@/lib/types";
 
 // Live catalogue: render on demand so holding counts reflect the current library
@@ -66,25 +67,44 @@ async function lineageData(slug: string) {
     year: w.originalYear,
   }));
 
+  // Era range comes from the essentials' own year span (authoritative), with the
+  // curated LINEAGE `years` string as a fallback for movements the reference
+  // data does not yet cover.
+  const span = movementYears(movement);
+  const yearsLabel = span
+    ? span.min === span.max
+      ? formatYear(span.min)
+      : `${formatYear(span.min)}–${formatYear(span.max)}`
+    : node.years;
   const eraLabel = [
     isCrossPeriod(movement) ? "Cross-period form" : shortPeriod(period),
-    node.years,
+    yearsLabel,
   ]
     .filter(Boolean)
     .join(" · ");
 
-  // Canon coverage: how many of the movement's curated canon the reader owns,
-  // matched translation-tolerantly against live holdings.
-  const canon = canonPath(movement);
-  let canonOwned = 0;
-  let canonTotal = 0;
-  if (canon) {
-    const owned = buildOwnedIndex(works);
-    canonTotal = canon.works.length;
-    canonOwned = canon.works.filter((w) =>
-      isCanonWorkOwned(owned, w.title, w.author, w.year),
-    ).length;
-  }
+  // Essentials: the movement's authoritative works (from the reference TSV),
+  // joined live against the reader's shelf so each is marked owned (a waypoint)
+  // or a gap. The essentials — not the reader's incidental holdings — are the
+  // point of this view.
+  const essentials = essentialsFor(movement);
+  const canonWorks: CanonEntry[] = essentials.map((e) => {
+    const owned = findOwnedWork(works, e.title, e.author, e.sortYear);
+    return {
+      title: e.title,
+      author: e.author,
+      displayYear: e.displayYear,
+      owned: owned != null,
+      ownedId: owned?.id ?? null,
+    };
+  });
+  const canonOwned = canonWorks.filter((w) => w.owned).length;
+
+  // A curated, ordered reading path (paths.ts) is a separate, transitional
+  // source that still powers /recommendations — surface its blurb and the
+  // "read in order" link only where one exists.
+  const guided = canonPath(movement);
+  const relations = influenceRelations(movement);
 
   return {
     movement,
@@ -93,12 +113,15 @@ async function lineageData(slug: string) {
     note: node.note,
     count: holdings.length,
     examples,
-    hasCanon: canon != null,
+    hasCanon: canonWorks.length > 0,
+    hasGuidedPath: guided != null,
+    canonBlurb: guided?.blurb,
+    canonWorks,
     canonOwned,
-    canonTotal,
-    reactedAgainst: toChips(node.reactedAgainst, counts),
-    ledTo: toChips(node.ledTo, counts),
-    alongside: toChips(node.alongside, counts),
+    canonTotal: canonWorks.length,
+    reactedAgainst: toChips(relations.reactedAgainst, counts),
+    ledTo: toChips(relations.ledTo, counts),
+    alongside: toChips(relations.alongside, counts),
   };
 }
 

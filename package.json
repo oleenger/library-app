@@ -5,7 +5,10 @@
   "description": "Personal Library App — Stage 0 PoC: browse a book collection by literary period and movement.",
   "scripts": {
     "seed": "node --env-file=.env.local --import tsx scripts/seed-supabase.ts",
+    "build:canon": "tsx scripts/build-canon-data.ts",
+    "predev": "tsx scripts/build-canon-data.ts",
     "dev": "next dev",
+    "prebuild": "tsx scripts/build-canon-data.ts",
     "build": "next build",
     "start": "next start"
   },

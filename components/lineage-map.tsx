@@ -57,13 +57,35 @@ export function LineageMap({
 
           {/* Timeline graph: the connected led-to flow, oldest at the top. */}
           <section className="mb-10">
-            <div className="rounded-2xl border border-paper-edge bg-paper p-4 shadow-card sm:p-5">
+            <Link
+              href="/foundations"
+              className="group mb-5 flex items-center gap-3 rounded-2xl border border-dashed border-paper-edge bg-paper-sunken/50 px-4 py-3.5 transition-colors hover:border-ink-faint"
+            >
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-paper text-ink-faint shadow-sm">
+                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M12 3v18M5 8l7-5 7 5M4 21h16" />
+                </svg>
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-sm font-semibold text-ink group-hover:text-accent">
+                  Before the movements — Foundations
+                </span>
+                <span className="block text-xs text-ink-soft">
+                  The pre-movement classics the whole lineage grows from.
+                </span>
+              </span>
+              <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-ink-faint transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="m9 6 6 6-6 6" />
+              </svg>
+            </Link>
+
+            <div className="rounded-[1.75rem] border border-paper-edge bg-paper-raised px-4 py-6 shadow-card sm:px-7 sm:py-8">
               <LineageGraph graph={graph} />
             </div>
             <p className="mt-3 px-1 text-xs text-ink-faint">
-              Oldest at the top. Arrows trace what each movement led to; dashed
-              links join movements within one period. Faded, dashed rows
-              aren&apos;t in your library yet.
+              A single line runs oldest to newest. Filled dots are movements in
+              your library; hollow dots are gaps. Colour marks the period, and the
+              threads trace what each movement grew into.
             </p>
           </section>
 
