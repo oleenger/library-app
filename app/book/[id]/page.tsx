@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getEdition, getWork } from "@/lib/books";
+import { getEdition, getWork, getWorks } from "@/lib/books";
 import { formatYear, formatReadDate } from "@/lib/display";
 import { slugify } from "@/lib/slug";
 import { isMovement } from "@/lib/taxonomy";
 import { AppHeader } from "@/components/app-header";
 import { EditionDeleteButton } from "@/components/edition-delete-button";
+import { LinkEditionButton } from "@/components/link-edition-button";
 import { PullToRefresh } from "@/components/pull-to-refresh";
 
 // Rendered on demand: the catalogue is live in Supabase, so a newly added book
@@ -103,6 +104,17 @@ export default async function BookDetailPage({
   ).filter((e): e is NonNullable<typeof e> => Boolean(e));
 
   const read = work.reading;
+
+  // Candidates for the "link as edition of…" picker: every other work, trimmed
+  // to what the search UI needs.
+  const candidates = (await getWorks())
+    .filter((w) => w.id !== work.id)
+    .map((w) => ({
+      id: w.id,
+      title: w.title,
+      author: w.author,
+      language: w.language ?? null,
+    }));
 
   return (
     <PullToRefresh>
@@ -236,7 +248,7 @@ export default async function BookDetailPage({
         )}
 
         {/* Edit action lives at the foot of the record. */}
-        <div className="mt-10 flex justify-center">
+        <div className="mt-10 flex flex-col items-center gap-4">
           <Link
             href={`/book/${work.id}/edit`}
             className="inline-flex items-center gap-2 rounded-[0.7rem] border border-paper-edge bg-paper px-4 py-2.5 text-sm font-semibold text-ink-soft shadow-sm transition-colors hover:border-ink-faint hover:text-ink"
@@ -247,6 +259,11 @@ export default async function BookDetailPage({
             </svg>
             Edit this book
           </Link>
+          <LinkEditionButton
+            sourceId={work.id}
+            sourceTitle={work.title}
+            candidates={candidates}
+          />
         </div>
       </main>
       </div>
