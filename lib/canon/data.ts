@@ -6,7 +6,7 @@
 // The generated JSON is committed, so this module works on a clean checkout; the
 // predev/prebuild codegen simply keeps it in sync with the source TSVs.
 
-import { isMovement, type Movement } from "../taxonomy";
+import { isMovement, isMovementOrPreMovement, type Movement } from "../taxonomy";
 import raw from "./generated/canon-data.json";
 
 // ---- shapes (mirror the emitter) ------------------------------------------
@@ -163,7 +163,7 @@ function assertValid(): void {
     if (!isMovement(e.target)) bad.push(`edge target "${e.target}"`);
   }
   for (const name of Object.keys(DATA.readingPaths)) {
-    if (!isMovement(name)) bad.push(`reading path "${name}"`);
+    if (!isMovementOrPreMovement(name)) bad.push(`reading path "${name}"`);
   }
   if (bad.length) {
     throw new Error(

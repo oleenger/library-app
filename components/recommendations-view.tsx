@@ -150,7 +150,8 @@ type AreaView = "path" | "essentials";
  */
 function MovementDetail({ detail }: { detail: MovementDetailView }) {
   const color = periodColor(detail.period);
-  // Essentials first — it's the default view (and the only one for pre-movement).
+  // Essentials first — it's the default view; the reading path tab appears
+  // whenever a curated path exists (foundations included).
   const views: AreaView[] = [
     ...(detail.hasEssentials ? (["essentials"] as const) : []),
     ...(detail.hasPath ? (["path"] as const) : []),

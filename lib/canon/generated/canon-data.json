@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-01T19:25:41.454Z",
+  "generatedAt": "2026-09-01T19:32:09.829Z",
   "source": "data/all-books.tsv + data/movement-influences.tsv + data/reading-paths.tsv",
   "movements": {
     "Neoclassicism / Augustan": {
@@ -6160,6 +6160,128 @@
         "sortYear": 1967,
         "displayYear": "1967",
         "note": "The summit — a century, a family, a village. Read it when ready."
+      }
+    ],
+    "None / Pre-movement": [
+      {
+        "position": 1,
+        "title": "Iliad",
+        "author": "Homer",
+        "sortYear": -750,
+        "displayYear": "c. 750 BCE",
+        "note": "Start at the source — the wrath of Achilles, the first and most imitated epic."
+      },
+      {
+        "position": 2,
+        "title": "Odyssey",
+        "author": "Homer",
+        "sortYear": -725,
+        "displayYear": "c. 725 BCE",
+        "note": "The homecoming counterpart; together these two poems are what every later epic answers."
+      },
+      {
+        "position": 3,
+        "title": "Oresteia",
+        "author": "Aeschylus",
+        "sortYear": -458,
+        "displayYear": "458 BCE",
+        "note": "Tragedy is born: watch justice move from blood-vendetta to law across the trilogy."
+      },
+      {
+        "position": 4,
+        "title": "Oedipus Rex",
+        "author": "Sophocles",
+        "sortYear": -429,
+        "displayYear": "c. 429 BCE",
+        "note": "The tragic form at its tightest — knowledge, fate, and the man who is his own quarry."
+      },
+      {
+        "position": 5,
+        "title": "Poetics",
+        "author": "Aristotle",
+        "sortYear": -335,
+        "displayYear": "c. 335 BCE",
+        "note": "The first theory of how all of the above works; criticism itself begins here."
+      },
+      {
+        "position": 6,
+        "title": "Aeneid",
+        "author": "Virgil",
+        "sortYear": -19,
+        "displayYear": "19 BCE",
+        "note": "Rome answers Homer — the deliberate, written epic of duty and empire."
+      },
+      {
+        "position": 7,
+        "title": "Metamorphoses",
+        "author": "Ovid",
+        "sortYear": 8,
+        "displayYear": "8 CE",
+        "note": "The storehouse of myth every later European poet and painter would raid."
+      },
+      {
+        "position": 8,
+        "title": "Confessions",
+        "author": "Augustine of Hippo",
+        "sortYear": 400,
+        "displayYear": "c. 400 CE",
+        "note": "The inward turn — the first autobiography of a self examining itself."
+      },
+      {
+        "position": 9,
+        "title": "The Tale of Genji",
+        "author": "Murasaki Shikibu",
+        "sortYear": 1010,
+        "displayYear": "c. 1010",
+        "note": "Step outside the Western line: the world's first psychological novel, from Heian Japan."
+      },
+      {
+        "position": 10,
+        "title": "The Divine Comedy",
+        "author": "Dante Alighieri",
+        "sortYear": 1320,
+        "displayYear": "1320",
+        "note": "The medieval synthesis — classical inheritance and Christian cosmos fused into one journey."
+      },
+      {
+        "position": 11,
+        "title": "The Canterbury Tales",
+        "author": "Geoffrey Chaucer",
+        "sortYear": 1400,
+        "displayYear": "c. 1400",
+        "note": "The vernacular arrives; ordinary voices in all their variety and mischief."
+      },
+      {
+        "position": 12,
+        "title": "Essays",
+        "author": "Michel de Montaigne",
+        "sortYear": 1580,
+        "displayYear": "1580",
+        "note": "The modern essay and skeptical self-inquiry — thinking as it actually happens."
+      },
+      {
+        "position": 13,
+        "title": "Hamlet",
+        "author": "William Shakespeare",
+        "sortYear": 1600,
+        "displayYear": "1600",
+        "note": "Interiority and doubt dramatized; the modern consciousness talking to itself."
+      },
+      {
+        "position": 14,
+        "title": "Don Quixote",
+        "author": "Miguel de Cervantes",
+        "sortYear": 1605,
+        "displayYear": "1605",
+        "note": "The novel begins — ironic, self-aware, gently mocking every romance before it."
+      },
+      {
+        "position": 15,
+        "title": "Paradise Lost",
+        "author": "John Milton",
+        "sortYear": 1667,
+        "displayYear": "1667",
+        "note": "The last great classical epic in English; the tradition turns knowingly on itself."
       }
     ]
   }

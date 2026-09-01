@@ -14,7 +14,7 @@
 // titles ("Fedre og sønner" = "Fathers and Sons") — author-surname + year.
 
 import type { Work } from "../types";
-import { MOVEMENTS, isCrossPeriod, movementPeriod, type Movement, type Period } from "../taxonomy";
+import { MOVEMENTS, isCrossPeriod, movementPeriod, PRE_MOVEMENT_KEY, type Movement, type Period } from "../taxonomy";
 import { shortPeriod, formatYear } from "../display";
 import { slugify } from "../slug";
 import { lineageNode } from "../lineage";
@@ -180,9 +180,11 @@ function toDetail(movement: Movement, works: Work[], counts: Map<Movement, numbe
 
 /**
  * The pre-movement (foundations) bucket as a synthetic detail so it can share the
- * Canon menu + detail surface. It has essentials only — no reading path, no
- * lineage relations — and its "holdings" is simply how many of the classics the
- * reader owns (used to sort it to the front of the menu).
+ * Canon menu + detail surface. It has essentials and — treated like any other
+ * movement — an optional curated reading path (keyed by PRE_MOVEMENT_KEY in
+ * data/reading-paths.tsv). It carries no lineage relations, and its "holdings"
+ * is simply how many of the classics the reader owns (used to sort it to the
+ * front of the menu).
  */
 function toPreMovementDetail(works: Work[]): MovementDetailView {
   const essentials: CanonWorkView[] = preMovementClassics().map((e) => {
@@ -191,6 +193,19 @@ function toPreMovementDetail(works: Work[]): MovementDetailView {
       title: e.title,
       author: e.author,
       displayYear: e.displayYear,
+      owned: owned != null,
+      read: owned?.reading != null,
+      ownedId: owned?.id ?? null,
+    };
+  });
+  const readingPath: ReadingStepView[] = readingPathFor(PRE_MOVEMENT_KEY).map((s) => {
+    const owned = findOwnedWork(works, s.title, s.author, s.sortYear);
+    return {
+      position: s.position,
+      title: s.title,
+      author: s.author,
+      displayYear: s.displayYear,
+      note: s.note,
       owned: owned != null,
       read: owned?.reading != null,
       ownedId: owned?.id ?? null,
@@ -210,11 +225,11 @@ function toPreMovementDetail(works: Work[]): MovementDetailView {
     essentialsRead: essentials.filter((w) => w.read).length,
     essentialsTotal: essentials.length,
     hasEssentials: essentials.length > 0,
-    readingPath: [],
-    pathOwned: 0,
-    pathRead: 0,
-    pathTotal: 0,
-    hasPath: false,
+    readingPath,
+    pathOwned: readingPath.filter((w) => w.owned).length,
+    pathRead: readingPath.filter((w) => w.read).length,
+    pathTotal: readingPath.length,
+    hasPath: readingPath.length > 0,
     holdings: owned,
     reactedAgainst: [],
     ledTo: [],
