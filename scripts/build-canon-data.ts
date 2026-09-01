@@ -21,7 +21,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { isMovement } from "../lib/taxonomy";
+import { isMovement, PRE_MOVEMENT_KEY } from "../lib/taxonomy";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const BOOKS_TSV = join(ROOT, "data", "all-books.tsv");
@@ -29,7 +29,7 @@ const EDGES_TSV = join(ROOT, "data", "movement-influences.tsv");
 const PATHS_TSV = join(ROOT, "data", "reading-paths.tsv");
 const OUT = join(ROOT, "lib", "canon", "generated", "canon-data.json");
 
-const PRE_MOVEMENT = "None / Pre-movement";
+const PRE_MOVEMENT = PRE_MOVEMENT_KEY;
 
 // ---- year parsing ---------------------------------------------------------
 // Faithful display string kept as-is; sortYear is a single number (BCE = negative,
@@ -165,11 +165,13 @@ for (const [source, target, relationship, strength, edgeNote] of rows(EDGES_TSV)
 }
 
 // ---- build reading paths --------------------------------------------------
-// One curated, ordered reading sequence per movement. Non-taxonomy movements
-// (the dropped avant-gardes) are skipped, so their paths never reach the app.
+// One curated, ordered reading sequence per movement — plus the pre-movement
+// foundations path, which is keyed like any other movement. Non-taxonomy
+// movements (the dropped avant-gardes) are skipped, so their paths never reach
+// the app.
 const byPath = new Map<string, ReadingStep[]>();
 for (const [movement, posRaw, title, author, year, stepNote] of rows(PATHS_TSV)) {
-  if (!isMovement(movement)) {
+  if (movement !== PRE_MOVEMENT && !isMovement(movement)) {
     note(movement);
     continue;
   }

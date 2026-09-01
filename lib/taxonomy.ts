@@ -68,6 +68,19 @@ export type Period = (typeof PERIODS)[number];
 export type Movement = (typeof MOVEMENTS)[number];
 
 /**
+ * The sentinel primary-movement value in the reference data marking a work as a
+ * pre-movement / classical foundation (before the movement lineage begins). It
+ * is deliberately NOT a taxonomy Movement, but it IS a valid key for the
+ * foundations bucket's essentials and — like any movement — its reading path.
+ */
+export const PRE_MOVEMENT_KEY = "None / Pre-movement";
+
+/** True for the pre-movement foundations key, or any real taxonomy movement. */
+export function isMovementOrPreMovement(value: string): boolean {
+  return value === PRE_MOVEMENT_KEY || isMovement(value);
+}
+
+/**
  * The period each movement is *most associated with* — its home/origin era —
  * used for era labels and colour in period-keyed views (there is no separate
  * per-movement colour).
