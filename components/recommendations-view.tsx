@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { periodColor } from "@/lib/display";
-import type { MovementDetailView, ReadingStepView } from "@/lib/canon/select";
+import type { MovementDetailView, OwnedWorkView, ReadingStepView } from "@/lib/canon/select";
 import { MovementChip } from "@/components/lineage-view";
 import { EssentialsList } from "@/components/essentials-list";
 import { CanonOwnLink } from "@/components/canon-own-link";
@@ -31,6 +31,16 @@ export function RecommendationsView({
       ? initialMovement
       : details[0]?.movement ?? "";
   const [selected, setSelected] = useState<string>(preselect);
+
+  // A lineage chip / metro-map node navigates to /recommendations?movement=X — a
+  // query-only change that re-renders the server component (new initialMovement)
+  // without remounting this client tree, so useState alone would ignore it and
+  // the detail would appear frozen. Follow the incoming movement here.
+  useEffect(() => {
+    if (initialMovement && details.some((d) => d.movement === initialMovement)) {
+      setSelected(initialMovement);
+    }
+  }, [initialMovement, details]);
 
   if (workCount < 5) {
     return (
@@ -146,7 +156,13 @@ function MovementMenu({
   );
 }
 
-type AreaView = "path" | "essentials";
+type AreaView = "essentials" | "path" | "mine";
+
+const AREA_LABELS: Record<AreaView, string> = {
+  essentials: "Essentials",
+  path: "Reading path",
+  mine: "My books",
+};
 
 /**
  * One movement's full detail: description, then its reading path / essentials
@@ -159,6 +175,7 @@ function MovementDetail({ detail, candidates }: { detail: MovementDetailView; ca
   const views: AreaView[] = [
     ...(detail.hasEssentials ? (["essentials"] as const) : []),
     ...(detail.hasPath ? (["path"] as const) : []),
+    ...(detail.ownedWorks.length > 0 ? (["mine"] as const) : []),
   ];
   const [view, setView] = useState<AreaView>(views[0] ?? "essentials");
   const active = views.includes(view) ? view : views[0];
@@ -182,12 +199,14 @@ function MovementDetail({ detail, candidates }: { detail: MovementDetailView; ca
         <div className="overflow-hidden rounded-2xl border border-paper-edge bg-paper shadow-card">
           {views.length > 1 && (
             <div className="border-b border-paper-edge px-5 py-3 sm:px-6">
-              <ViewToggle view={active} onChange={setView} />
+              <ViewToggle views={views} view={active} onChange={setView} />
             </div>
           )}
           <div className="px-5 py-5 sm:px-6">
             {active === "path" ? (
               <ReadingPath steps={detail.readingPath} owned={detail.pathOwned} read={detail.pathRead} total={detail.pathTotal} candidates={candidates} />
+            ) : active === "mine" ? (
+              <MyBooks works={detail.ownedWorks} />
             ) : (
               <EssentialsList
                 works={detail.essentials}
@@ -221,32 +240,97 @@ function MovementDetail({ detail, candidates }: { detail: MovementDetailView; ca
   );
 }
 
-/** Segmented reading-path / essentials switch. */
-function ViewToggle({ view, onChange }: { view: AreaView; onChange: (v: AreaView) => void }) {
-  const opts: { id: AreaView; label: string }[] = [
-    { id: "essentials", label: "Essentials" },
-    { id: "path", label: "Reading path" },
-  ];
+/** Segmented switch across whichever detail views this movement offers. */
+function ViewToggle({
+  views,
+  view,
+  onChange,
+}: {
+  views: AreaView[];
+  view: AreaView;
+  onChange: (v: AreaView) => void;
+}) {
   return (
     <div className="inline-flex rounded-lg border border-paper-edge bg-paper-sunken p-0.5" role="tablist">
-      {opts.map((o) => {
-        const isActive = o.id === view;
+      {views.map((id) => {
+        const isActive = id === view;
         return (
           <button
-            key={o.id}
+            key={id}
             type="button"
             role="tab"
             aria-selected={isActive}
-            onClick={() => onChange(o.id)}
+            onClick={() => onChange(id)}
             className={`rounded-md px-3 py-1.5 text-[0.75rem] font-semibold transition ${
               isActive ? "bg-white text-ink shadow-sm" : "text-ink-faint hover:text-ink-soft"
             }`}
           >
-            {o.label}
+            {AREA_LABELS[id]}
           </button>
         );
       })}
     </div>
+  );
+}
+
+/** The reader's own works in this movement — a simple linked list, read-marked. */
+function MyBooks({ works }: { works: OwnedWorkView[] }) {
+  const readCount = works.filter((w) => w.read).length;
+  return (
+    <div>
+      <p className="text-sm text-ink-soft">
+        <span className="font-medium text-ink tabular-nums">{works.length}</span>{" "}
+        {works.length === 1 ? "work" : "works"} in your library,{" "}
+        <span className="font-medium text-ink tabular-nums">{readCount}</span> read
+      </p>
+      <ol className="mt-4 divide-y divide-paper-edge">
+        {works.map((w) => (
+          <li key={w.id}>
+            <Link href={`/book/${w.id}`} className="group flex items-start gap-3 py-3">
+              <span className="mt-[3px]">
+                <OwnedMarker read={w.read} />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="font-serif text-[0.95rem] font-bold text-ink transition-colors group-hover:text-accent">
+                  {w.title}
+                </span>{" "}
+                <span className="text-sm text-ink-faint">{w.author}</span>
+                {!w.read && (
+                  <span className="ml-2 align-middle text-[0.62rem] font-semibold uppercase tracking-[0.1em] text-ink-faint">
+                    unread
+                  </span>
+                )}
+              </span>
+              <span className="shrink-0 text-sm tabular-nums text-ink-faint">{w.displayYear}</span>
+            </Link>
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}
+
+/** Read = filled accent tick; owned-but-unread = an open accent ring. */
+function OwnedMarker({ read }: { read: boolean }) {
+  if (read) {
+    return (
+      <span
+        className="grid h-[1.05rem] w-[1.05rem] shrink-0 place-items-center rounded-full bg-accent text-paper-raised"
+        title="Read"
+        aria-label="Read"
+      >
+        <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          <path d="m5 12 5 5 9-11" />
+        </svg>
+      </span>
+    );
+  }
+  return (
+    <span
+      className="h-[1.05rem] w-[1.05rem] shrink-0 rounded-full border-2 border-accent bg-transparent"
+      title="In your library, unread"
+      aria-label="In your library, unread"
+    />
   );
 }
 
