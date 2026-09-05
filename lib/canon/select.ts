@@ -55,6 +55,16 @@ export interface ReadingStepView extends CanonWorkView {
   note: string;
 }
 
+/** An owned library work sitting in a movement — for the "My books" tab. */
+export interface OwnedWorkView {
+  id: string;
+  title: string;
+  author: string;
+  displayYear: string;
+  /** True when the reader has marked their copy read. */
+  read: boolean;
+}
+
 /** The complete detail for one movement. */
 export interface MovementDetailView {
   /** Movement name, or PRE_MOVEMENT_LABEL for the foundations bucket. */
@@ -79,6 +89,8 @@ export interface MovementDetailView {
   hasPath: boolean;
   /** How many shelved works sit in this movement (drives sort + menu grouping). */
   holdings: number;
+  /** The reader's own works in this movement, newest-classic first. */
+  ownedWorks: OwnedWorkView[];
   reactedAgainst: MovementChipView[];
   ledTo: MovementChipView[];
   alongside: MovementChipView[];
@@ -111,6 +123,42 @@ function eraLabelFor(movement: Movement, period: Period | null): string {
   return [isCrossPeriod(movement) ? "Cross-period form" : shortPeriod(period), years]
     .filter(Boolean)
     .join(" · ");
+}
+
+/** The reader's own works sitting in a movement (primary or secondary), sorted. */
+function ownedWorksFor(movement: Movement, works: Work[]): OwnedWorkView[] {
+  return works
+    .filter((w) => {
+      const labels = [w.classification.primaryMovement, ...w.classification.secondaryMovements];
+      return labels.includes(movement);
+    })
+    .sort((a, b) => {
+      // Chronological by original year (unknown years last), then title.
+      const ay = a.originalYear ?? Infinity;
+      const by = b.originalYear ?? Infinity;
+      return ay - by || a.title.localeCompare(b.title);
+    })
+    .map((w) => ({
+      id: w.id,
+      title: w.title,
+      author: w.author,
+      displayYear: formatYear(w.originalYear),
+      read: w.reading != null,
+    }));
+}
+
+/** Owned works derived from a canon-work join (used by the pre-movement bucket). */
+function ownedFromJoin(entries: { owned: Work | undefined }[]): OwnedWorkView[] {
+  return entries
+    .filter((e): e is { owned: Work } => e.owned != null)
+    .sort((a, b) => (a.owned.originalYear ?? Infinity) - (b.owned.originalYear ?? Infinity) || a.owned.title.localeCompare(b.owned.title))
+    .map((e) => ({
+      id: e.owned.id,
+      title: e.owned.title,
+      author: e.owned.author,
+      displayYear: formatYear(e.owned.originalYear),
+      read: e.owned.reading != null,
+    }));
 }
 
 /** Turn related movements into display chips with live holding counts. */
@@ -172,6 +220,7 @@ function toDetail(movement: Movement, works: Work[], counts: Map<Movement, numbe
     pathTotal: readingPath.length,
     hasPath: readingPath.length > 0,
     holdings: counts.get(movement) ?? 0,
+    ownedWorks: ownedWorksFor(movement, works),
     reactedAgainst: toChips(rel.reactedAgainst, counts),
     ledTo: toChips(rel.ledTo, counts),
     alongside: toChips(rel.alongside, counts),
@@ -187,17 +236,20 @@ function toDetail(movement: Movement, works: Work[], counts: Map<Movement, numbe
  * front of the menu).
  */
 function toPreMovementDetail(works: Work[]): MovementDetailView {
-  const essentials: CanonWorkView[] = preMovementClassics().map((e) => {
-    const owned = findOwnedWork(works, e.title, e.author, e.sortYear);
-    return {
-      title: e.title,
-      author: e.author,
-      displayYear: e.displayYear,
-      owned: owned != null,
-      read: owned?.reading != null,
-      ownedId: owned?.id ?? null,
-    };
-  });
+  // Keep the owned Work from each join so the "My books" tab can list the owned
+  // classics (the foundations bucket has no movement label to filter on).
+  const classicJoins = preMovementClassics().map((e) => ({
+    entry: e,
+    owned: findOwnedWork(works, e.title, e.author, e.sortYear),
+  }));
+  const essentials: CanonWorkView[] = classicJoins.map(({ entry: e, owned }) => ({
+    title: e.title,
+    author: e.author,
+    displayYear: e.displayYear,
+    owned: owned != null,
+    read: owned?.reading != null,
+    ownedId: owned?.id ?? null,
+  }));
   const readingPath: ReadingStepView[] = readingPathFor(PRE_MOVEMENT_KEY).map((s) => {
     const owned = findOwnedWork(works, s.title, s.author, s.sortYear);
     return {
@@ -231,6 +283,7 @@ function toPreMovementDetail(works: Work[]): MovementDetailView {
     pathTotal: readingPath.length,
     hasPath: readingPath.length > 0,
     holdings: owned,
+    ownedWorks: ownedFromJoin(classicJoins),
     reactedAgainst: [],
     ledTo: [],
     alongside: [],
