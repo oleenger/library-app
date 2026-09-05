@@ -16,6 +16,8 @@ CREATE TABLE works (
   primary_movement    TEXT,
   secondary_movements TEXT,          -- '|'-delimited; a work_movements table is the Stage 1 shape
   notes               TEXT,
+  canonical_title     TEXT,          -- manual "this owned book IS that canon work" alias;
+  canonical_author    TEXT,          -- set together with canonical_title, or both NULL
   UNIQUE (title, author)             -- enforces work de-duplication at the DB level
 );
 

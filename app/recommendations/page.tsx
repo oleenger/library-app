@@ -21,6 +21,14 @@ export default async function RecommendationsPage({
   const works = await getWorks();
   const details = movementDetails(works);
 
+  // Every owned book, trimmed for the "I own this" gap-link picker.
+  const candidates = works.map((w) => ({
+    id: w.id,
+    title: w.title,
+    author: w.author,
+    language: w.language ?? null,
+  }));
+
   return (
     <PullToRefresh>
       <div className="min-h-screen">
@@ -31,6 +39,7 @@ export default async function RecommendationsPage({
             details={details}
             workCount={works.length}
             initialMovement={movement ?? null}
+            candidates={candidates}
           />
         </main>
       </div>

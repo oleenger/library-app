@@ -27,9 +27,23 @@ export function workKey(title: string, author: string): string {
   return `${normalizeKey(title)}|${normalizeKey(author)}`;
 }
 
-/** Build the set of owned title+author keys for a live holdings join. */
+/**
+ * Every identity key a work answers to for an exact ownership match: its own
+ * title+author, plus its manual canonical alias when set (so a translation held
+ * under a different title still resolves to the canon entry the owner linked it
+ * to). See lib/catalogue/edit.ts#setCanonicalAlias.
+ */
+export function workKeys(w: Work): string[] {
+  const keys = [workKey(w.title, w.author)];
+  if (w.canonicalTitle && w.canonicalAuthor) {
+    keys.push(workKey(w.canonicalTitle, w.canonicalAuthor));
+  }
+  return keys;
+}
+
+/** Build the set of owned title+author keys (incl. canonical aliases) for a join. */
 export function ownedKeySet(works: Work[]): Set<string> {
-  return new Set(works.map((w) => workKey(w.title, w.author)));
+  return new Set(works.flatMap((w) => workKeys(w)));
 }
 
 /**
@@ -72,7 +86,7 @@ export function buildOwnedIndex(works: Work[]): OwnedIndex {
   const byTitle = new Set<string>();
   const surnamesByYear = new Map<number, string[]>();
   for (const w of works) {
-    byTitle.add(workKey(w.title, w.author));
+    for (const k of workKeys(w)) byTitle.add(k);
     if (w.originalYear != null) {
       const list = surnamesByYear.get(w.originalYear);
       const s = surnameKey(w.author);
@@ -121,7 +135,7 @@ export function findOwnedWork(
   year: number | null,
 ): Work | undefined {
   const key = workKey(title, author);
-  const exact = works.find((w) => workKey(w.title, w.author) === key);
+  const exact = works.find((w) => workKeys(w).includes(key));
   if (exact) return exact;
   if (year == null) return undefined;
   const target = surnameKey(author);

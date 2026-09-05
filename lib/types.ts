@@ -21,6 +21,13 @@ export interface Work {
   language: string | null;
   /** Free-text note from the import (e.g. "Owned in multiple editions"). */
   notes: string | null;
+  /**
+   * Manual canonical alias: the canon (title, author) this owned work stands in
+   * for, so a translation held under a different title ("Rødt og sort") still
+   * resolves to its canon entry ("The Red and the Black"). Both null unless set.
+   */
+  canonicalTitle: string | null;
+  canonicalAuthor: string | null;
   /** The owned edition(s) of this work. A work may be owned in several editions. */
   editionIds: string[];
   /**

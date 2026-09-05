@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-01T19:32:09.829Z",
+  "generatedAt": "2026-09-05T17:48:11.885Z",
   "source": "data/all-books.tsv + data/movement-influences.tsv + data/reading-paths.tsv",
   "movements": {
     "Neoclassicism / Augustan": {
@@ -2518,6 +2518,147 @@
         "max": 1944
       }
     },
+    "Expressionism": {
+      "essentials": [
+        {
+          "title": "Menschheitsdämmerung",
+          "author": "Kurt Pinthus",
+          "sortYear": 1919,
+          "displayYear": "1919",
+          "rank": 3
+        },
+        {
+          "title": "From Morning to Midnight",
+          "author": "Georg Kaiser",
+          "sortYear": 1912,
+          "displayYear": "1912",
+          "rank": 4
+        },
+        {
+          "title": "The Beggar",
+          "author": "Reinhard Sorge",
+          "sortYear": 1912,
+          "displayYear": "1912",
+          "rank": 5
+        },
+        {
+          "title": "Transfiguration",
+          "author": "Ernst Toller",
+          "sortYear": 1919,
+          "displayYear": "1919",
+          "rank": 6
+        },
+        {
+          "title": "The Gas Trilogy",
+          "author": "Georg Kaiser",
+          "sortYear": 1917,
+          "displayYear": "1917",
+          "rank": 7
+        },
+        {
+          "title": "Man and the Masses",
+          "author": "Ernst Toller",
+          "sortYear": 1920,
+          "displayYear": "1920",
+          "rank": 8
+        },
+        {
+          "title": "Poems of Georg Trakl",
+          "author": "Georg Trakl",
+          "sortYear": 1913,
+          "displayYear": "1913",
+          "rank": 9
+        },
+        {
+          "title": "Morgue and Other Poems",
+          "author": "Gottfried Benn",
+          "sortYear": 1912,
+          "displayYear": "1912",
+          "rank": 10
+        },
+        {
+          "title": "Murderer, the Hope of Women",
+          "author": "Oskar Kokoschka",
+          "sortYear": 1909,
+          "displayYear": "1909",
+          "rank": 12
+        },
+        {
+          "title": "Umbra vitae",
+          "author": "Georg Heym",
+          "sortYear": 1912,
+          "displayYear": "1912",
+          "rank": 13
+        },
+        {
+          "title": "The Son",
+          "author": "Walter Hasenclever",
+          "sortYear": 1914,
+          "displayYear": "1914",
+          "rank": 14
+        },
+        {
+          "title": "The Burghers of Calais",
+          "author": "Georg Kaiser",
+          "sortYear": 1914,
+          "displayYear": "1914",
+          "rank": 15
+        },
+        {
+          "title": "Naval Encounter",
+          "author": "Reinhard Goering",
+          "sortYear": 1917,
+          "displayYear": "1917",
+          "rank": 17
+        },
+        {
+          "title": "The Judgment",
+          "author": "Franz Kafka",
+          "sortYear": 1913,
+          "displayYear": "1913",
+          "rank": null
+        },
+        {
+          "title": "The Metamorphosis",
+          "author": "Franz Kafka",
+          "sortYear": 1915,
+          "displayYear": "1915",
+          "rank": null
+        },
+        {
+          "title": "In the Penal Colony",
+          "author": "Franz Kafka",
+          "sortYear": 1919,
+          "displayYear": "1919",
+          "rank": null
+        },
+        {
+          "title": "The Trial",
+          "author": "Franz Kafka",
+          "sortYear": 1925,
+          "displayYear": "1925",
+          "rank": null
+        },
+        {
+          "title": "The Castle",
+          "author": "Franz Kafka",
+          "sortYear": 1926,
+          "displayYear": "1926",
+          "rank": null
+        },
+        {
+          "title": "Berlin Alexanderplatz",
+          "author": "Alfred Döblin",
+          "sortYear": 1929,
+          "displayYear": "1929",
+          "rank": null
+        }
+      ],
+      "years": {
+        "min": 1909,
+        "max": 1929
+      }
+    },
     "Postmodernism": {
       "essentials": [
         {
@@ -3630,6 +3771,204 @@
         "max": 1917
       }
     },
+    "Futurism": {
+      "essentials": [
+        {
+          "title": "The Founding and Manifesto of Futurism",
+          "author": "F. T. Marinetti",
+          "sortYear": 1909,
+          "displayYear": "1909",
+          "rank": 1
+        },
+        {
+          "title": "Technical Manifesto of Futurist Literature",
+          "author": "F. T. Marinetti",
+          "sortYear": 1912,
+          "displayYear": "1912",
+          "rank": 2
+        },
+        {
+          "title": "Zang Tumb Tumb",
+          "author": "F. T. Marinetti",
+          "sortYear": 1914,
+          "displayYear": "1914",
+          "rank": 3
+        },
+        {
+          "title": "Mafarka the Futurist",
+          "author": "F. T. Marinetti",
+          "sortYear": 1910,
+          "displayYear": "1910",
+          "rank": 4
+        },
+        {
+          "title": "A Slap in the Face of Public Taste",
+          "author": "David Burliuk, Aleksei Kruchenykh, Vladimir Mayakovsky and Velimir Khlebnikov",
+          "sortYear": 1912,
+          "displayYear": "1912",
+          "rank": 5
+        },
+        {
+          "title": "A Cloud in Trousers",
+          "author": "Vladimir Mayakovsky",
+          "sortYear": 1915,
+          "displayYear": "1915",
+          "rank": 6
+        },
+        {
+          "title": "Destruction of Syntax",
+          "author": "F. T. Marinetti",
+          "sortYear": 1913,
+          "displayYear": "1913",
+          "rank": 7
+        },
+        {
+          "title": "Dyr bul shchyl",
+          "author": "Aleksei Kruchenykh",
+          "sortYear": 1913,
+          "displayYear": "1913",
+          "rank": 8
+        },
+        {
+          "title": "The Incendiary",
+          "author": "Aldo Palazzeschi",
+          "sortYear": 1910,
+          "displayYear": "1910",
+          "rank": 9
+        },
+        {
+          "title": "Synthetic Futurist Theatre",
+          "author": "F. T. Marinetti, Emilio Settimelli and Bruno Corra",
+          "sortYear": 1915,
+          "displayYear": "1915",
+          "rank": 10
+        },
+        {
+          "title": "War, the Only Hygiene of the World",
+          "author": "F. T. Marinetti",
+          "sortYear": 1915,
+          "displayYear": "1915",
+          "rank": 11
+        },
+        {
+          "title": "150,000,000",
+          "author": "Vladimir Mayakovsky",
+          "sortYear": 1921,
+          "displayYear": "1921",
+          "rank": 12
+        },
+        {
+          "title": "Zangezi",
+          "author": "Velimir Khlebnikov",
+          "sortYear": 1922,
+          "displayYear": "1922",
+          "rank": 13
+        },
+        {
+          "title": "Electric Poems",
+          "author": "Corrado Govoni",
+          "sortYear": 1911,
+          "displayYear": "1911",
+          "rank": 14
+        }
+      ],
+      "years": {
+        "min": 1909,
+        "max": 1922
+      }
+    },
+    "Dada": {
+      "essentials": [
+        {
+          "title": "Dada Manifesto",
+          "author": "Tristan Tzara",
+          "sortYear": 1918,
+          "displayYear": "1918",
+          "rank": 1
+        },
+        {
+          "title": "Seven Dada Manifestos",
+          "author": "Tristan Tzara",
+          "sortYear": 1924,
+          "displayYear": "1924",
+          "rank": 2
+        },
+        {
+          "title": "The First Heavenly Adventure of Mr. Antipyrine",
+          "author": "Tristan Tzara",
+          "sortYear": 1916,
+          "displayYear": "1916",
+          "rank": 3
+        },
+        {
+          "title": "Twenty-Five Poems",
+          "author": "Tristan Tzara",
+          "sortYear": 1918,
+          "displayYear": "1918",
+          "rank": 4
+        },
+        {
+          "title": "The Gas Heart",
+          "author": "Tristan Tzara",
+          "sortYear": 1921,
+          "displayYear": "1921",
+          "rank": 5
+        },
+        {
+          "title": "Dada",
+          "author": "Tristan Tzara",
+          "sortYear": 1917,
+          "displayYear": "1917",
+          "rank": 6
+        },
+        {
+          "title": "Flight Out of Time",
+          "author": "Hugo Ball",
+          "sortYear": 1927,
+          "displayYear": "1927",
+          "rank": 7
+        },
+        {
+          "title": "Karawane",
+          "author": "Hugo Ball",
+          "sortYear": 1916,
+          "displayYear": "1916",
+          "rank": 8
+        },
+        {
+          "title": "Anna Blume",
+          "author": "Kurt Schwitters",
+          "sortYear": 1919,
+          "displayYear": "1919",
+          "rank": 9
+        },
+        {
+          "title": "Cabaret Voltaire",
+          "author": "Hugo Ball",
+          "sortYear": 1916,
+          "displayYear": "1916",
+          "rank": 10
+        },
+        {
+          "title": "Fantastic Prayers",
+          "author": "Richard Huelsenbeck",
+          "sortYear": 1916,
+          "displayYear": "1916",
+          "rank": 11
+        },
+        {
+          "title": "En avant Dada",
+          "author": "Richard Huelsenbeck",
+          "sortYear": 1920,
+          "displayYear": "1920",
+          "rank": 12
+        }
+      ],
+      "years": {
+        "min": 1916,
+        "max": 1927
+      }
+    },
     "Harlem Renaissance": {
       "essentials": [
         {
@@ -4128,6 +4467,119 @@
       "years": {
         "min": 1950,
         "max": 1972
+      }
+    },
+    "New Sincerity": {
+      "essentials": [
+        {
+          "title": "Infinite Jest",
+          "author": "David Foster Wallace",
+          "sortYear": 1996,
+          "displayYear": "1996",
+          "rank": 1
+        },
+        {
+          "title": "E Unibus Pluram",
+          "author": "David Foster Wallace",
+          "sortYear": 1993,
+          "displayYear": "1993",
+          "rank": 2
+        },
+        {
+          "title": "A Heartbreaking Work of Staggering Genius",
+          "author": "Dave Eggers",
+          "sortYear": 2000,
+          "displayYear": "2000",
+          "rank": 3
+        },
+        {
+          "title": "CivilWarLand in Bad Decline",
+          "author": "George Saunders",
+          "sortYear": 1996,
+          "displayYear": "1996",
+          "rank": 4
+        },
+        {
+          "title": "The Corrections",
+          "author": "Jonathan Franzen",
+          "sortYear": 2001,
+          "displayYear": "2001",
+          "rank": 5
+        },
+        {
+          "title": "Brief Interviews with Hideous Men",
+          "author": "David Foster Wallace",
+          "sortYear": 1999,
+          "displayYear": "1999",
+          "rank": 6
+        },
+        {
+          "title": "Lincoln in the Bardo",
+          "author": "George Saunders",
+          "sortYear": 2017,
+          "displayYear": "2017",
+          "rank": 7
+        },
+        {
+          "title": "Tenth of December",
+          "author": "George Saunders",
+          "sortYear": 2013,
+          "displayYear": "2013",
+          "rank": 8
+        },
+        {
+          "title": "The Amazing Adventures of Kavalier & Clay",
+          "author": "Michael Chabon",
+          "sortYear": 2000,
+          "displayYear": "2000",
+          "rank": 9
+        },
+        {
+          "title": "The Brief Wondrous Life of Oscar Wao",
+          "author": "Junot Díaz",
+          "sortYear": 2007,
+          "displayYear": "2007",
+          "rank": 10
+        },
+        {
+          "title": "A Visit from the Goon Squad",
+          "author": "Jennifer Egan",
+          "sortYear": 2010,
+          "displayYear": "2010",
+          "rank": 11
+        },
+        {
+          "title": "Pastoralia",
+          "author": "George Saunders",
+          "sortYear": 2000,
+          "displayYear": "2000",
+          "rank": 12
+        },
+        {
+          "title": "This Is Water",
+          "author": "David Foster Wallace",
+          "sortYear": 2005,
+          "displayYear": "2005",
+          "rank": 13
+        },
+        {
+          "title": "The Pale King",
+          "author": "David Foster Wallace",
+          "sortYear": 2011,
+          "displayYear": "2011",
+          "rank": 14
+        },
+        {
+          "title": "How Should a Person Be?",
+          "author": "Sheila Heti",
+          "sortYear": 2010,
+          "displayYear": "2010",
+          "rank": 15
+        }
+      ],
+      "years": {
+        "min": 1993,
+        "max": 2017
       }
     },
     "Humanism": {
@@ -4745,11 +5197,60 @@
       "note": "Rimbaud and Lautreamont revered as Surrealist ancestors"
     },
     {
+      "source": "Symbolism",
+      "target": "Expressionism",
+      "relationship": "feeds / precursor",
+      "strength": "secondary",
+      "note": "Symbolist inwardness feeds Expressionist distortion"
+    },
+    {
       "source": "Imagism",
       "target": "Modernism",
       "relationship": "evolves into",
       "strength": "primary",
       "note": "The first phase of Anglo-American poetic Modernism"
+    },
+    {
+      "source": "Expressionism",
+      "target": "Modernism",
+      "relationship": "feeds / precursor",
+      "strength": "secondary",
+      "note": "Psychological distortion (Kafka) within the Modernist current"
+    },
+    {
+      "source": "Expressionism",
+      "target": "Theatre of the Absurd",
+      "relationship": "feeds / precursor",
+      "strength": "secondary",
+      "note": "Expressionist stagecraft prefigures Absurdist drama"
+    },
+    {
+      "source": "Futurism",
+      "target": "Dada",
+      "relationship": "feeds / precursor",
+      "strength": "secondary",
+      "note": "Manifestos, typography, and provocation passed to Dada"
+    },
+    {
+      "source": "Futurism",
+      "target": "Modernism",
+      "relationship": "feeds / precursor",
+      "strength": "secondary",
+      "note": "Avant-garde rupture feeds the wider Modernist ferment"
+    },
+    {
+      "source": "Dada",
+      "target": "Surrealism",
+      "relationship": "evolves into",
+      "strength": "primary",
+      "note": "Surrealism grows directly out of Dada (Breton, Tzara)"
+    },
+    {
+      "source": "Dada",
+      "target": "Postmodernism",
+      "relationship": "feeds / precursor",
+      "strength": "secondary",
+      "note": "Anti-art, chance, and collage prefigure postmodern play"
     },
     {
       "source": "Modernism",
@@ -4883,6 +5384,13 @@
       "relationship": "cross-influence / overlap",
       "strength": "secondary",
       "note": "Much postcolonial fiction adopts postmodern strategies"
+    },
+    {
+      "source": "Postmodernism",
+      "target": "New Sincerity",
+      "relationship": "reaction against",
+      "strength": "primary",
+      "note": "New Sincerity reacts against pervasive postmodern irony (D. F. Wallace)"
     }
   ],
   "readingPaths": {
@@ -5946,6 +6454,140 @@
         "note": "The movement widens."
       }
     ],
+    "Expressionism": [
+      {
+        "position": 1,
+        "title": "Morgue and Other Poems",
+        "author": "Gottfried Benn",
+        "sortYear": 1912,
+        "displayYear": "1912",
+        "note": "Start with the shock — the body, unsparing."
+      },
+      {
+        "position": 2,
+        "title": "Poems of Georg Trakl",
+        "author": "Georg Trakl",
+        "sortYear": 1913,
+        "displayYear": "1913",
+        "note": "Dark, luminous imagery — the lyric core."
+      },
+      {
+        "position": 3,
+        "title": "From Morning to Midnight",
+        "author": "Georg Kaiser",
+        "sortYear": 1912,
+        "displayYear": "1912",
+        "note": "Expressionist drama — the everyman spiraling."
+      },
+      {
+        "position": 4,
+        "title": "Menschheitsdämmerung",
+        "author": "Kurt Pinthus",
+        "sortYear": 1919,
+        "displayYear": "1919",
+        "note": "The defining anthology — the movement in one volume."
+      },
+      {
+        "position": 5,
+        "title": "Man and the Masses",
+        "author": "Ernst Toller",
+        "sortYear": 1920,
+        "displayYear": "1920",
+        "note": "Politics and anguish on stage."
+      },
+      {
+        "position": 6,
+        "title": "The Gas Trilogy",
+        "author": "Georg Kaiser",
+        "sortYear": 1917,
+        "displayYear": "1917",
+        "note": "Industry and apocalypse — the fuller vision."
+      }
+    ],
+    "Futurism": [
+      {
+        "position": 1,
+        "title": "The Founding and Manifesto of Futurism",
+        "author": "F. T. Marinetti",
+        "sortYear": 1909,
+        "displayYear": "1909",
+        "note": "Start here: the movement is its manifesto."
+      },
+      {
+        "position": 2,
+        "title": "Technical Manifesto of Futurist Literature",
+        "author": "F. T. Marinetti",
+        "sortYear": 1912,
+        "displayYear": "1912",
+        "note": "The method — words set free."
+      },
+      {
+        "position": 3,
+        "title": "Zang Tumb Tumb",
+        "author": "F. T. Marinetti",
+        "sortYear": 1914,
+        "displayYear": "1914",
+        "note": "The theory made noise — sound and typography."
+      },
+      {
+        "position": 4,
+        "title": "A Slap in the Face of Public Taste",
+        "author": "David Burliuk, Aleksei Kruchenykh, Vladimir Mayakovsky and Velimir Khlebnikov",
+        "sortYear": 1912,
+        "displayYear": "1912",
+        "note": "The movement goes global."
+      },
+      {
+        "position": 5,
+        "title": "A Cloud in Trousers",
+        "author": "Vladimir Mayakovsky",
+        "sortYear": 1915,
+        "displayYear": "1915",
+        "note": "Futurism with a beating heart — the readable peak."
+      }
+    ],
+    "Dada": [
+      {
+        "position": 1,
+        "title": "Dada Manifesto",
+        "author": "Tristan Tzara",
+        "sortYear": 1918,
+        "displayYear": "1918",
+        "note": "Start here: anti-art declares itself."
+      },
+      {
+        "position": 2,
+        "title": "Karawane",
+        "author": "Hugo Ball",
+        "sortYear": 1916,
+        "displayYear": "1916",
+        "note": "Sound poetry — language abolished."
+      },
+      {
+        "position": 3,
+        "title": "The First Heavenly Adventure of Mr. Antipyrine",
+        "author": "Tristan Tzara",
+        "sortYear": 1916,
+        "displayYear": "1916",
+        "note": "Dada on stage — nonsense with intent."
+      },
+      {
+        "position": 4,
+        "title": "Anna Blume",
+        "author": "Kurt Schwitters",
+        "sortYear": 1919,
+        "displayYear": "1919",
+        "note": "Collage as love poem."
+      },
+      {
+        "position": 5,
+        "title": "Cabaret Voltaire",
+        "author": "Hugo Ball",
+        "sortYear": 1916,
+        "displayYear": "1916",
+        "note": "Where it happened — the anthology of the moment."
+      }
+    ],
     "Harlem Renaissance": [
       {
         "position": 1,
@@ -6160,6 +6802,64 @@
         "sortYear": 1967,
         "displayYear": "1967",
         "note": "The summit — a century, a family, a village. Read it when ready."
+      }
+    ],
+    "New Sincerity": [
+      {
+        "position": 1,
+        "title": "This Is Water",
+        "author": "David Foster Wallace",
+        "sortYear": 2005,
+        "displayYear": "2005",
+        "note": "Start here: the ethos in one short speech."
+      },
+      {
+        "position": 2,
+        "title": "E Unibus Pluram",
+        "author": "David Foster Wallace",
+        "sortYear": 1993,
+        "displayYear": "1993",
+        "note": "The argument against irony — the manifesto."
+      },
+      {
+        "position": 3,
+        "title": "Tenth of December",
+        "author": "George Saunders",
+        "sortYear": 2013,
+        "displayYear": "2013",
+        "note": "Warmth and craft — the accessible stories."
+      },
+      {
+        "position": 4,
+        "title": "A Heartbreaking Work of Staggering Genius",
+        "author": "Dave Eggers",
+        "sortYear": 2000,
+        "displayYear": "2000",
+        "note": "Self-aware but sincere memoir."
+      },
+      {
+        "position": 5,
+        "title": "The Brief Wondrous Life of Oscar Wao",
+        "author": "Junot Díaz",
+        "sortYear": 2007,
+        "displayYear": "2007",
+        "note": "Voice, heart, and footnotes."
+      },
+      {
+        "position": 6,
+        "title": "The Corrections",
+        "author": "Jonathan Franzen",
+        "sortYear": 2001,
+        "displayYear": "2001",
+        "note": "The big family novel of feeling."
+      },
+      {
+        "position": 7,
+        "title": "Infinite Jest",
+        "author": "David Foster Wallace",
+        "sortYear": 1996,
+        "displayYear": "1996",
+        "note": "The maximal summit — attempt it last."
       }
     ],
     "None / Pre-movement": [
