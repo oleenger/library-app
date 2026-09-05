@@ -17,6 +17,8 @@ interface WorkRow {
   primary_movement: string | null;
   secondary_movements: string | null;
   notes: string | null;
+  canonical_title: string | null;
+  canonical_author: string | null;
 }
 interface EditionRow {
   id: string;
@@ -116,6 +118,8 @@ const queryCatalogue = async (): Promise<Catalogue> => {
       originalYear: r.first_published,
       language: r.original_language,
       notes: r.notes,
+      canonicalTitle: r.canonical_title ?? null,
+      canonicalAuthor: r.canonical_author ?? null,
       editionIds,
       formats,
       classification: {

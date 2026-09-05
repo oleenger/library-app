@@ -6,6 +6,8 @@ import { periodColor } from "@/lib/display";
 import type { MovementDetailView, ReadingStepView } from "@/lib/canon/select";
 import { MovementChip } from "@/components/lineage-view";
 import { EssentialsList } from "@/components/essentials-list";
+import { CanonOwnLink } from "@/components/canon-own-link";
+import type { LinkCandidate } from "@/components/link-edition-button";
 
 /**
  * Canon: the single per-movement detail surface. Pick a movement (the reader's
@@ -17,10 +19,12 @@ export function RecommendationsView({
   details,
   workCount,
   initialMovement,
+  candidates,
 }: {
   details: MovementDetailView[];
   workCount: number;
   initialMovement?: string | null;
+  candidates: LinkCandidate[];
 }) {
   const preselect =
     initialMovement && details.some((d) => d.movement === initialMovement)
@@ -67,7 +71,7 @@ export function RecommendationsView({
         <>
           <MovementMenu pre={pre} held={held} rest={rest} value={current?.movement ?? ""} onChange={setSelected} />
 
-          {current && <MovementDetail key={current.movement} detail={current} />}
+          {current && <MovementDetail key={current.movement} detail={current} candidates={candidates} />}
 
           <p className="text-xs text-ink-faint">
             Reading order, essentials and notes are curated, not generated. Owned
@@ -148,7 +152,7 @@ type AreaView = "path" | "essentials";
  * One movement's full detail: description, then its reading path / essentials
  * (whichever exist), then its lineage — what it grew out of, led to, stood beside.
  */
-function MovementDetail({ detail }: { detail: MovementDetailView }) {
+function MovementDetail({ detail, candidates }: { detail: MovementDetailView; candidates: LinkCandidate[] }) {
   const color = periodColor(detail.period);
   // Essentials first — it's the default view; the reading path tab appears
   // whenever a curated path exists (foundations included).
@@ -183,13 +187,14 @@ function MovementDetail({ detail }: { detail: MovementDetailView }) {
           )}
           <div className="px-5 py-5 sm:px-6">
             {active === "path" ? (
-              <ReadingPath steps={detail.readingPath} owned={detail.pathOwned} read={detail.pathRead} total={detail.pathTotal} />
+              <ReadingPath steps={detail.readingPath} owned={detail.pathOwned} read={detail.pathRead} total={detail.pathTotal} candidates={candidates} />
             ) : (
               <EssentialsList
                 works={detail.essentials}
                 owned={detail.essentialsOwned}
                 read={detail.essentialsRead}
                 total={detail.essentialsTotal}
+                candidates={candidates}
               />
             )}
           </div>
@@ -246,7 +251,7 @@ function ViewToggle({ view, onChange }: { view: AreaView; onChange: (v: AreaView
 }
 
 /** The curated reading path as an ordered spine of waypoints and gaps. */
-function ReadingPath({ steps, owned, read, total }: { steps: ReadingStepView[]; owned: number; read: number; total: number }) {
+function ReadingPath({ steps, owned, read, total, candidates }: { steps: ReadingStepView[]; owned: number; read: number; total: number; candidates: LinkCandidate[] }) {
   const pct = total > 0 ? Math.round((owned / total) * 100) : 0;
   return (
     <div>
@@ -260,7 +265,7 @@ function ReadingPath({ steps, owned, read, total }: { steps: ReadingStepView[]; 
       </div>
       <ol>
         {steps.map((step, i) => (
-          <PathStep key={`${step.title}|${step.author}`} step={step} isLast={i === steps.length - 1} />
+          <PathStep key={`${step.title}|${step.author}`} step={step} isLast={i === steps.length - 1} candidates={candidates} />
         ))}
       </ol>
     </div>
@@ -268,7 +273,7 @@ function ReadingPath({ steps, owned, read, total }: { steps: ReadingStepView[]; 
 }
 
 /** One step down the reading-path spine: owned waypoint or numbered gap. */
-function PathStep({ step, isLast }: { step: ReadingStepView; isLast: boolean }) {
+function PathStep({ step, isLast, candidates }: { step: ReadingStepView; isLast: boolean; candidates: LinkCandidate[] }) {
   const body = (
     <>
       <div className="flex items-baseline justify-between gap-3">
@@ -307,7 +312,12 @@ function PathStep({ step, isLast }: { step: ReadingStepView; isLast: boolean }) 
           {body}
         </Link>
       ) : (
-        <div className="min-w-0 flex-1">{body}</div>
+        <div className="min-w-0 flex-1">
+          {body}
+          <div className="mt-2">
+            <CanonOwnLink canonTitle={step.title} canonAuthor={step.author} candidates={candidates} />
+          </div>
+        </div>
       )}
     </li>
   );

@@ -6,6 +6,8 @@
 "use client";
 
 import Link from "next/link";
+import { CanonOwnLink } from "@/components/canon-own-link";
+import type { LinkCandidate } from "@/components/link-edition-button";
 
 /** One essential (canon) work, joined against the reader's shelf. */
 export interface CanonEntry {
@@ -58,7 +60,7 @@ function EssentialMarker({ owned, read }: { owned: boolean; read: boolean }) {
 }
 
 /** One essential work: a book-page link when owned, plain text when a gap. */
-function EssentialRow({ work }: { work: CanonEntry }) {
+function EssentialRow({ work, candidates }: { work: CanonEntry; candidates: LinkCandidate[] }) {
   const body = (
     <>
       <span className="mt-[3px]">
@@ -76,6 +78,11 @@ function EssentialRow({ work }: { work: CanonEntry }) {
         {work.owned && !work.read && (
           <span className="ml-2 align-middle text-[0.62rem] font-semibold uppercase tracking-[0.1em] text-ink-faint">
             unread
+          </span>
+        )}
+        {!work.owned && (
+          <span className="mt-1 block">
+            <CanonOwnLink canonTitle={work.title} canonAuthor={work.author} candidates={candidates} />
           </span>
         )}
       </span>
@@ -100,6 +107,7 @@ export function EssentialsList({
   total,
   read,
   blurb,
+  candidates,
 }: {
   works: CanonEntry[];
   owned: number;
@@ -107,6 +115,7 @@ export function EssentialsList({
   /** How many of the owned works the reader has read. */
   read?: number;
   blurb?: string;
+  candidates: LinkCandidate[];
 }) {
   const pct = total > 0 ? Math.round((owned / total) * 100) : 0;
 
@@ -133,7 +142,7 @@ export function EssentialsList({
       <ol className="mt-4 divide-y divide-paper-edge">
         {works.map((w) => (
           <li key={`${w.title}|${w.author}|${w.displayYear}`}>
-            <EssentialRow work={w} />
+            <EssentialRow work={w} candidates={candidates} />
           </li>
         ))}
       </ol>

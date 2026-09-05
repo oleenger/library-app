@@ -34,7 +34,6 @@ Grouped by the period they are most associated with, but a movement is assigned 
 
 ### Enlightenment / Neoclassical
 - **Neoclassicism / Augustan** — balance, restraint, satire (Pope, Swift).
-- **Enlightenment** — reason, empiricism, social critique.
 
 ### 19th century
 - **Romanticism** — emotion, imagination, nature, individualism.
@@ -49,37 +48,22 @@ Grouped by the period they are most associated with, but a movement is assigned 
 ### Modernist / early 20th century
 - **Modernism** — formal rupture, fragmentation, subjectivity.
 - **Imagism** — precise, spare poetic image (Pound, H.D.).
-- **Stream of consciousness** — interior mental flow (Joyce, Woolf).
 - **Surrealism** — dream logic, the unconscious.
+- **Futurism** — speed, machines, rupture with the past (Marinetti, Mayakovsky).
+- **Expressionism** — distorted, anguished inner vision (Kafka, Trakl, Kaiser).
+- **Dada** — anti-art, chance, provocation (Tzara, Ball, Schwitters).
 - **Harlem Renaissance** — early-20th-c. African American flowering.
-- **Lost Generation** — expatriate postwar disillusion (Hemingway, Fitzgerald).
 
 ### Postwar / late 20th century
 - **Existentialism** — freedom, absurdity, meaning-making (Camus, Sartre).
 - **Theatre of the Absurd** — meaningless universe on stage (Beckett, Ionesco).
 - **Beat Generation** — spontaneity, counterculture (Kerouac, Ginsberg).
-- **Nouveau Roman** — anti-novel, French formal experiment (Robbe-Grillet).
 - **Magical realism** — the marvellous within the everyday (García Márquez, Borges, Rushdie).
 - **Postmodernism** — irony, metafiction, pastiche, instability (Pynchon, DeLillo).
-- **Metafiction** — fiction foregrounding its own artifice.
 - **Postcolonial literature** — writing by/about former colonies and their aftermath.
 
 ### Contemporary
-- **Contemporary literary fiction** — general label for present-day literary work without a sharper movement.
-- **Autofiction** — autobiographical fiction blurring author and narrator (Ferrante, Knausgård, Louis).
-
-### Genre & cross-period forms
-
-Forms defined by subject or stance rather than a single era. Two kinds:
-
-**Origin-anchored** — born in one period, later revived; labelled with their home era.
-- **Epic poetry** — long narrative poem of heroic deeds (Homer, Virgil, Dante, Milton). *Home: Classical / Antiquity.*
-
-**Cross-period modes** — recur across the whole timeline with no single home era. Views label these "Cross-period form", not a period, and colour them neutrally.
-- **Satire** — ridicule of vice and folly (Aristophanes → Swift → Heller).
-- **Science fiction** — speculative science, technology and futures (Shelley → Wells → Le Guin).
-- **Dystopian fiction** — cautionary imagined societies (Zamyatin, Huxley, Orwell, Atwood).
-- **Crime fiction** — detective, mystery and crime narratives (Poe → Christie → present).
+- **New Sincerity** — post-ironic earnestness after postmodernism (Wallace, Saunders, Eggers).
 
 ---
 
@@ -88,10 +72,9 @@ Forms defined by subject or stance rather than a single era. Two kinds:
 1. Exactly one **period** per work (or null if genuinely unplaceable).
 2. Exactly one **primary movement** (or null); secondary movements optional.
 3. A movement may span periods — assign by style, not the calendar.
-4. **Cross-period modes** (Satire, Science fiction, Dystopian fiction, Crime fiction) have no home period; period-keyed views show "Cross-period form" rather than forcing an era.
-5. Where a work fits none well, prefer **null** over forcing a label.
-6. The LLM (scanning path) and the import CSV must both draw only from this approved list; new labels are proposed separately, never invented inline.
+4. Where a work fits none well, prefer **null** over forcing a label. A genre (e.g. crime, science fiction) is *not* a movement — leave such works' movement null.
+5. This list is authoritative and mirrors the movements assigned in `data/all-books.tsv`. The LLM (scanning path) and the import CSV must draw only from it; new labels are proposed separately, never invented inline.
 
 ## Notes
-- This list favours breadth of coverage for a general literary collection. Trim movements you'll never use to keep filtering clean.
+- The taxonomy contains only movements present in `data/all-books.tsv` (plus `Humanism` and `Dark Romanticism`, which appear there as secondary tags).
 - Non-Western and national traditions (e.g. Norwegian) are only lightly represented here; add labels if the collection needs them.

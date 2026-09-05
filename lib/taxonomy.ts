@@ -26,7 +26,6 @@ export const MOVEMENTS = [
   "Humanism",
   // Enlightenment / Neoclassical
   "Neoclassicism / Augustan",
-  "Enlightenment",
   // 19th century
   "Romanticism",
   "Transcendentalism",
@@ -39,29 +38,20 @@ export const MOVEMENTS = [
   // Modernist / early 20th century
   "Modernism",
   "Imagism",
-  "Stream of consciousness",
   "Surrealism",
+  "Futurism",
+  "Expressionism",
+  "Dada",
   "Harlem Renaissance",
-  "Lost Generation",
   // Postwar / late 20th century
   "Existentialism",
   "Theatre of the Absurd",
   "Beat Generation",
-  "Nouveau Roman",
   "Magical realism",
   "Postmodernism",
-  "Metafiction",
   "Postcolonial literature",
   // Contemporary
-  "Contemporary literary fiction",
-  "Autofiction",
-  // Genre & cross-period forms — added beyond docs/library-taxonomy.md to cover
-  // genre works the era-grouped list did not reach.
-  "Epic poetry", // long narrative poem of heroic deeds (Homer, Virgil, Dante, Milton)
-  "Satire", // ridicule of vice and folly (Chaucer, Swift, Heller)
-  "Science fiction", // speculative science, technology and futures
-  "Dystopian fiction", // cautionary imagined societies
-  "Crime fiction", // detective, mystery and crime narratives
+  "New Sincerity",
 ] as const;
 
 export type Period = (typeof PERIODS)[number];
@@ -85,21 +75,15 @@ export function isMovementOrPreMovement(value: string): boolean {
  * used for era labels and colour in period-keyed views (there is no separate
  * per-movement colour).
  *
- * Some movements are **cross-period modes**: forms defined by stance or subject
- * rather than an era, whose canon genuinely scatters across the whole timeline
- * (Satire runs Aristophanes → Swift → Heller; Crime fiction Poe → Christie →
- * present). Pinning them to one period is actively misleading, so their value is
- * `null` and views render them as "Cross-period form" rather than a false era.
- *
  * Typed so every movement is covered — the compiler rejects a new movement that
- * omits an entry here.
+ * omits an entry here. A movement may still be `null` if it has no single home
+ * era; such movements render as "Cross-period form" rather than a false period.
  */
 export const MOVEMENT_PERIODS: Record<Movement, Period | null> = {
   // Renaissance / Early Modern
   Humanism: "Renaissance / Early Modern",
   // Enlightenment / Neoclassical
   "Neoclassicism / Augustan": "Enlightenment / Neoclassical",
-  Enlightenment: "Enlightenment / Neoclassical",
   // 19th century
   Romanticism: "Romantic",
   Transcendentalism: "Romantic",
@@ -112,30 +96,20 @@ export const MOVEMENT_PERIODS: Record<Movement, Period | null> = {
   // Modernist / early 20th century
   Modernism: "Modernist / early 20th century",
   Imagism: "Modernist / early 20th century",
-  "Stream of consciousness": "Modernist / early 20th century",
   Surrealism: "Modernist / early 20th century",
+  Futurism: "Modernist / early 20th century",
+  Expressionism: "Modernist / early 20th century",
+  Dada: "Modernist / early 20th century",
   "Harlem Renaissance": "Modernist / early 20th century",
-  "Lost Generation": "Modernist / early 20th century",
   // Postwar / late 20th century
   Existentialism: "Postwar / late 20th century",
   "Theatre of the Absurd": "Postwar / late 20th century",
   "Beat Generation": "Postwar / late 20th century",
-  "Nouveau Roman": "Postwar / late 20th century",
   "Magical realism": "Postwar / late 20th century",
   Postmodernism: "Postwar / late 20th century",
-  Metafiction: "Postwar / late 20th century",
   "Postcolonial literature": "Postwar / late 20th century",
   // Contemporary
-  "Contemporary literary fiction": "Contemporary",
-  Autofiction: "Contemporary",
-  // Genre & cross-period forms.
-  // Origin-anchored (a period-born form later revived): keep their home era.
-  "Epic poetry": "Classical / Antiquity",
-  // Cross-period modes (recur across the whole timeline, no single home era): null.
-  Satire: null,
-  "Science fiction": null,
-  "Dystopian fiction": null,
-  "Crime fiction": null,
+  "New Sincerity": "Contemporary",
 };
 
 /** Movements with no single home period — rendered as "Cross-period form". */
@@ -148,7 +122,7 @@ export function movementPeriod(movement: string): Period | null {
   return isMovement(movement) ? MOVEMENT_PERIODS[movement] : null;
 }
 
-/** True when the movement is a cross-period mode (Satire, Crime fiction, …). */
+/** True when the movement has no single home period (a cross-period mode). */
 export function isCrossPeriod(movement: string): boolean {
   return isMovement(movement) && CROSS_PERIOD_MOVEMENTS.has(movement);
 }

@@ -16,6 +16,8 @@ export type WorksRow = {
   primary_movement: string | null;
   secondary_movements: string | null;
   notes: string | null;
+  canonical_title: string | null;
+  canonical_author: string | null;
 }
 
 export type EditionsRow = {
@@ -63,7 +65,11 @@ export interface Database {
     Tables: {
       works: {
         Row: WorksRow;
-        Insert: Omit<WorksRow, "author_sort"> & { author_sort?: string | null };
+        Insert: Omit<WorksRow, "author_sort" | "canonical_title" | "canonical_author"> & {
+          author_sort?: string | null;
+          canonical_title?: string | null;
+          canonical_author?: string | null;
+        };
         Update: Partial<WorksRow>;
         Relationships: [];
       };

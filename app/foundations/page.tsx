@@ -66,6 +66,14 @@ export default async function FoundationsPage() {
   // Emit in chronological period order.
   const groups = PERIODS.map((p) => byEra.get(p)).filter((g): g is EraGroup => g != null);
 
+  // Every owned book, trimmed for the "I own this" gap-link picker.
+  const candidates = works.map((w) => ({
+    id: w.id,
+    title: w.title,
+    author: w.author,
+    language: w.language ?? null,
+  }));
+
   const total = classics.length;
   const ownedTotal = groups.reduce((n, g) => n + g.owned, 0);
   const readTotal = groups.reduce((n, g) => n + g.read, 0);
@@ -128,6 +136,7 @@ export default async function FoundationsPage() {
                     owned={g.owned}
                     read={g.read}
                     total={g.works.length}
+                    candidates={candidates}
                   />
                 </div>
               </section>

@@ -213,6 +213,30 @@ async function mergeWorkInto(fromId: string, toId: string): Promise<void> {
 }
 
 /**
+ * Set or clear a work's manual canonical alias — the "this owned book IS that
+ * canon work" link initiated from a canon gap. Pass a title+author to set it (so
+ * a translation like "Rødt og sort" answers to the canon "The Red and the
+ * Black"), or both null/blank to clear. Throws if only one of the pair is given.
+ */
+export async function setCanonicalAlias(
+  workId: string,
+  canonicalTitle: string | null | undefined,
+  canonicalAuthor: string | null | undefined,
+): Promise<void> {
+  const title = clean(canonicalTitle);
+  const author = clean(canonicalAuthor);
+  if ((title == null) !== (author == null)) {
+    throw new Error("canonical title and author must be set together");
+  }
+  const db = admin();
+  const { error } = await db
+    .from("works")
+    .update({ canonical_title: title, canonical_author: author })
+    .eq("id", workId);
+  if (error) throw new Error(`canonical alias write failed: ${error.message}`);
+}
+
+/**
  * Permanently delete a work. The `work_editions` links and any `read_status`
  * row are removed automatically by the `on delete cascade` foreign keys; this
  * then sweeps up any editions left with no remaining links so the catalogue

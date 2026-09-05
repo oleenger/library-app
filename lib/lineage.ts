@@ -33,7 +33,7 @@ export const LINEAGE: Partial<Record<Movement, LineageNode>> = {
   Romanticism: {
     years: "1798–1837",
     note: "Feeling, nature and the sublime raised over Enlightenment reason and neoclassical restraint.",
-    reactedAgainst: ["Neoclassicism / Augustan", "Enlightenment"],
+    reactedAgainst: ["Neoclassicism / Augustan"],
     ledTo: ["Realism", "Symbolism"],
     alongside: ["Gothic", "Transcendentalism", "Dark Romanticism"],
   },
@@ -71,18 +71,10 @@ export const LINEAGE: Partial<Record<Movement, LineageNode>> = {
     reactedAgainst: ["Realism", "Symbolism"],
     ledTo: ["Postmodernism"],
     alongside: [
-      "Stream of consciousness",
       "Imagism",
       "Surrealism",
-      "Lost Generation",
       "Harlem Renaissance",
     ],
-  },
-  "Stream of consciousness": {
-    years: "1915–1945",
-    note: "Narrative as the unmediated flow of a character's thought, syntax bending to the shape of the mind.",
-    reactedAgainst: ["Realism"],
-    alongside: ["Modernism", "Imagism"],
   },
   Imagism: {
     years: "1912–1917",
@@ -98,11 +90,6 @@ export const LINEAGE: Partial<Record<Movement, LineageNode>> = {
     ledTo: ["Magical realism"],
     alongside: ["Modernism"],
   },
-  "Lost Generation": {
-    years: "1918–1939",
-    note: "Expatriate American writers disillusioned by the First World War.",
-    alongside: ["Modernism"],
-  },
   "Harlem Renaissance": {
     years: "1918–1937",
     note: "A flowering of Black American literature, music and art centred on Harlem.",
@@ -112,13 +99,7 @@ export const LINEAGE: Partial<Record<Movement, LineageNode>> = {
     years: "1945–2000",
     note: "Play, pastiche and self-awareness — scepticism toward grand narratives and the stable self.",
     reactedAgainst: ["Modernism"],
-    ledTo: ["Autofiction", "Contemporary literary fiction"],
-    alongside: ["Metafiction", "Magical realism"],
-  },
-  Metafiction: {
-    years: "1960–1990",
-    note: "Fiction that lays bare its own artifice, addressing the reader and the act of writing.",
-    alongside: ["Postmodernism"],
+    alongside: ["Magical realism"],
   },
   "Magical realism": {
     years: "1935–2000",
